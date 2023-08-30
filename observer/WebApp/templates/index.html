@@ -14,6 +14,8 @@
     <form action="{% url 'reporting' %}" method="POST">
     <table>
         {{ depts_list }}
+
+        {{ research_list }}
     </table>
         <button type="submit" id="ref" > <b>Построить отчет</b> </button>
                           {% csrf_token %}
