@@ -10,6 +10,20 @@
 <body>
     <div class="container">
         <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>
+
+    <form action="{% url 'reporting' %}" method="POST">
+    <table>
+        {{ depts_list }}
+    </table>
+        <button type="submit" id="ref" > <b>Построить отчет</b> </button>
+                          {% csrf_token %}
+    </form>
+    <br>
+    {% if messages %}
+         {% for message in messages %}
+         <p class="{{ message.tags }}" >{{ message }}</p><br>
+         {% endfor %}
+    {% endif %}
     </div>
 </body>
 </html>
