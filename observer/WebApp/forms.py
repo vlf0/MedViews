@@ -3,7 +3,8 @@ from django.db import models
 
 
 class DeptChoose(forms.Form):
-    """ This class represent dept choosing form on the page. """
+    """ Represent drop-down list of departments
+        name from KIS DB on the starting page. """
 
     # List of the all depts from KIS DB
     # depts = KIS_Model.objects.all()
@@ -18,4 +19,12 @@ class DeptChoose(forms.Form):
     dept_name = forms.ChoiceField(label='Отделение', choices=(('ПАО', 'ПАО'), ('Педиатрия', 'Педиатрия'),
                                                               ('Хиругия', 'Хиругия'), ('Кардио', 'Кардио')))
 
+
+class ResearchType(forms.Form):
+    """ Represent drop-down list of research
+        name from KIS DB on the starting page. """
+
+    research_types = forms.ChoiceField(label='Тип незакрытых назначений',
+                                       choices=(('ЛИ', 'ЛИ'), ('Консультации', 'Консультации'),
+                                                ('ТАПы', 'ТАПы'), ('ИИ', 'ИИ')))
 

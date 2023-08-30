@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # My own modules
-from .forms import DeptChoose
+from .forms import DeptChoose, ResearchType
 
 
 # Starting page (main)
 def index(request):
     # Fields to be sending to page (from our forms)
     depts_list = DeptChoose()
-    return render(request=request, template_name='index.html', context={'depts_list': depts_list})
+    research_list = ResearchType()
+    return render(request=request, template_name='index.html', context={'depts_list': depts_list,
+                                                                        'research_list': research_list})
 
 
 def reporting(request):
