@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 # My own modules
 from .forms import DeptChoose, ResearchType
+from kisdb_connecting.operations import connecting
 
 
 # Starting page (main)
@@ -15,8 +16,6 @@ def index(request):
 
 def reporting(request):
     dept = request.POST.get('dept_name')
-    print(dept)
-    print(type(dept))
     if dept in ['Педиатрия', 'Хирургия']:
         return redirect(to='output')
     messages.error(request, 'Error')
@@ -25,6 +24,8 @@ def reporting(request):
 
 
 def output(request):
+    connecting()
+
     return render(request=request, template_name='output.html')
 
 # Redirecting to reporting page
