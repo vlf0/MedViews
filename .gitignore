@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+test.py
 config_data.txt
 observer/observer/settings.py
 
