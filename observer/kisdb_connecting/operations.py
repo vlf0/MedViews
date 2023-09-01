@@ -1,5 +1,3 @@
-import encodings.utf_8
-
 import pandas as pd
 import psycopg2
 from psycopg2 import Error
@@ -28,28 +26,42 @@ bot_of_template = (
 
 
 def connecting():
+    """ Simple connecting to DB and getting data. """
     try:
         # # Connect to needed DB
         connection = psycopg2.connect(database='postgres', host='localhost',
-                                      port='5432', user='postgres', password='root')
+                                      port='5431', user='postgres', password='root')
         cursor = connection.cursor()
-
         # SQL query to getting data from DB
         select_query = 'SELECT * FROM mm.cons2'
-
         # Executing query and getting list of rows represented in tuples
         cursor.execute(select_query)
         selecting_data = cursor.fetchall()
+        return selecting_data
 
+    # Caught all possible exceptions
+    except (Exception, Error) as error:
+        return 'Bad SQL request or another DB problem. Call to administrator.'
+    finally:
+        try:
+            if connection:
+                cursor.close()
+                connection.close()
+        except UnboundLocalError:
+            return False
+
+
+def preparing_data(db_data):
+    """ Prepare raw data getting from KIS DB and creating HTML template based on them. """
+    if type(db_data) is list:
         # List of lists that will be DataFrame dict values
         data_lists = [id := [], fio := [], doc_num := [], research := [], add_data := [], plan_data := [], status := []]
 
         # Raw list iterations from KIS DB
         # Then iteration of separated record from list represented in the tuple
-        for record in selecting_data:
+        for record in db_data:
             for row in record:
                 data_lists[record.index(row)].append(row)
-
         key_index = 0
         # Data dict - argument to the DataFrame
         data = {'id': [],
@@ -60,7 +72,6 @@ def connecting():
                 'plan_data': [],
                 'status': []
                 }
-
         # Values assignment to data keys
         for i in data:
             data[i] = data_lists[key_index]
@@ -70,30 +81,15 @@ def connecting():
         # Converting to HTML block in the <table> tag
         # It is middle part of body of the HTML template
         tab = df.to_html()
-
-        # Updating template by overwriting when get the new data from KIS
-        with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
-                  encoding='utf-8') as template:
-            template.write(top_of_template)
-            template.writelines(tab)
-            template.writelines(bot_of_template)
-        return tab
-
-
-    # Caught all possible exceptions
-    except (Exception, Error) as error:
-        print('executing error!')
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            print("Соединение с PostgreSQL закрыто")
-
-# connecting()
-
-
-
-
-
+    elif type(db_data) is str:
+        tab = f'\t<p class="center-top-text">{db_data}</p>\n'
+    else:
+        tab = '\t<p class="center-top-text">ОШИБКА РАБОТЫ С БД. Обратитесть к администратору.</p>\n'
+    # Updating template by overwriting when get the new data from KIS
+    with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
+              encoding='utf-8') as template:
+        template.write(top_of_template)
+        template.writelines(tab)
+        template.writelines(bot_of_template)
 
 
