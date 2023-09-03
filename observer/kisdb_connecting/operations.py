@@ -30,7 +30,7 @@ def connecting():
     try:
         # # Connect to needed DB
         connection = psycopg2.connect(database='postgres', host='localhost',
-                                      port='5431', user='postgres', password='root')
+                                      port='5432', user='postgres', password='root')
         cursor = connection.cursor()
         # SQL query to getting data from DB
         select_query = 'SELECT * FROM mm.cons2'
@@ -50,18 +50,24 @@ def connecting():
         except UnboundLocalError:
             return False
 
+# print(connecting())
+
 
 def preparing_data(db_data):
     """ Prepare raw data getting from KIS DB and creating HTML template based on them. """
-    if type(db_data) is list:
+    if type(db_data) is list and len(db_data) == 0:
+        tab = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
+    elif type(db_data) is list and len(db_data) != 0:
         # List of lists that will be DataFrame dict values
-        data_lists = [id := [], fio := [], doc_num := [], research := [], add_data := [], plan_data := [], status := []]
+        data_lists = [id := [], fio := [], doc_num := [], research := [], add_data := [],
+                      plan_data := [], status := [], research_type := []]
 
         # Raw list iterations from KIS DB
         # Then iteration of separated record from list represented in the tuple
         for record in db_data:
             for row in record:
                 data_lists[record.index(row)].append(row)
+
         key_index = 0
         # Data dict - argument to the DataFrame
         data = {'id': [],
@@ -91,5 +97,4 @@ def preparing_data(db_data):
         template.write(top_of_template)
         template.writelines(tab)
         template.writelines(bot_of_template)
-
 
