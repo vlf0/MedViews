@@ -37,13 +37,9 @@ def connecting(sql_query):
         connection = psycopg2.connect(database='postgres', host='localhost',
                                       port='5432', user='postgres', password='root')
         cursor = connection.cursor()
-        # SQL query to getting data from DB
-        # selecting_query = 'SELECT * FROM mm.cons2'
         # Executing query and getting list of rows represented in tuples
-
         cursor.execute(sql_query)
         selecting_data = cursor.fetchall()
-        print(selecting_data)
         return selecting_data
 
     # Caught all possible exceptions
