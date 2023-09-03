@@ -25,7 +25,12 @@ bot_of_template = (
 )
 
 
-def connecting():
+def select_query(research_type):
+    selecting_query = f'SELECT * FROM mm.cons2 WHERE naz_type = \'{research_type}\''
+    return selecting_query
+
+
+def connecting(sql_query):
     """ Simple connecting to DB and getting data. """
     try:
         # # Connect to needed DB
@@ -33,10 +38,12 @@ def connecting():
                                       port='5432', user='postgres', password='root')
         cursor = connection.cursor()
         # SQL query to getting data from DB
-        select_query = 'SELECT * FROM mm.cons2'
+        # selecting_query = 'SELECT * FROM mm.cons2'
         # Executing query and getting list of rows represented in tuples
-        cursor.execute(select_query)
+
+        cursor.execute(sql_query)
         selecting_data = cursor.fetchall()
+        print(selecting_data)
         return selecting_data
 
     # Caught all possible exceptions
@@ -49,8 +56,6 @@ def connecting():
                 connection.close()
         except UnboundLocalError:
             return False
-
-# print(connecting())
 
 
 def preparing_data(db_data):
