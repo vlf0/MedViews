@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 # My own modules
 from .forms import DeptChoose, ResearchType
-from kisdb_connecting.operations import connecting, preparing_data
+from kisdb_connecting.operations import connecting, preparing_data, select_query
+
+naz_type = ''
 
 
 # Starting page (main)
@@ -15,8 +17,11 @@ def index(request):
 
 
 def reporting(request):
+    global naz_type
     dept = request.POST.get('dept_name')
+    naz_type = request.POST.get('research_types')
     if dept in ['Педиатрия', 'Хирургия']:
+        # Redirecting to reporting page
         return redirect(to='output')
     messages.error(request, 'Error')
     return redirect(to='index')
@@ -24,15 +29,7 @@ def reporting(request):
 
 
 def output(request):
-    preparing_data(connecting())
+    query = select_query(naz_type)
+    preparing_data(connecting(query))
     return render(request=request, template_name='output.html')
 
-# Redirecting to reporting page
-# def reporting(request):
-#     dept = request.POST.get('dept_name')
-#     print(dept)
-#     for depts in ['Педиатрия', 'Хирургия', 'Кардио']:
-#         if depts == dept:
-#             return redirect(to='reporting')
-#     messages.error(request, 'Error')
-#     return redirect(to='index')

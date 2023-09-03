@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 test.py
+output.html
 config_data.txt
 observer/observer/settings.py
 
