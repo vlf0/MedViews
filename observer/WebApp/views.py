@@ -4,8 +4,6 @@ from django.contrib import messages
 from .forms import DeptChoose, ResearchType
 from kisdb_connecting.operations import connecting, preparing_data, select_query
 
-naz_type = ''
-
 
 # Starting page (main)
 def index(request):
@@ -17,10 +15,12 @@ def index(request):
 
 
 def reporting(request):
-    global naz_type
     dept = request.POST.get('dept_name')
     naz_type = request.POST.get('research_types')
     if dept in ['Педиатрия', 'Хирургия']:
+        # SQL queries executing
+        query_text = select_query(naz_type)
+        preparing_data(connecting(query_text))
         # Redirecting to reporting page
         return redirect(to='output')
     messages.error(request, 'Error')
@@ -29,7 +29,5 @@ def reporting(request):
 
 
 def output(request):
-    query = select_query(naz_type)
-    preparing_data(connecting(query))
     return render(request=request, template_name='output.html')
 
