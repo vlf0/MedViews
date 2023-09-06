@@ -25,6 +25,5 @@ class ResearchType(forms.Form):
         name from KIS DB on the starting page. """
 
     research_types = forms.ChoiceField(label='Тип незакрытых назначений',
-                                       choices=(('ЛИ', 'ЛИ'), ('Консультации', 'Консультации'),
-                                                ('ТАПы', 'ТАПы'), ('ИИ', 'ИИ')))
-
+                                       choices=(('Назначено', 'Назначено'),
+                                                ('Отменено', 'Отменено')))
