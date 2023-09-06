@@ -16,6 +16,13 @@ top_of_template = (
     '  <body>\n'
     '\t<div class="container">\n'
     '\t<p class="center-top-text">Here is your data</p>\n'
+    '\t<form action="{% url \'output\' \'chosen_dept\' \'chosen_type\' %}" method="POST">\n'
+    '\t  <table>\n'
+    '\t\t  {{research_type}}\n'
+    '\t  </table>\n'
+    '\t  <button type="submit" id="ref"> <b> Показать </b> </button>\n'
+    '\t\t  {%csrf_token %}\n'
+    '\t</form>\n'
 )
 
 bot_of_template = (
@@ -26,32 +33,34 @@ bot_of_template = (
 
 
 def select_query(research_type):
-    selecting_query = f'SELECT * FROM mm.cons2 WHERE naz_type = \'{research_type}\''
+    selecting_query = f'SELECT * FROM mm.cons2 WHERE status = \'{research_type}\''
     return selecting_query
 
 
 def connecting(sql_query):
     """ Simple connecting to DB and getting data. """
-    try:
-        # # Connect to needed DB
-        connection = psycopg2.connect(database='postgres', host='localhost',
-                                      port='5432', user='postgres', password='root')
-        cursor = connection.cursor()
-        # Executing query and getting list of rows represented in tuples
-        cursor.execute(sql_query)
-        selecting_data = cursor.fetchall()
-        return selecting_data
+    # try:
+    # # Connect to needed DB
+    connection = psycopg2.connect(database='postgres', host='localhost',
+                                  port='5432', user='postgres', password='root')
+    cursor = connection.cursor()
+    # Executing query and getting list of rows represented in tuples
+    cursor.execute(sql_query)
+    selecting_data = cursor.fetchall()
+    # print(len(selecting_data))
+    return selecting_data
 
-    # Caught all possible exceptions
-    except (Exception, Error) as error:
-        return 'Bad SQL request or another DB problem. Call to administrator.'
-    finally:
-        try:
-            if connection:
-                cursor.close()
-                connection.close()
-        except UnboundLocalError:
-            return False
+    # # Caught all possible exceptions
+    # except (Exception, Error) as error:
+    #     return 'Bad SQL request or another DB problem. Call to administrator.'
+    # finally:
+    #     try:
+    #         if connection:
+    #             cursor.close()
+    #             connection.close()
+    #     except UnboundLocalError:
+    #         return False
+
 
 
 def preparing_data(db_data):
@@ -72,9 +81,10 @@ def preparing_data(db_data):
         key_index = 0
         # Data dict - argument to the DataFrame
         data = {'id': [],
-                'fio': [],
+                'fio_doc': [],
                 'doc_num': [],
-                'research': [],
+                'pat_fio': [],
+                'naz_type': [],
                 'add_data': [],
                 'plan_data': [],
                 'status': []
@@ -99,3 +109,4 @@ def preparing_data(db_data):
         template.writelines(tab)
         template.writelines(bot_of_template)
 
+# print(preparing_data(connecting(f'SELECT * FROM mm.cons2 WHERE status = \'Назначено\'')))

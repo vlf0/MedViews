@@ -1,3 +1,4 @@
+# from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # My own modules
@@ -5,29 +6,36 @@ from .forms import DeptChoose, ResearchType
 from kisdb_connecting.operations import connecting, preparing_data, select_query
 
 
-# Starting page (main)
-def index(request):
+# Starting page (main) with the choice fields
+def dept(request):
     # Fields to be sending to page (from our forms)
     depts_list = DeptChoose()
-    research_list = ResearchType()
-    return render(request=request, template_name='index.html', context={'depts_list': depts_list,
-                                                                        'research_list': research_list})
+    return render(request=request, template_name='index.html', context={'depts_list': depts_list})
 
 
-def reporting(request):
-    dept = request.POST.get('dept_name')
-    naz_type = request.POST.get('research_types')
-    if dept in ['Педиатрия', 'Хирургия']:
-        # SQL queries executing
-        query_text = select_query(naz_type)
-        preparing_data(connecting(query_text))
-        # Redirecting to reporting page
-        return redirect(to='output')
-    messages.error(request, 'Error')
-    return redirect(to='index')
-    # return render(request=request, template_name='output.html')
+def ref_to_type(request):
+    chosen_dept = request.POST.get('dept_name')
+    return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
-def output(request):
+def research_type(request, chosen_dept):
+    types_list = ResearchType()
+    print(request.GET)
+    # Get the first part of URL path - department and reuse it
+    # dept_from_url = request.path.split(sep='/')[1]
+    print(chosen_dept)
+
+    return render(request=request, template_name='research_type.html', context={'types_list': types_list,
+                                                                                'chosen_dept': chosen_dept})
+
+
+def ref_to_output(request, chosen_dept):
+    chosen_type = request.POST.get('research_types')
+    return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type)
+
+
+# Just displaying template with django URL parameter by getting previous POST data
+def output(request, chosen_dept, chosen_type):
+    preparing_data(connecting('SELECT * FROM mm.cons2'))
     return render(request=request, template_name='output.html')
 

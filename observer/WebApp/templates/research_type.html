@@ -5,15 +5,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Department choice</title>
+    <title>Research choice</title>
 </head>
 <body>
     <div class="container">
         <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>
-
-    <form action="{% url 'ref_to_type' %}" method="POST">
+        {{ chosen_dept }}
+    <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
     <table>
-        {{ depts_list }}
+        {{ types_list }}
     </table>
         <button type="submit" id="ref" > <b>Выбрать</b> </button>
                           {% csrf_token %}

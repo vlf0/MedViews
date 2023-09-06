@@ -20,7 +20,10 @@ from WebApp import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('data_out/', views.reporting, name='reporting'),
-    path('output/', views.output, name='output'),
+    path('', views.dept, name='dept'),
+    path('ref_to_type/', views.ref_to_type, name='ref_to_type'),
+    path('<str:chosen_dept>/research_type/', views.research_type, name='research_type'),
+    path('<str:chosen_dept>/', views.ref_to_output, name='ref_to_output'),
+
+    path('<str:chosen_dept>/<str:chosen_type>/output', views.output, name='output'),
 ]
