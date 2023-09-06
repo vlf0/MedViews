@@ -20,10 +20,9 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    print(request.GET)
+
     # Get the first part of URL path - department and reuse it
     # dept_from_url = request.path.split(sep='/')[1]
-    print(chosen_dept)
 
     return render(request=request, template_name='research_type.html', context={'types_list': types_list,
                                                                                 'chosen_dept': chosen_dept})
@@ -36,6 +35,17 @@ def ref_to_output(request, chosen_dept):
 
 # Just displaying template with django URL parameter by getting previous POST data
 def output(request, chosen_dept, chosen_type):
-    preparing_data(connecting('SELECT * FROM mm.cons2'))
-    return render(request=request, template_name='output.html')
+    if request.method == 'POST':
+        chosen_type = request.POST.get('research_types')
+        preparing_data(connecting(select_query(chosen_dept, chosen_type)))
+        return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type)
+    else:
+        preparing_data(connecting(select_query(chosen_dept, chosen_type)))
+        types_list = ResearchType()
+        return render(request=request, template_name='output.html', context={'types_list': types_list,
+                                                                             'chosen_dept': chosen_dept})
+
+
+# def ref_second_output(request, ):
+#     return redirect()
 

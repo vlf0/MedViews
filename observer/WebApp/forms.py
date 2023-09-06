@@ -16,8 +16,7 @@ class DeptChoose(forms.Form):
     #     depts_tuple.append(tuple([field, field]))
 
     # Choice field on the page with ready drop-down list
-    dept_name = forms.ChoiceField(label='Отделение', choices=(('ПАО', 'ПАО'), ('Педиатрия', 'Педиатрия'),
-                                                              ('Хиругия', 'Хиругия'), ('Кардио', 'Кардио')))
+    dept_name = forms.ChoiceField(label='Отделение', choices=(('dept_1', 'dept_1'), ('dept_2', 'dept_2')))
 
 
 class ResearchType(forms.Form):
