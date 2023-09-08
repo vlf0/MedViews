@@ -44,7 +44,11 @@ class ReadyReportHTML:
         self.research = research
 
     def select_query(self):
-        selecting_query = f'SELECT * FROM mm.{self.dept} WHERE status = \'{self.research}\' limit \'1\''
+        selecting_query = f'SELECT * FROM mm.dbkis where dept = \'{self.dept}\' and status = \'{self.research}\''
+
+        # selecting_query = f'SELECT m.surname, m.name, m.patron, m.num,m.YEAR, m.beg_dt, m.sex, m.mdoc_type_id' \
+        #                   f' FROM mm.{self.dept} m WHERE mdoc_type_id = \'{self.research}\' LIMIT \'10\''
+
         return selecting_query
 
     def connecting(self):
@@ -94,25 +98,30 @@ class ReadyReportHTML:
             ]
             # Raw list iterations from KIS DB
             # Then iteration of separated record from list represented in the tuple
+            # # print(self.connecting())
             for record in self.connecting():
+                list_key_index = 0
                 for row in record:
-                    data_lists[record.index(row)].append(row)
-            key_index = 0
+                    data_lists[list_key_index].append(row)
+                    list_key_index += 1
+            # # print(data_lists)
             # Data dict - argument to the DataFrame
-            data = {'id': [],
+            dict_key_index = 0
+            data = {
                     'fio_doc': [],
-                    'doc_num': [],
+                    'ib_num': [],
                     'pat_fio': [],
-                    'naz_type': [],
-                    'add_data': [],
-                    'plan_data': [],
-                    'status': []
+                    'research': [],
+                    'create_dt': [],
+                    'status': [],
+                    'dept': [],
+                    'plan_dt': []
                     }
             # Values assignment to data keys
             for i in data:
-                data[i] = data_lists[key_index]
-                key_index += 1
-            # print(data)
+                data[i] = data_lists[dict_key_index]
+                dict_key_index += 1
+            # # print(data)
             df = pd.DataFrame(data=data)
             # Converting to HTML block in the <table> tag
             # It is middle part of body of the HTML template

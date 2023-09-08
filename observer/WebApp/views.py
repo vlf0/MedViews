@@ -38,14 +38,10 @@ def ref_to_output(request, chosen_dept):
 def output(request, chosen_dept, chosen_type):
     if request.method == 'POST':
         chosen_type = request.POST.get('research_types')
-        # preparing_data(connecting(select_query(chosen_dept, chosen_type)))
-        page = ReadyReportHTML(dept=chosen_dept, research=chosen_type)
-        page.preparing_data()
+        ReadyReportHTML(dept=chosen_dept, research=chosen_type).preparing_data()
         return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type)
     else:
-        # preparing_data(connecting(select_query(chosen_dept, chosen_type)))
-        page = ReadyReportHTML(dept=chosen_dept, research=chosen_type)
-        page.preparing_data()
+        ReadyReportHTML(dept=chosen_dept, research=chosen_type).preparing_data()
         types_list = ResearchType()
         return render(request=request, template_name='output.html', context={'types_list': types_list,
                                                                              'chosen_dept': chosen_dept})
