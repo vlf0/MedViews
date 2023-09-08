@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 test.py
+test2.py
 test.html
 output.html
 config_data.txt

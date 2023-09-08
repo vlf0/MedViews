@@ -1,24 +1,32 @@
 from django import forms
 from django.db import models
 
+from kisdb_connecting.operations import SelectAnswer, Queries
+
 
 class DeptChoose(forms.Form):
     """ Represent drop-down list of departments
         name from KIS DB on the starting page. """
+    # Create object that contains all departments from KIS DB
+    answer = SelectAnswer(query_text='SELECT name FROM mm.depts d').selecting()
+    str_values = [field[0] for field in answer]
 
-    # List of the all depts from KIS DB
-    # depts = KIS_Model.objects.all()
-    # depts_tuple = []
-    #
-    # # Iterations and converting depts string in tuple
-    # # Because in requesting only tuple(tuple(str, str), tuple(str, str), ...)
-    # for field in depts:
-    #     depts_tuple.append(tuple([field, field]))
+    # Defined method that create tuple(tuple(str, str), tuple(str, str), ...)
+    # It will be the choices list on the page
+    @staticmethod
+    def converting(x):
+        result = []
+        for i in x:
+            result.append((i, i))
+        return tuple(result)
+    print(converting(str_values))
 
-    dept_name = forms.CharField(required=True)
+    # # For testing on the pages
+    # dept_name = forms.CharField(required=True)
 
-    # # Choice field on the page with ready drop-down list
-    # dept_name = forms.ChoiceField(label='Отделение', choices=(('dept_1', 'dept_1'), ('dept_2', 'dept_2')))
+    # Choice field on the page with ready drop-down list
+    dept_name = forms.ChoiceField(label='Отделение', choices=converting(str_values))
+
 
 
 class ResearchType(forms.Form):
