@@ -5,6 +5,64 @@ from psycopg2 import Error
 from WebApp.models import ConnectingToKIS
 
 
+class Queries:
+    """
+    SQL queries for selecting data from DB.
+    """
+
+    def __init__(self, dept, research):
+        self.dept = dept
+        self.research = research
+
+    def ready_select(self):
+        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\''
+
+
+class SelectAnswer:
+    """
+    Just connecting and give info about success or not.
+    Class attributes is data from app DB filed.
+    They contain data for connecting to KIS DB.
+    """
+
+    def __init__(self, query_text):
+        self.query_text = query_text
+
+    def selecting(self):
+        if len(ConnectingToKIS.objects.all()) != 0:
+            for conn_data in ConnectingToKIS.objects.all():
+                if conn_data.active is True:
+                    try:
+                        connection = psycopg2.connect(database='postgres',
+                                                      host='localhost',
+                                                      port='5432',
+                                                      user='postgres',
+                                                      password='root')
+                        try:
+                            cursor = connection.cursor()
+                            cursor.execute(self.query_text)
+                            selecting_data = cursor.fetchall()
+                            return selecting_data
+                        except (Exception, Error):
+                            return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
+                        finally:
+                            cursor.close()
+                            connection.close()
+                    except (Exception, Error):
+                        return 'Can not connect to BD!\nCall to admin!'
+                    # finally:
+                        # try:
+                        #     if connection:
+                        #         cursor.close()
+                        #         connection.close()
+                        # except UnboundLocalError:
+                        #     pass
+                else:
+                    return 'DB not active!\n To use it - turn on check box in the admin panel!'
+        else:
+            return 'There are no any records in the BD data tab!'
+
+
 class ReadyReportHTML:
     """ Represent HTML page which generated from func - (preparing data) - and contains select required data.
         The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models.
@@ -39,67 +97,21 @@ class ReadyReportHTML:
         '</html>'
     )
 
-    def __init__(self, dept, research):
-        self.dept = dept
-        self.research = research
+    def __init__(self, db_data):
+        self.db_data = db_data
 
-    def select_query(self):
-        selecting_query = f'SELECT * FROM mm.dbkis where dept = \'{self.dept}\' and status = \'{self.research}\''
-
-        # selecting_query = f'SELECT m.surname, m.name, m.patron, m.num,m.YEAR, m.beg_dt, m.sex, m.mdoc_type_id' \
-        #                   f' FROM mm.{self.dept} m WHERE mdoc_type_id = \'{self.research}\' LIMIT \'10\''
-
-        return selecting_query
-
-    def connecting(self):
-        """ Simple connecting to DB and getting data. """
-        # try:
-        # # Connect to needed DB
-        for conn_data in ConnectingToKIS.objects.all():
-            if conn_data.active is True:
-                connection = psycopg2.connect(database=conn_data.db,
-                                              host=conn_data.host,
-                                              port=conn_data.port,
-                                              user=conn_data.user,
-                                              password=conn_data.password)
-
-                # connection = psycopg2.connect(database='postgres',
-                #                               host='localhost',
-                #                               port='5432',
-                #                               user='postgres',
-                #                               password='root')
-
-        cursor = connection.cursor()
-        # Executing query and getting list of rows represented in tuples
-        cursor.execute(self.select_query())
-        selecting_data = cursor.fetchall()
-        # print(len(selecting_data))
-        return selecting_data
-
-        # # Caught all possible exceptions
-        # except (Exception, Error) as error:
-        #     return 'Bad SQL request or another DB problem. Call to administrator.'
-        # finally:
-        #     try:
-        #         if connection:
-        #             cursor.close()
-        #             connection.close()
-        #     except UnboundLocalError:
-        #         return False
-
-    def preparing_data(self):
+    def output_data(self):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. """
-        if type(self.connecting()) is list and len(self.connecting()) == 0:
+        if type(self.db_data) is list and len(self.db_data) == 0:
             tab = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
-        elif type(self.connecting()) is list and len(self.connecting()) != 0:
-            # List of lists that will be DataFrame dict values
-            data_lists = [
-                [], [], [], [], [], [], [], []
-            ]
+        elif type(self.db_data) is list and len(self.db_data) != 0:
+            # # List of lists that will be DataFrame dict values
+            data_lists = []
+            for i in self.db_data[0]:
+                data_lists.append([])
             # Raw list iterations from KIS DB
             # Then iteration of separated record from list represented in the tuple
-            # # print(self.connecting())
-            for record in self.connecting():
+            for record in self.db_data:
                 list_key_index = 0
                 for row in record:
                     data_lists[list_key_index].append(row)
@@ -126,10 +138,10 @@ class ReadyReportHTML:
             # Converting to HTML block in the <table> tag
             # It is middle part of body of the HTML template
             tab = df.to_html()
-        elif type(self.connecting()) is str:
-            tab = f'\t<p class="center-top-text">{self.connecting()}</p>\n'
+        elif type(self.db_data) is str:
+            tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
         else:
-            tab = '\t<p class="center-top-text">ОШИБКА РАБОТЫ С БД. Обратитесть к администратору.</p>\n'
+            tab = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
         # Updating template by overwriting when get the new data from KIS
         with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:

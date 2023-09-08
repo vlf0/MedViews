@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 # My own modules
 from .forms import DeptChoose, ResearchType
-from kisdb_connecting.operations import ReadyReportHTML
+from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
 # from kisdb_connecting.operations import connecting, preparing_data, select_query
 
 
@@ -38,11 +38,19 @@ def ref_to_output(request, chosen_dept):
 def output(request, chosen_dept, chosen_type):
     if request.method == 'POST':
         chosen_type = request.POST.get('research_types')
-        ReadyReportHTML(dept=chosen_dept, research=chosen_type).preparing_data()
+        # Handling data from db to HTML page by PANDAS
+        query_text = Queries(dept=chosen_dept, research=chosen_type).ready_select()
+        answer = SelectAnswer(query_text).selecting()
+        ReadyReportHTML(answer).output_data()
         return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type)
-    else:
-        ReadyReportHTML(dept=chosen_dept, research=chosen_type).preparing_data()
-        types_list = ResearchType()
-        return render(request=request, template_name='output.html', context={'types_list': types_list,
-                                                                             'chosen_dept': chosen_dept})
+    types_list = ResearchType()
+    # Handling data from db to HTML page by PANDAS
+    # Defined query class and call its method
+    query_text = Queries(dept=chosen_dept, research=chosen_type).ready_select()
+    # Defined answer class and call its method - this will ready data list from DB
+    answer = SelectAnswer(query_text).selecting()
+    # Preparing and outputting report on the page by pandas
+    ReadyReportHTML(answer).output_data()
+    return render(request=request, template_name='output.html', context={'types_list': types_list,
+                                                                         'chosen_dept': chosen_dept})
 
