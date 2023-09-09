@@ -6,29 +6,27 @@ from WebApp.models import ConnectingToKIS
 
 
 class Queries:
-    """
-    SQL queries for selecting data from DB.
-    """
-
-    def __init__(self, dept, research):
+    """ This object consists of gotten values from web pages
+     and returns full query in string format ready to use in DB. """
+    def __init__(self, dept, research, from_dt, to_dt):
         self.dept = dept
         self.research = research
+        self.from_dt = from_dt
+        self.to_dt = to_dt
 
     def ready_select(self):
-        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\''
+        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\' ' \
+               f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
 
 class SelectAnswer:
-    """
-    Just connecting and give info about success or not.
-    Class attributes is data from app DB filed.
-    They contain data for connecting to KIS DB.
-    """
-
+    """ Represent SQL query object in the text format. """
     def __init__(self, query_text):
         self.query_text = query_text
 
     def selecting(self):
+        """ Connecting to DB and execute SQL query. If connect not established or
+        bad query getting - throw exceptions that displaying on the web page. """
         if len(ConnectingToKIS.objects.all()) != 0:
             for conn_data in ConnectingToKIS.objects.all():
                 if conn_data.active is True:
@@ -64,10 +62,8 @@ class SelectAnswer:
 
 
 class ReadyReportHTML:
-    """ Represent HTML page which generated from func - (preparing data) - and contains select required data.
-        The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models.
-    """
-
+    """ Represent HTML page and contains selected required data.
+    The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models. """
     top_of_template = (
         '<!DOCTYPE html>\n'
         '<html lang="ru">\n'
@@ -82,12 +78,17 @@ class ReadyReportHTML:
         '<body>\n'
         '\t<div class="container">\n'
         '\t  <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>\n'
-        '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' %}" method="POST">\n'
+        '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t<table>\n'
         '\t\t{{ types_list }}\n'
+        '\t\t{{ date_buttons }}\n'
         '\t</table>'
-        '\t\t<button type="submit" id="ref" > <b>Выбрать</b> </button>\n'
-        '\t                      {% csrf_token %}\n'
+        '\t\t<button type="submit" id="ref"> <b>Выбрать</b> </button>\n'
+        '\t{% csrf_token %}\n'
+        '\t\t</form>\n'
+
+        '\t<form action="{% url \'dept\' %}" method="GET">\n'
+        '\t\t<button type="submit" id="gt"> <b>Вернуться к выбору отделений</b> </button>\n'
         '\t</form>\n'
     )
 
@@ -101,7 +102,7 @@ class ReadyReportHTML:
         self.db_data = db_data
 
     def output_data(self):
-        """ Prepare raw data getting from KIS DB and creating HTML template based on them. """
+        """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
         if type(self.db_data) is list and len(self.db_data) == 0:
             tab = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
         elif type(self.db_data) is list and len(self.db_data) != 0:

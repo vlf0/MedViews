@@ -3,9 +3,7 @@ from django.db import models
 
 # Create your models here.
 class ConnectingToKIS(models.Model):
-    """ Table for recording and storage
-     data connecting to KIS BataBase
-    """
+    """ Table for recording and storage data connecting to KIS BataBase. """
     def __str__(self):
         return self.db
 
