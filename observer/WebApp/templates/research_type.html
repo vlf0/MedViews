@@ -15,6 +15,7 @@
     <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
     <table>
         {{ types_list }}
+        {{ date_buttons }}
     </table>
         <button type="submit" id="ref" > <b>Выбрать</b> </button>
                           {% csrf_token %}
