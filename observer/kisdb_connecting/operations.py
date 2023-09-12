@@ -18,6 +18,34 @@ class Queries:
         return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\' ' \
                f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
+    # def ready_select(self):
+    #     return f'SELECT' \
+    #            f' dp.name AS Отделение,' \
+    #            f' mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением,' \
+    #            f' concat_ws (' ',p.surname,p.name,p.patron) AS Назначил,' \
+    #            f' concat_ws (' ',m.num,m.YEAR) AS №ИБ,' \
+    #            f' concat_ws(' ',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+    #            f' n.name AS Назначение,' \
+    #            f' n.create_dt AS Создано,' \
+    #            f' n.plan_dt AS Назначено_на_дату,' \
+    #            f' CASE n.naz_extr_id ' \
+    #            f'\tWHEN \'0\' THEN \'Планово\' ' \
+    #            f'\tWHEN \'1\' THEN \'Экстренно\' ' \
+    #            f' ELSE n.naz_extr_id::TEXT ' \
+    #            f' END ' \
+    #            f' FROM mm.mdoc AS m ' \
+    #            f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
+    #            f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
+    #            f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
+    #            f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
+    #            f' JOIN mm.people AS p ON  p.id = em.people_id ' \
+    #            f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
+    #            f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
+    #            f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+    #            f' AND n.naz_view = {self.research} ' \
+    #            f' AND n.naz_state_id = 2 ' \
+    #            f' AND dp.name = \'{self.dept}\''
+
 
 class SelectAnswer:
     """ Represent SQL query object in the text format. """
@@ -31,11 +59,11 @@ class SelectAnswer:
             for conn_data in ConnectingToKIS.objects.all():
                 if conn_data.active is True:
                     try:
-                        connection = psycopg2.connect(database='postgres',
-                                                      host='localhost',
-                                                      port='5432',
-                                                      user='postgres',
-                                                      password='root')
+                        connection = psycopg2.connect(database=conn_data.db,
+                                                      host=conn_data.host,
+                                                      port=conn_data.port,
+                                                      user=conn_data.user,
+                                                      password=conn_data.password)
                         try:
                             cursor = connection.cursor()
                             cursor.execute(self.query_text)
@@ -76,6 +104,8 @@ class ReadyReportHTML:
         '\t<title>Second Page</title>\n'
         '\t</head>\n\n'
         '<body>\n'
+        '\t\t<p class="center-top-text">{{ chosen_dept }}</p>\n'
+        '\t\t<p class="center-top-text">{{ doc }}</p>\n'
         '\t<div class="container">\n'
         '\t  <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>\n'
         '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'

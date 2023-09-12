@@ -9,9 +9,11 @@
     <title>Research choice</title>
 </head>
 <body>
+        <p class="center-top-text">{{ chosen_dept }}</p>
+        <p class="center-top-text">{{ doc }}</p>
     <div class="container">
         <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>
-        {{ chosen_dept }}
+
     <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
     <table>
         {{ types_list }}

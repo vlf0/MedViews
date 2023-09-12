@@ -20,13 +20,16 @@ def dept(request):
 
 def ref_to_type(request):
     chosen_dept = request.POST.get('dept_name')
+
     return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
     date_buttons = DateButtons()
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'date_buttons': date_buttons}
+    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    doc = doc[0][0]
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
     # Get the first part of URL path - department and reuse it
     # dept_from_url = request.path.split(sep='/')[1]
     return render(request=request, template_name='research_type.html', context=context)
