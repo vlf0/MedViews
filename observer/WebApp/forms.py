@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, timedelta
 from django import forms
 from django.db import models
 
@@ -30,6 +30,8 @@ class ResearchType(forms.Form):
 
 class DateButtons(forms.Form):
     """ Represent buttons of date type on the page. It is the 3rd sql condition in query. """
-    from_dt = forms.DateField(required=True, initial=(datetime.date.today()-datetime.timedelta(days=14)))
-    to_dt = forms.DateField(required=True, initial=datetime.date.today())
+    from_dt = forms.DateField(widget=forms.SelectDateWidget(years=range(date.today().year, date.today().year-5, -1)),
+                              initial=date.today()-timedelta(days=14))
+    to_dt = forms.DateField(widget=forms.SelectDateWidget(years=range(date.today().year, date.today().year-5, -1)),
+                            initial=date.today())
 

@@ -48,13 +48,13 @@ class SelectAnswer:
                             connection.close()
                     except (Exception, Error):
                         return 'Can not connect to BD!\nCall to admin!'
-                    # finally:
-                        # try:
-                        #     if connection:
-                        #         cursor.close()
-                        #         connection.close()
-                        # except UnboundLocalError:
-                        #     pass
+                    finally:
+                        try:
+                            if connection:
+                                cursor.close()
+                                connection.close()
+                        except UnboundLocalError:
+                            pass
                 else:
                     return 'DB not active!\n To use it - turn on check box in the admin panel!'
         else:
