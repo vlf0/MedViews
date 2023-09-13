@@ -23,7 +23,8 @@ class DeptChoose(forms.Form):
         str_values = [field[0] for field in depts]
         # Choice field on the page with ready drop-down list
         dept_name = forms.ChoiceField(label='Отделение', choices=converting(str_values),
-                                      widget=forms.Select(attrs={'class': 'dept-custom'}))
+                                      widget=forms.Select(attrs={'class': 'dept-custom'})
+                                      )
 
 
 class ResearchType(forms.Form):
@@ -33,8 +34,9 @@ class ResearchType(forms.Form):
         pass
     else:
         str_values = [field[0] for field in r_types]
-        research_types = forms.ChoiceField(label='Тип исследования', choices=converting(str_values))
-
+        research_types = forms.ChoiceField(label='Тип исследования', choices=converting(str_values),
+                                           widget=forms.Select(attrs={'class': 'r_type-custom'})
+                                           )
 
 class DateButtons(forms.Form):
     """ Represent buttons of date type on the page. It is the 3rd sql condition in query. """
