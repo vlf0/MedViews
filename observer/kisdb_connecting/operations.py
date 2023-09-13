@@ -14,60 +14,39 @@ class Queries:
         self.from_dt = from_dt
         self.to_dt = to_dt
 
+    # def ready_select(self):
+        # return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND r_type = \'{self.research}\' ' \
+        #        f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+
     def ready_select(self):
         return f'SELECT' \
-               f' mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением,' \
-               f' concat_ws(\' \',p.surname,p.name,p.patron) AS Назначил,' \
-               f' concat_ws(\' \',m.num,m.YEAR) AS №ИБ,' \
+               f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,' \
+               f' CASE n.naz_view' \
+	           f'\tWHEN \'1\' THEN \'Лаба\'' \
+               f' ELSE n.naz_view::TEXT' \
+               f' END' \
+               f' concat_ws (\' \',m.num,m.YEAR) AS №ИБ,' \
                f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                f' n.name AS Назначение,' \
                f' n.create_dt AS Создано,' \
                f' n.plan_dt AS Назначено_на_дату,' \
-               f' CASE n.naz_extr_id ' \
-               f'\tWHEN \'0\' THEN \'Планово\' ' \
-               f'\tWHEN \'1\' THEN \'Экстренно\' ' \
-               f' ELSE n.naz_extr_id::TEXT ' \
-               f' END ' \
-               f' FROM mm.mdoc AS m ' \
-               f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
-               f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
-               f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
-               f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
-               f' JOIN mm.people AS p ON  p.id = em.people_id ' \
-               f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
-               f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
-               f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
-               f' AND n.naz_view = {self.research} ' \
-               f' AND n.naz_state_id = 2 ' \
+               f' CASE n.naz_extr_id' \
+               f'\tWHEN \'0\' THEN \'Планово\'' \
+               f'\tWHEN \'1\' THEN \'Экстренно\'' \
+               f' ELSE n.naz_extr_id::TEXT' \
+               f' END' \
+               f' FROM mm.mdoc AS m' \
+               f' JOIN mm.hospdoc h ON h.mdoc_id = m.id' \
+               f' JOIN mm.naz n ON n.mdoc_id = m.id' \
+               f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id' \
+               f' JOIN mm.dept AS dp ON  dp.id = em.dept_id' \
+               f' JOIN mm.people AS p ON  p.id = em.people_id' \
+               f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
+               f' LEFT JOIN mm.naz_action na  ON na.id = n.id' \
+               f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
+               f' AND n.naz_view = {self.research}' \
+               f' AND n.naz_state_id = 2' \
                f' AND dp.name = \'{self.dept}\''
-
-    # def ready_select(self):
-    #     return f'SELECT' \
-    #            f' dp.name AS Отделение,' \
-    #            f' mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением,' \
-    #            f' concat_ws (' ',p.surname,p.name,p.patron) AS Назначил,' \
-    #            f' concat_ws (' ',m.num,m.YEAR) AS №ИБ,' \
-    #            f' concat_ws(' ',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
-    #            f' n.name AS Назначение,' \
-    #            f' n.create_dt AS Создано,' \
-    #            f' n.plan_dt AS Назначено_на_дату,' \
-    #            f' CASE n.naz_extr_id ' \
-    #            f'\tWHEN \'0\' THEN \'Планово\' ' \
-    #            f'\tWHEN \'1\' THEN \'Экстренно\' ' \
-    #            f' ELSE n.naz_extr_id::TEXT ' \
-    #            f' END ' \
-    #            f' FROM mm.mdoc AS m ' \
-    #            f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
-    #            f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
-    #            f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
-    #            f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
-    #            f' JOIN mm.people AS p ON  p.id = em.people_id ' \
-    #            f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
-    #            f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
-    #            f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
-    #            f' AND n.naz_view = {self.research} ' \
-    #            f' AND n.naz_state_id = 2 ' \
-    #            f' AND dp.name = \'{self.dept}\''
 
 
 class SelectAnswer:
@@ -82,24 +61,21 @@ class SelectAnswer:
             for conn_data in ConnectingToKIS.objects.all():
                 if conn_data.active is True:
                     # try:
-
                         connection = psycopg2.connect(database=conn_data.db,
                                                       host=conn_data.host,
                                                       port=conn_data.port,
                                                       user=conn_data.user,
                                                       password=conn_data.password)
-
-
                         # try:
                         cursor = connection.cursor()
                         cursor.execute(self.query_text)
                         selecting_data = cursor.fetchall()
                         return selecting_data
-                        # except (Exception, Error):
-                        #     return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
-                        # finally:
-                        #     cursor.close()
-                        #     connection.close()
+                    #     except (Exception, Error):
+                    #         return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
+                    #     finally:
+                    #         cursor.close()
+                    #         connection.close()
                     # except (Exception, Error):
                     #     return 'Can not connect to BD!\nCall to admin!'
                     # finally:
@@ -130,21 +106,24 @@ class ReadyReportHTML:
         '\t<title>Second Page</title>\n'
         '\t</head>\n\n'
         '<body>\n'
-        '\t\t<p class="center-top-text">{{ chosen_dept }}</p>\n'
-        '\t\t<p class="center-top-text">{{ doc }}</p>\n'
+        '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>\n'
+        '\t\t\tЗаведущий: {{ doc }}</p>\n'
+        '\t\t<p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>\n'
         '\t<div class="container">\n'
-        '\t  <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>\n'
         '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t<table>\n'
         '\t\t{{ types_list }}\n'
         '\t\t{{ date_buttons }}\n'
-        '\t</table>'
-        '\t\t<button type="submit" id="ref"> <b>Выбрать</b> </button>\n'
+        '\t</table>\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Выбрать</b> </button>\n'
+        '\t\t</div>\n'
         '\t{% csrf_token %}\n'
         '\t\t</form>\n'
-
         '\t<form action="{% url \'dept\' %}" method="GET">\n'
-        '\t\t<button type="submit" id="gt"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t</div>\n'
         '\t</form>\n'
     )
 
@@ -183,7 +162,8 @@ class ReadyReportHTML:
                     'research': [],
                     'create_dt': [],
                     'status': [],
-                    'plan_dt': []
+                    'plan_dt': [],
+                    'naz': []
                     }
             # Values assignment to data keys
             for i in data:
@@ -193,7 +173,9 @@ class ReadyReportHTML:
             df = pd.DataFrame(data=data)
             # Converting to HTML block in the <table> tag
             # It is middle part of body of the HTML template
-            tab = df.to_html()
+            report = df.to_html()
+            tab = f'\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n' + report
+
         elif type(self.db_data) is str:
             tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
         else:

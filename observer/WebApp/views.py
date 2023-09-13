@@ -9,28 +9,32 @@ from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
 
 
 def dept(request):
-    # Fields to be sending to page (from our forms)
-    t1 = DateButtons()
     depts_list = DeptChoose()
-    context = {'depts_list': depts_list,
-               't1': t1
-               }
+    if type(depts_list.depts) is str:
+        error_text = 'Ошибка выборки отделений.'
+        return render(request=request, template_name='errors.html',
+                      context={'error_text': error_text})
+    # Fields to be sending to page (from our forms)
+    context = {'depts_list': depts_list}
     return render(request=request, template_name='dept_name.html', context=context)
 
 
 def ref_to_type(request):
     chosen_dept = request.POST.get('dept_name')
-
     return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
+    print(types_list)
+    # if type(types_list.r_types) is str:
+    #     error_text = 'Ошибка выборки типов исследований.'
+    #     return render(request=request, template_name='errors.html',
+    #                   context={'error_text': error_text})
     date_buttons = DateButtons()
-    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc[0][0], 'date_buttons': date_buttons}
-    # Get the first part of URL path - department and reuse it
-    # dept_from_url = request.path.split(sep='/')[1]
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением' 
+                                  f' FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()[0][0]
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
     return render(request=request, template_name='research_type.html', context=context)
 
 
@@ -41,7 +45,7 @@ def ref_to_output(request, chosen_dept):
     from_dt = [request.POST.get(i) for i in request.POST if i in ['from_dt_month',
                                                                   'from_dt_day',
                                                                   'from_dt_year']
-          ]
+               ]
     # Converting date format to Postgres format (yyyy-mm-dd)
     # because another way - change postgresql.conf file KIS DB
     from_dt.insert(0, from_dt.pop())
@@ -86,6 +90,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt):
     answer = SelectAnswer(query_text).selecting()
     # Preparing and outputting report on the page by pandas
     ReadyReportHTML(answer).output_data()
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'date_buttons': date_buttons}
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()[0][0]
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
     return render(request=request, template_name='output.html', context=context)
 
