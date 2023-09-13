@@ -15,7 +15,7 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\' ' \
+        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND r_type = \'{self.research}\' ' \
                f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
     # def ready_select(self):
@@ -104,10 +104,10 @@ class ReadyReportHTML:
         '\t<title>Second Page</title>\n'
         '\t</head>\n\n'
         '<body>\n'
-        '\t\t<p class="center-top-text">{{ chosen_dept }}</p>\n'
-        '\t\t<p class="center-top-text">{{ doc }}</p>\n'
+        '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>\n'
+        '\t\t\tЗаведущий: {{ doc }}</p>\n'
+        '\t\t<p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>\n'
         '\t<div class="container">\n'
-        '\t  <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>\n'
         '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t<table>\n'
         '\t\t{{ types_list }}\n'
@@ -168,7 +168,9 @@ class ReadyReportHTML:
             df = pd.DataFrame(data=data)
             # Converting to HTML block in the <table> tag
             # It is middle part of body of the HTML template
-            tab = df.to_html()
+            report = df.to_html()
+            tab = f'\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n' + report
+
         elif type(self.db_data) is str:
             tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
         else:

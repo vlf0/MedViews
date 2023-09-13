@@ -8,16 +8,80 @@ body {
 .container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-    height: 100vh;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 20px; /* Add some padding to space things out */
+    box-sizing: border-box; /* Include padding in the element's total width/height */
 }
 
 .center-top-text {
     text-align: center;
     color: white;
-    font-size: 18px;
-    background-color: blue;
-    padding: 10px;
+    font-size: 16px;
+    background-color: #0056b3;
+    padding: 15px;
     border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%; /* Make this element take up the full width of its container */
+    box-sizing: border-box; /* Include padding in the element's total width/height */
+}
+
+.dept-custom {
+    /* Add your styling here */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Style the field when it is focused (clicked) */
+.dept-custom:focus {
+    border-color: #007BFF; /* Change the border color when focused */
+    outline: none; /* Remove the default focus outline (if desired) */
+}
+
+.datefield-custom {
+    /* Add your styling here */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease-in-out;
+    box-sizing: border-box; /* Include padding in the element's total width/height */
+}
+
+/* Style the field when it is focused (clicked) */
+.datefield-custom:focus {
+    border-color: #007BFF; /* Change the border color when focused */
+    outline: none; /* Remove the default focus outline (if desired) */
+}
+
+.button-container {
+    text-align: center;
+}
+
+.common_button {
+    padding: 10px 180px; /* Adjust padding to control button size */
+    background-color: #007BFF; /* Background color */
+    color: white; /* Text color */
+    border: none; /* Remove button border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor style on hover */
+    transition: background-color 0.2s ease-in-out; /* Smooth background color transition */
+
+    /* Optional: Add a box shadow for depth */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect */
+.common_button:hover {
+    background-color: #0056b3; /* Change background color on hover */
 }
