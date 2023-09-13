@@ -15,8 +15,31 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND status = \'{self.research}\' ' \
-               f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+        return f'SELECT' \
+               f' mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением,' \
+               f' concat_ws(\' \',p.surname,p.name,p.patron) AS Назначил,' \
+               f' concat_ws(\' \',m.num,m.YEAR) AS №ИБ,' \
+               f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+               f' n.name AS Назначение,' \
+               f' n.create_dt AS Создано,' \
+               f' n.plan_dt AS Назначено_на_дату,' \
+               f' CASE n.naz_extr_id ' \
+               f'\tWHEN \'0\' THEN \'Планово\' ' \
+               f'\tWHEN \'1\' THEN \'Экстренно\' ' \
+               f' ELSE n.naz_extr_id::TEXT ' \
+               f' END ' \
+               f' FROM mm.mdoc AS m ' \
+               f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
+               f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
+               f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
+               f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
+               f' JOIN mm.people AS p ON  p.id = em.people_id ' \
+               f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
+               f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
+               f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+               f' AND n.naz_view = {self.research} ' \
+               f' AND n.naz_state_id = 2 ' \
+               f' AND dp.name = \'{self.dept}\''
 
 
 class SelectAnswer:
@@ -30,31 +53,31 @@ class SelectAnswer:
         if len(ConnectingToKIS.objects.all()) != 0:
             for conn_data in ConnectingToKIS.objects.all():
                 if conn_data.active is True:
-                    try:
-                        connection = psycopg2.connect(database='postgres',
-                                                      host='localhost',
-                                                      port='5432',
-                                                      user='postgres',
-                                                      password='root')
-                        try:
-                            cursor = connection.cursor()
-                            cursor.execute(self.query_text)
-                            selecting_data = cursor.fetchall()
-                            return selecting_data
-                        except (Exception, Error):
-                            return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
-                        finally:
-                            cursor.close()
-                            connection.close()
-                    except (Exception, Error):
-                        return 'Can not connect to BD!\nCall to admin!'
-                    finally:
-                        try:
-                            if connection:
-                                cursor.close()
-                                connection.close()
-                        except UnboundLocalError:
-                            pass
+                    # try:
+                        connection = psycopg2.connect(database=conn_data.db,
+                                                      host=conn_data.host,
+                                                      port=conn_data.port,
+                                                      user=conn_data.user,
+                                                      password=conn_data.password)
+                        # try:
+                        cursor = connection.cursor()
+                        cursor.execute(self.query_text)
+                        selecting_data = cursor.fetchall()
+                        return selecting_data
+                        # except (Exception, Error):
+                        #     return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
+                        # finally:
+                        #     cursor.close()
+                        #     connection.close()
+                    # except (Exception, Error):
+                    #     return 'Can not connect to BD!\nCall to admin!'
+                    # finally:
+                    #     try:
+                    #         if connection:
+                    #             cursor.close()
+                    #             connection.close()
+                    #     except UnboundLocalError:
+                    #         pass
                 else:
                     return 'DB not active!\n To use it - turn on check box in the admin panel!'
         else:
@@ -76,6 +99,8 @@ class ReadyReportHTML:
         '\t<title>Second Page</title>\n'
         '\t</head>\n\n'
         '<body>\n'
+        '\t\t<p class="center-top-text">{{ chosen_dept }}</p>\n'
+        '\t\t<p class="center-top-text">{{ doc }}</p>\n'
         '\t<div class="container">\n'
         '\t  <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>\n'
         '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
@@ -117,7 +142,7 @@ class ReadyReportHTML:
                 for row in record:
                     data_lists[list_key_index].append(row)
                     list_key_index += 1
-            # # print(data_lists)
+            print(data_lists)
             # Data dict - argument to the DataFrame
             dict_key_index = 0
             data = {
@@ -127,7 +152,6 @@ class ReadyReportHTML:
                     'research': [],
                     'create_dt': [],
                     'status': [],
-                    'dept': [],
                     'plan_dt': []
                     }
             # Values assignment to data keys
@@ -144,7 +168,7 @@ class ReadyReportHTML:
         else:
             tab = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
         # Updating template by overwriting when get the new data from KIS
-        with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
+        with open(r'C:\Users\adm-ryadovoyaa\Documents\DMKprojects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(ReadyReportHTML.top_of_template)
             template.writelines(tab)

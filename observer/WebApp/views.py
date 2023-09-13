@@ -26,7 +26,8 @@ def ref_to_type(request):
 def research_type(request, chosen_dept):
     types_list = ResearchType()
     date_buttons = DateButtons()
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'date_buttons': date_buttons}
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc[0][0], 'date_buttons': date_buttons}
     # Get the first part of URL path - department and reuse it
     # dept_from_url = request.path.split(sep='/')[1]
     return render(request=request, template_name='research_type.html', context=context)
@@ -44,10 +45,12 @@ def ref_to_output(request, chosen_dept):
     # because another way - change postgresql.conf file KIS DB
     from_dt.insert(0, from_dt.pop())
     from_dt = '-'.join(from_dt)
+    print(from_dt)
     # Get TO data from FORM fields by creating list generator of date values
     to_dt = [request.POST.get(i) for i in request.POST if i in ['to_dt_month', 'to_dt_day', 'to_dt_year']]
     to_dt.insert(0, to_dt.pop())
     to_dt = '-'.join(to_dt)
+    print(to_dt)
     return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type,
                     from_dt=from_dt, to_dt=to_dt)
 

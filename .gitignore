@@ -7,7 +7,7 @@ test2.py
 test.html
 output.html
 config_data.txt
-observer/observer/settings.py
+settings.py
 
 # C extensions
 *.so
