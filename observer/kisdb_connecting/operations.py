@@ -112,13 +112,16 @@ class ReadyReportHTML:
         '\t<table>\n'
         '\t\t{{ types_list }}\n'
         '\t\t{{ date_buttons }}\n'
-        '\t</table>'
-        '\t\t<button type="submit" id="ref"> <b>Выбрать</b> </button>\n'
+        '\t</table>\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Выбрать</b> </button>\n'
+        '\t\t</div>\n'
         '\t{% csrf_token %}\n'
         '\t\t</form>\n'
-
         '\t<form action="{% url \'dept\' %}" method="GET">\n'
-        '\t\t<button type="submit" id="gt"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t</div>\n'
         '\t</form>\n'
     )
 
