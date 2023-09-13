@@ -9,19 +9,24 @@
     <title>Research choice</title>
 </head>
 <body>
-        <p class="center-top-text">{{ chosen_dept }}</p>
-        <p class="center-top-text">{{ doc }}</p>
-    <div class="container">
-        <p class="center-top-text">Выберите отделение и нажмите кнопку "далее"</p>
+        <p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>
+            {{ doc }}</p>
+        <p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>
 
-    <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
-    <table>
-        {{ types_list }}
-        {{ date_buttons }}
-    </table>
-        <button type="submit" id="ref" > <b>Выбрать</b> </button>
-                          {% csrf_token %}
-    </form>
+    <div class="container">
+
+        <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
+            <table>
+            {{ date_buttons }}
+            {{ types_list }}
+            </table>
+        <div class="button-container">
+            <button type="submit" class="common_button">Выбрать</button>
+        </div>
+
+
+            {% csrf_token %}
+        </form>
 
     </div>
 </body>

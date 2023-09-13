@@ -10,24 +10,26 @@ from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
 
 def dept(request):
     depts_list = DeptChoose()
-    if type(depts_list.answer) is str:
+    if type(depts_list.depts) is str:
+        error_text = 'Ошибка выборки отделений.'
         return render(request=request, template_name='errors.html',
-                      context={'error_text': depts_list.dept_name})
+                      context={'error_text': error_text})
     # Fields to be sending to page (from our forms)
-    t1 = DateButtons()
-    context = {'depts_list': depts_list,
-               't1': t1}
+    context = {'depts_list': depts_list}
     return render(request=request, template_name='dept_name.html', context=context)
 
 
 def ref_to_type(request):
     chosen_dept = request.POST.get('dept_name')
-
     return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
+    if type(types_list.r_types) is str:
+        error_text = 'Ошибка выборки типов исследований.'
+        return render(request=request, template_name='errors.html',
+                      context={'error_text': error_text})
     date_buttons = DateButtons()
     doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
