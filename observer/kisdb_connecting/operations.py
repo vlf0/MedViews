@@ -171,7 +171,7 @@ class ReadyReportHTML:
             df = pd.DataFrame(data=data)
             # Converting to HTML block in the <table> tag
             # It is middle part of body of the HTML template
-            report = df.to_html()
+            report = df.to_html(index=False)
             tab = f'\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n' + report
 
         elif type(self.db_data) is str:
