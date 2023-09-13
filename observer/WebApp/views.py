@@ -26,12 +26,13 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    if type(types_list.r_types) is str:
-        error_text = 'Ошибка выборки типов исследований.'
-        return render(request=request, template_name='errors.html',
-                      context={'error_text': error_text})
+    print(types_list)
+    # if type(types_list.r_types) is str:
+    #     error_text = 'Ошибка выборки типов исследований.'
+    #     return render(request=request, template_name='errors.html',
+    #                   context={'error_text': error_text})
     date_buttons = DateButtons()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()[0][0]
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
     return render(request=request, template_name='research_type.html', context=context)
 
@@ -86,7 +87,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt):
     answer = SelectAnswer(query_text).selecting()
     # Preparing and outputting report on the page by pandas
     ReadyReportHTML(answer).output_data()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()[0][0]
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
     return render(request=request, template_name='output.html', context=context)
 
