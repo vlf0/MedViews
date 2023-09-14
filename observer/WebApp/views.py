@@ -26,7 +26,6 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    print(types_list)
     # if type(types_list.r_types) is str:
     #     error_text = 'Ошибка выборки типов исследований.'
     #     return render(request=request, template_name='errors.html',

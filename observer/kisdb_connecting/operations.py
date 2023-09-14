@@ -21,10 +21,6 @@ class Queries:
     def ready_select(self):
         return f'SELECT' \
                f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,' \
-               f' CASE n.naz_view' \
-	           f'\tWHEN \'1\' THEN \'Лаба\'' \
-               f' ELSE n.naz_view::TEXT' \
-               f' END' \
                f' concat_ws (\' \',m.num,m.YEAR) AS №ИБ,' \
                f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                f' n.name AS Назначение,' \
@@ -152,7 +148,7 @@ class ReadyReportHTML:
                 for row in record:
                     data_lists[list_key_index].append(row)
                     list_key_index += 1
-            print(data_lists)
+            # # print(data_lists)
             # Data dict - argument to the DataFrame
             dict_key_index = 0
             data = {
@@ -163,7 +159,6 @@ class ReadyReportHTML:
                     'create_dt': [],
                     'status': [],
                     'plan_dt': [],
-                    'naz': []
                     }
             # Values assignment to data keys
             for i in data:
