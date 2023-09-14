@@ -42,7 +42,7 @@ class DeptChoose(forms.Form):
 
 class ResearchType(forms.Form):
     """ Represent drop-down list of research name from KIS DB on the starting page. """
-    research_types = forms.ChoiceField(label='Тип исследования', choices=(('Лаба', 'Лаба'), (2, 2), (3, 3), (4, 4), (5, 5)),
+    research_types = forms.ChoiceField(label='Тип исследования', choices=((1, 1), (2, 2), (3, 3), (4, 4), (5, 5)),
                                         widget=forms.Select(attrs={'class': 'r_type-custom'})
                                            )
 

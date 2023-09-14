@@ -103,3 +103,35 @@ body {
 .common_button:hover {
     background-color: #0056b3; /* Change background color on hover */
 }
+
+/* Style the table */
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Style the table header */
+.dataframe th {
+    background-color: #007BFF;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Style the table rows */
+.dataframe td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+}
+
+/* Alternate row background color */
+.dataframe tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Hover effect on rows */
+.dataframe tbody tr:hover {
+    background-color: #e0e0e0;
+}
