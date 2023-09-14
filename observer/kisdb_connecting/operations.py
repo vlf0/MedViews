@@ -3,6 +3,7 @@ import psycopg2
 from psycopg2 import Error
 
 from WebApp.models import ConnectingToKIS
+from . import string_snippets
 
 
 class Queries:
@@ -15,34 +16,30 @@ class Queries:
         self.to_dt = to_dt
 
     # def ready_select(self):
-        # return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND r_type = \'{self.research}\' ' \
-        #        f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
-
-    def ready_select(self):
-        return f'SELECT' \
-               f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,' \
-               f' concat_ws (\' \',m.num,m.YEAR) AS №ИБ,' \
-               f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
-               f' n.name AS Назначение,' \
-               f' n.create_dt AS Создано,' \
-               f' n.plan_dt AS Назначено_на_дату,' \
-               f' CASE n.naz_extr_id' \
-               f'\tWHEN \'0\' THEN \'Планово\'' \
-               f'\tWHEN \'1\' THEN \'Экстренно\'' \
-               f' ELSE n.naz_extr_id::TEXT' \
-               f' END' \
-               f' FROM mm.mdoc AS m' \
-               f' JOIN mm.hospdoc h ON h.mdoc_id = m.id' \
-               f' JOIN mm.naz n ON n.mdoc_id = m.id' \
-               f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id' \
-               f' JOIN mm.dept AS dp ON  dp.id = em.dept_id' \
-               f' JOIN mm.people AS p ON  p.id = em.people_id' \
-               f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
-               f' LEFT JOIN mm.naz_action na  ON na.id = n.id' \
-               f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
-               f' AND n.naz_view = {self.research}' \
-               f' AND n.naz_state_id = 2' \
-               f' AND dp.name = \'{self.dept}\''
+    #     return f'SELECT' \
+    #            f' concat_ws (' ',p.surname,p.name,p.patron) AS Назначил,' \
+    #            f' concat_ws (' ',m.num,m.YEAR) AS №ИБ,' \
+    #            f' concat_ws(' ',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+    #            f' n.name AS Назначение,' \
+    #            f' n.create_dt AS Создано,' \
+    #            f' n.plan_dt AS Назначено_на_дату,' \
+    #            f' CASE n.naz_extr_id ' \
+    #            f'\tWHEN \'0\' THEN \'Планово\' ' \
+    #            f'\tWHEN \'1\' THEN \'Экстренно\' ' \
+    #            f' ELSE n.naz_extr_id::TEXT ' \
+    #            f' END ' \
+    #            f' FROM mm.mdoc AS m ' \
+    #            f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
+    #            f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
+    #            f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
+    #            f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
+    #            f' JOIN mm.people AS p ON  p.id = em.people_id ' \
+    #            f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
+    #            f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
+    #            f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+    #            f' AND n.naz_view = {self.research} ' \
+    #            f' AND n.naz_state_id = 2 ' \
+    #            f' AND dp.name = \'{self.dept}\''
 
 
 class SelectAnswer:
@@ -56,31 +53,24 @@ class SelectAnswer:
         if len(ConnectingToKIS.objects.all()) != 0:
             for conn_data in ConnectingToKIS.objects.all():
                 if conn_data.active is True:
-                    # try:
+                    try:
                         connection = psycopg2.connect(database=conn_data.db,
                                                       host=conn_data.host,
-                                                      port=conn_data.port,
+                                                      port=5432,
                                                       user=conn_data.user,
                                                       password=conn_data.password)
-                        # try:
-                        cursor = connection.cursor()
-                        cursor.execute(self.query_text)
-                        selecting_data = cursor.fetchall()
-                        return selecting_data
-                    #     except (Exception, Error):
-                    #         return 'Connect to DB = SUCCSESS.\nError in SQL query!\nCall to admin!'
-                    #     finally:
-                    #         cursor.close()
-                    #         connection.close()
-                    # except (Exception, Error):
-                    #     return 'Can not connect to BD!\nCall to admin!'
-                    # finally:
-                    #     try:
-                    #         if connection:
-                    #             cursor.close()
-                    #             connection.close()
-                    #     except UnboundLocalError:
-                    #         pass
+                        try:
+                            cursor = connection.cursor()
+                            cursor.execute(self.query_text)
+                            selecting_data = cursor.fetchall()
+                            return selecting_data
+                        except (Exception, Error) as e:
+                            return f'Error!\n\n{e}\n'
+                        finally:
+                            cursor.close()
+                            connection.close()
+                    except (Exception, Error) as e:
+                        return f'Error!\n\n{e}\n'
                 else:
                     return 'DB not active!\n To use it - turn on check box in the admin panel!'
         else:
@@ -90,44 +80,8 @@ class SelectAnswer:
 class ReadyReportHTML:
     """ Represent HTML page and contains selected required data.
     The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models. """
-    top_of_template = (
-        '<!DOCTYPE html>\n'
-        '<html lang="ru">\n'
-        '<head>\n'
-        '\t{% load static %}\n'
-        '\t<link rel="stylesheet" type="text/css" href="{% static \'index.css\' %}">\n'
-        '\t<meta charset="UTF-8">\n'
-        '\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-        '\t<link rel="shortcut icon" type="image/png" href="{% static \'favicon.ico\' %}">\n'
-        '\t<title>Second Page</title>\n'
-        '\t</head>\n\n'
-        '<body>\n'
-        '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>\n'
-        '\t\t\tЗаведущий: {{ doc }}</p>\n'
-        '\t\t<p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>\n'
-        '\t<div class="container">\n'
-        '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
-        '\t<table>\n'
-        '\t\t{{ types_list }}\n'
-        '\t\t{{ date_buttons }}\n'
-        '\t</table>\n'
-        '\t\t<div class="button-container">\n'
-        '\t\t\t<button type="submit" class="common_button"> <b>Выбрать</b> </button>\n'
-        '\t\t</div>\n'
-        '\t{% csrf_token %}\n'
-        '\t\t</form>\n'
-        '\t<form action="{% url \'dept\' %}" method="GET">\n'
-        '\t\t<div class="button-container">\n'
-        '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
-        '\t\t</div>\n'
-        '\t</form>\n'
-    )
-
-    bot_of_template = (
-        '\n\t</div>\n'
-        '</body>\n'
-        '</html>'
-    )
+    top_of_template = string_snippets.top_of_template
+    bot_of_template = string_snippets.bot_of_template
 
     def __init__(self, db_data):
         self.db_data = db_data
@@ -135,46 +89,25 @@ class ReadyReportHTML:
     def output_data(self):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
         if type(self.db_data) is list and len(self.db_data) == 0:
-            tab = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
+            tab = string_snippets.tab_done
         elif type(self.db_data) is list and len(self.db_data) != 0:
-            # # List of lists that will be DataFrame dict values
-            data_lists = []
-            for i in self.db_data[0]:
-                data_lists.append([])
-            # Raw list iterations from KIS DB
-            # Then iteration of separated record from list represented in the tuple
-            for record in self.db_data:
-                list_key_index = 0
-                for row in record:
-                    data_lists[list_key_index].append(row)
-                    list_key_index += 1
-            # # print(data_lists)
-            # Data dict - argument to the DataFrame
-            dict_key_index = 0
-            data = {
-                    'fio_doc': [],
-                    'ib_num': [],
-                    'pat_fio': [],
-                    'research': [],
-                    'create_dt': [],
-                    'status': [],
-                    'plan_dt': [],
-                    }
-            # Values assignment to data keys
-            for i in data:
-                data[i] = data_lists[dict_key_index]
-                dict_key_index += 1
-            # # print(data)
-            df = pd.DataFrame(data=data)
-            # Converting to HTML block in the <table> tag
+            row_values = len(self.db_data[0])
+            rows_number = len(self.db_data)
+            headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
+                             'Дата создания', 'Назначено на дату', 'Статус']
+            # List of lists of data separated and grouped inside
+            data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
+            # Creating dict for DataFrame
+            data = dict(zip(headers_names, data_lists))
+            df = pd.DataFrame(data=data, index=range(1, rows_number+1))
+            # Converting to HTML block inside the <table> tag
             # It is middle part of body of the HTML template
             report = df.to_html()
-            tab = f'\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n' + report
-
+            tab = string_snippets.tab_report + report
         elif type(self.db_data) is str:
             tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
         else:
-            tab = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
+            tab = string_snippets.system_error
         # Updating template by overwriting when get the new data from KIS
         with open(r'C:\Users\adm-ryadovoyaa\Documents\DMKprojects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:

@@ -16,10 +16,12 @@ def converting(x):
 class DeptChoose(forms.Form):
     """ Represent drop-down list of departments name from KIS DB on the starting page. """
     # Create object that contains all departments from KIS DB and create list generator
-    depts = SelectAnswer(query_text='SELECT d.name FROM mm.dept d WHERE d.bed_cnt NOTNULL AND d.end_dt ISNULL').selecting()
+    depts = SelectAnswer(query_text='SELECT name FROM mm.depts d').selecting()
+    # Call exception and redirect to page with its text
     if type(depts) is str:
         pass
-    else:
+    # Creating form and redirect to depts choice page
+    elif type(depts) is list:
         str_values = [field[0] for field in depts]
         # Choice field on the page with ready drop-down list
         dept_name = forms.ChoiceField(label='Отделение', choices=converting(str_values),
