@@ -25,9 +25,9 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    if type(types_list.r_types) is str:
-        return render(request=request, template_name='errors.html',
-                      context={'error_text': types_list.r_types})
+    # if type(types_list.r_types) is str:
+    #     return render(request=request, template_name='errors.html',
+    #                   context={'error_text': types_list.r_types})
     date_buttons = DateButtons()
     doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
