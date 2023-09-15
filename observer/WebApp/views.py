@@ -1,11 +1,21 @@
-# from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django import forms
+from datetime import date, timedelta
+import calendar
+
+
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
-# from kisdb_connecting.operations import connecting, preparing_data, select_query
+from .local_functions import months, date_converter, date_pg_format, calendar_create
+
+def test(request):
+    context = {'calendar': calendar_create()}
+    print(context['calendar'])
+    return render(request=request, template_name='test.html', context=context)
 
 
 def dept(request):
@@ -29,62 +39,57 @@ def research_type(request, chosen_dept):
         return render(request=request, template_name='errors.html',
                       context={'error_text': types_list.r_types})
     date_buttons = DateButtons()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()[0][0]
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
+    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    # Checking if doctor belong this dept
+    if len(doc) == 0:
+        doc = 'заведующий не может быть назначен неработающему отделению.'
+    else:
+        doc = doc[0][0]
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc,
+               'date_buttons': date_buttons, 'calendar': calendar_create()}
     return render(request=request, template_name='research_type.html', context=context)
 
 
 def ref_to_output(request, chosen_dept):
+    prep_dates = date_pg_format(request.POST.get)
+    # Dates to send on page into information line
+    from_dt = '-'.join(prep_dates[:3])
+    to_dt = '-'.join(prep_dates[3:])
     # Get research type from FORM fields
     chosen_type = request.POST.get('research_types')
-    # Get FROM data from FORM fields by creating list generator of date values
-    from_dt = [request.POST.get(i) for i in request.POST if i in ['from_dt_month',
-                                                                  'from_dt_day',
-                                                                  'from_dt_year']
-               ]
-    # Converting date format to Postgres format (yyyy-mm-dd)
-    # because another way - change postgresql.conf file KIS DB
-    from_dt.insert(0, from_dt.pop())
-    from_dt = '-'.join(from_dt)
-    # Get TO data from FORM fields by creating list generator of date values
-    to_dt = [request.POST.get(i) for i in request.POST if i in ['to_dt_month', 'to_dt_day', 'to_dt_year']]
-    to_dt.insert(0, to_dt.pop())
-    to_dt = '-'.join(to_dt)
     return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type,
                     from_dt=from_dt, to_dt=to_dt)
 
 
 def output(request, chosen_dept, chosen_type, from_dt, to_dt):
-    if request.method == 'POST':
-        chosen_type = request.POST.get('research_types')
-        # Get FROM data from FORM fields by creating list generator of date values
-        from_dt = [request.POST.get(i) for i in request.POST if i in ['from_dt_month',
-                                                                      'from_dt_day',
-                                                                      'from_dt_year']
-                   ]
-        # Converting date format to Postgres format (yyyy-mm-dd)
-        # because another way - change postgresql.conf file KIS DB
-        from_dt.insert(0, from_dt.pop())
-        from_dt = '-'.join(from_dt)
-        # Get TO data from FORM fields by creating list generator of date values
-        to_dt = [request.POST.get(i) for i in request.POST if i in ['to_dt_month', 'to_dt_day', 'to_dt_year']]
-        to_dt.insert(0, to_dt.pop())
-        to_dt = '-'.join(to_dt)
-        # Handling data from db to HTML page by PANDAS
-        query_text = Queries(dept=chosen_dept, research=chosen_type, from_dt=from_dt, to_dt=to_dt).ready_select()
-        answer = SelectAnswer(query_text).selecting()
-        ReadyReportHTML(answer).output_data()
-        return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type, from_dt=from_dt, to_dt=to_dt)
-    types_list = ResearchType()
-    date_buttons = DateButtons()
-    # Handling data from db to HTML page by PANDAS
-    # Defined query class and call its method
+    # Sql query to DB
     query_text = Queries(dept=chosen_dept, research=chosen_type, from_dt=from_dt, to_dt=to_dt).ready_select()
-    # Defined answer class and call its method - this will ready data list from DB
+    # Connecting to DB and execute query
     answer = SelectAnswer(query_text).selecting()
-    # Preparing and outputting report on the page by pandas
+    # Creating full reporting page contains prepared data got from DB by PANDAS
     ReadyReportHTML(answer).output_data()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()[0][0]
-    context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc, 'date_buttons': date_buttons}
+    # Forms on page
+    # Dict containing date values user inserted
+    choice = {'research_types': chosen_type}
+    dates = {'from_dt': from_dt, 'to_dt': to_dt}
+    # Parameter data is actual values that will initial
+    types_list = ResearchType(data=choice)
+    date_buttons = DateButtons(data=dates)
+    if request.method == 'POST':
+        prep_dates = date_pg_format(request.POST.get)
+        chosen_type = request.POST.get('research_types')
+        # Dates to send on page into information line
+        from_dt = '-'.join(prep_dates[:3])
+        to_dt = '-'.join(prep_dates[3:])
+        return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type, from_dt=from_dt, to_dt=to_dt)
+    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    # Checking if doctor belong this dept
+    if len(doc) == 0:
+        doc = 'заведующий не может быть назначен неработающему отделению.'
+    else:
+        doc = doc[0][0]
+    context = {'types_list': types_list, 'chosen_dept': chosen_dept,
+               'doc': doc, 'date_buttons': date_buttons, 'from_dt': date_converter(from_dt),
+               'to_dt': date_converter(to_dt), 'chosen_type': chosen_type}
     return render(request=request, template_name='output.html', context=context)
 
