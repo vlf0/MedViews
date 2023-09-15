@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 from django import forms
-from django.db import models
-
+from django.http.request import HttpRequest
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
 
@@ -39,6 +38,7 @@ class ResearchType(forms.Form):
         research_types = forms.ChoiceField(label='Тип исследования', choices=converting(str_values),
                                            widget=forms.Select(attrs={'class': 'r_type-custom'})
                                            )
+
 
 class DateButtons(forms.Form):
     """ Represent buttons of date type on the page. It is the 3rd sql condition in query. """

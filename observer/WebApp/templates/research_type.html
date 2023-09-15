@@ -10,7 +10,7 @@
 </head>
 <body>
         <p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>
-            {{ doc }}</p>
+            Заведующий: {{ doc }}</p>
         <p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>
 
     <div class="container">
@@ -27,6 +27,10 @@
 
             {% csrf_token %}
         </form>
+
+        <div class="calendar-container">
+            {{ calendar|safe }}
+        </div>
 
     </div>
 </body>

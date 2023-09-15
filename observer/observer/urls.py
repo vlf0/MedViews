@@ -22,6 +22,8 @@ from WebApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.dept, name='dept'),
+    path('test/', views.test, name='test'),
+
     # path('errors.css/', views.errors.css, name='errors.css'),
     path('ref_to_type/', views.ref_to_type, name='ref_to_type'),
     path('<str:chosen_dept>/research_type/', views.research_type, name='research_type'),
