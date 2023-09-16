@@ -1,21 +1,28 @@
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
+import http.client
+
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django import forms
-from datetime import date, timedelta
-import calendar
-
-
+from django.views.decorators.csrf import csrf_exempt
+import json
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
-from .local_functions import months, date_converter, date_pg_format, calendar_create
+from .local_functions import FrontDataValues, months, date_converter, date_pg_format, calendar_create
 
-def test(request):
-    context = {'calendar': calendar_create()}
-    print(context['calendar'])
-    return render(request=request, template_name='test.html', context=context)
+
+# Decorator that let us avoid django CSRF protection method.
+@csrf_exempt
+def api_func(request):
+    """ Getting data values gotten from frontend by JS
+    and create class's obj based for them.
+     Workpiece for future.
+    """
+    data = json.loads(request.body)
+    FrontDataValues(value=data).adding()
+    return JsonResponse({'message': 'GOT DATA'}, status=200)
 
 
 def dept(request):
@@ -53,8 +60,12 @@ def research_type(request, chosen_dept):
 def ref_to_output(request, chosen_dept):
     prep_dates = date_pg_format(request.POST.get)
     # Dates to send on page into information line
-    from_dt = '-'.join(prep_dates[:3])
-    to_dt = '-'.join(prep_dates[3:])
+    try:
+        from_dt = '-'.join(prep_dates[:3])
+        to_dt = '-'.join(prep_dates[3:])
+    except TypeError as er:
+        print(f'\n{er}\n')
+        pass
     # Get research type from FORM fields
     chosen_type = request.POST.get('research_types')
     return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type,

@@ -3,6 +3,7 @@
 <head>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
@@ -24,7 +25,6 @@
             <button type="submit" class="common_button">Выбрать</button>
         </div>
 
-
             {% csrf_token %}
         </form>
 
@@ -33,5 +33,7 @@
         </div>
 
     </div>
+    <script src="{% static 'calendar_handler.js' %}"></script>
+
 </body>
 </html>

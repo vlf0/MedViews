@@ -41,25 +41,32 @@ def chosen_date(date_string) -> Any:
     return ready_date
 
 
-# def calendar_create() -> Any:
-#     today = date.today()
-#     web_calendar = calendar.HTMLCalendar().formatmonth(theyear=today.year,
-#                                                        themonth=today.month,
-#                                                        withyear=True)
-#     print(web_calendar)
-#     web_calendar = web_calendar.replace(f'class="sat">', 'class="sat today">')
-#     return web_calendar
-#
-#
-# print(calendar_create())
-
 def calendar_create() -> str:
     today = date.today()
     # Get the day of the week for today's date (0 = Monday, 6 = Sunday)
-    day_of_week = date(today.year, today.month, today.day).weekday()
-    cal = calendar.HTMLCalendar().formatmonth(today.year, today.month, withyear=True)
-    # Replace the class attribute for the cell corresponding to today's date
-    cal = cal.replace(f'<td class="sat">{today.day}</td>', f'<td class="sat today">{today.day}</td>', 1)
+    web_calendar = calendar.LocaleHTMLCalendar().formatmonth(theyear=today.year,
+                                                             themonth=today.month,
+                                                             withyear=True)
+    web_calendar = web_calendar.replace(f'<td class="sat">{today.day}</td>',
+                                        f'<td class="sat today" id="today">{today.day}</td>', 1)
+    return web_calendar
 
-    return cal
 
+class FrontDataValues:
+    """ Describing list containing 10 values only. Values adding
+    into list from api_func.
+    """
+    val_list = []
+
+    def __init__(self, value):
+        self.value = value
+
+    def adding(self) -> Any:
+        """
+        Adding gotten value from frontend to class
+         attribute list for further handling.
+        """
+        if len(self.val_list) == 2:
+            self.val_list.clear()
+        self.val_list.append(self.value)
+        return self.val_list
