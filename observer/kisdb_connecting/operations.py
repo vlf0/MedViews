@@ -56,7 +56,8 @@ class SelectAnswer:
                     try:
                         connection = psycopg2.connect(database=conn_data.db,
                                                       host=conn_data.host,
-                                                      port=5432,
+                                                    #   port=5431,
+                                                      port=conn_data.port,
                                                       user=conn_data.user,
                                                       password=conn_data.password)
                         try:
