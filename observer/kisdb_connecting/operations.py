@@ -9,6 +9,14 @@ from . import string_snippets
 class Queries:
     """ This object consists of gotten values from web pages
      and returns full query in string format ready to use in DB. """
+    types_converting = {
+        'Лабораторные исследования': 1,
+        'Инструментальные исследования': 2,
+        'Процедуры и манипуляции': 3,
+        'Операции': 4,
+        'Консультации': 5
+    }
+
     def __init__(self, dept, research, from_dt, to_dt):
         self.dept = dept
         self.research = research
@@ -16,8 +24,9 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        return f'SELECT * FROM mm.dbkis WHERE dept = \'{self.dept}\' AND r_type = \'{self.research}\' ' \
-               f'AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+        return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
+               f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
+               f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
     # def ready_select(self):
     #     return f'SELECT' \
