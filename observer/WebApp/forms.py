@@ -30,7 +30,7 @@ class DeptChoose(forms.Form):
 
 # class ResearchType(forms.Form):
 #     """ Represent drop-down list of research name from KIS DB on the starting page. """
-#     r_types = SelectAnswer(query_text='SELECT n.naz_view FROM mm.naz n WHERE n.naz_view = 5\'').selecting()
+#     r_types = SelectAnswer(query_text='SELECT n.naz_view FROM mm.naz n WHERE n.naz_view = \'5\'').selecting()
 #     print(r_types)
 #     if type(r_types) is str:
 #         pass
@@ -44,8 +44,8 @@ class DeptChoose(forms.Form):
 class ResearchType(forms.Form):
     """ Represent drop-down list of research name from KIS DB on the starting page. """
     research_types = forms.ChoiceField(label='Тип исследования', choices=((1, 1), (2, 2), (3, 3), (4, 4), (5, 5)),
-                                        widget=forms.Select(attrs={'class': 'r_type-custom'})
-                                           )
+                                       widget=forms.Select(attrs={'class': 'r_type-custom'})
+                                       )
 
 
 class DateButtons(forms.Form):
