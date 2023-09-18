@@ -15,7 +15,7 @@ top_of_template = (
         '\t\t<p class="center-top-text">Показан отчёт по типу {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}</p>\n'
         '\t\t<p class="center-top-text">Чтобы изменить тип исследования укажите данные в полях повторно</p>\n'
         '\t<div class="container">\n'
-        '\t<form action="{% url \'output\' chosen_dept \'chosen_type\' \'from_dt\' \'to_dt\' %}" method="POST">\n'
+        '\t<form action="{% url \'output\' chosen_dept chosen_type \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t<table>\n'
         '\t\t{{ types_list }}\n'
         '\t\t{{ date_buttons }}\n'
