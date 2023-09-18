@@ -42,9 +42,9 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    if type(types_list.r_types) is str:
-        return render(request=request, template_name='errors.html',
-                      context={'error_text': types_list.r_types})
+    # if type(types_list.r_types) is str:
+    #     return render(request=request, template_name='errors.html',
+    #                   context={'error_text': types_list.r_types})
     date_buttons = DateButtons()
     doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
