@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'errors.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
@@ -10,9 +10,12 @@
 </head>
 <body>
     <div class="container">
-        <p class="center-top-text">{{ error_text }} Обратитесь к администратору.</p>
+        <p class="center-top-text">{{ error_text }} 
+            <div class="center-top-text">
+                <p> Что-то пошло не так, обратитесь к Администратору</p>
+            </div>
     <form action="{% url 'dept' %}" method="GET">
-		<button type="submit" id="gt"> <b>Перезагрузить страницу</b> </button>
+		<button type="submit" class="comm_button" id="gt"> <b>Перезагрузить страницу</b> </button>
 	</form>
     </div>
 </body>

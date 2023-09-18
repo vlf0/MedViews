@@ -56,7 +56,7 @@ class SelectAnswer:
                     try:
                         connection = psycopg2.connect(database=conn_data.db,
                                                       host=conn_data.host,
-                                                    #   port=5431,
+                                                      #port =5431,
                                                       port=conn_data.port,
                                                       user=conn_data.user,
                                                       password=conn_data.password)
@@ -94,7 +94,7 @@ class ReadyReportHTML:
         elif type(self.db_data) is list and len(self.db_data) != 0:
             row_values = len(self.db_data[0])
             rows_number = len(self.db_data)
-            headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
+            headers_names = ['Назначил', 'Номер ИБ', 'Пациент', 'Назначение',
                              'Дата создания', 'Назначено на дату', 'Статус']
             # List of lists of data separated and grouped inside
             data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
