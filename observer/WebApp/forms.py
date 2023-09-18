@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 from django import forms
-from django.db import models
-
+from django.http.request import HttpRequest
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
 
