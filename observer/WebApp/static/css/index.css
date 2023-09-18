@@ -1,82 +1,127 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: lightblue;
+@font-face {
+    font-family: 'nbold';
+    src: url('Nunito-Bold.ttf');
+    font-size: 50px;
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+          
+@font-face {
+    font-family: 'nregular';
+    src: url('Nunito-Regular.ttf');
+    font-size: 50px;
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'nmed';
+    src: url('Nunito-Medium.ttf');
+    font-size: 50px;
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
 }
 
-.container {
+body {
+    font-family: 'nregular', sans-serif;
+    background-color: #72A276;
+}
+
+.container { /*отделение*/
+    margin: auto;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     height: 100%;
-    padding: 20px; /* Add some padding to space things out */
+    padding: 10px; /* Add some padding to space things out Отделение*/ 
     box-sizing: border-box; /* Include padding in the element's total width/height */
+
 }
 
-.center-top-text {
-    text-align: center;
-    color: white;
-    font-size: 16px;
-    background-color: #0056b3;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    width: 100%; /* Make this element take up the full width of its container */
-    box-sizing: border-box; /* Include padding in the element's total width/height */
+.center-top-text {      /*Выберите отделение*/
+    position:relative;
+    font-family: 'nbold',sans-serif;
+    margin: auto;
+    margin-top: 20px;
+    text-align:center;
+    color: #000000;
+    font-size: 20px;
+    background-color: #72A276;
+    border: 0.5rem solid #ffffff;
+    border-radius: 20px ;
+    padding: 20px;
+    width: 80%;
+    box-shadow: 5px 5px 15px #BFDBF7;
 }
 
 .dept-custom {
     /* Add your styling here */
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 20px;
+    border: 5px solid #1F7A8C;
     border-radius: 5px;
-    font-size: 16px;
-    margin-bottom: 10px;
-    width: 231%; /* Adjust the width as needed */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: backwards;
+    color: #060c0e;
+    font-family: 'nmed',sans-serif;
+    font-size: 18px;
+    margin-bottom: 5px;
+    width: 100%; /* Adjust the width as needed */
+    box-shadow: 5px 5px 15px #BFDBF7;
     transition: border-color 0.2s ease-in-out;
+    background-color: #E1E5F2;
+    border-style: inset;
+    border-radius: 30px;
+    border-top-color: #cf6b6b;
+}
+
+.dept-custom:hover {
+    background-color: #fcfcfc;
 }
 
 /* Style the field when it is focused (clicked) */
 .dept-custom:focus {
-    border-color: #007BFF; /* Change the border color when focused */
+    border-color: #348cdf; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
 .r_type-custom {
     /* Add your styling here */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #FFFFFF;
     border-radius: 5px;
-    font-size: 16px;
-    margin-bottom: 10px;
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-width: 4px;
+    border-radius: 15px;
+    text-align: center;
     width: 100%; /* Adjust the width as needed */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: border-color 0.2s ease-in-out;
 }
 
 .r_type-custom:focus {
-    border-color: #007BFF; /* Change the border color when focused */
+    border-color: #1F7A8C; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
 .datefield-custom {
     /* Add your styling here */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 15px;
+    border: 3px solid #e7ecea;
+    border-radius: 15px;
+    width:auto;
+    font-size: 20px;
     margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.2s ease-in-out;
-    box-sizing: border-box; /* Include padding in the element's total width/height */
+    text-align: center;
+    transition: border-color 0.5s ease-in-out;
+    box-sizing:border-box; /* Include padding in the element's total width/height */
 }
 
 /* Style the field when it is focused (clicked) */
 .datefield-custom:focus {
-    border-color: #007BFF; /* Change the border color when focused */
+    border-color: #1F7A8C; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
@@ -86,22 +131,58 @@ body {
 
 .common_button {
     padding: 20px 180px; /* Adjust padding to control button size */
-    background-color: #007BFF; /* Background color */
+    background-color: rgb(54, 73, 88); /* Background color */
     color: white; /* Text color */
+    font-family: 'nmed',sans-serif;
+    text-transform: uppercase;
     border: none; /* Remove button border */
-    border-radius: 5px; /* Rounded corners */
+    border-radius: 10px; /* Rounded corners */
     margin: 10px;
     font-size: 16px; /* Font size */
+    clip-path:ellipse()(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
     cursor: pointer; /* Cursor style on hover */
-    transition: background-color 0.2s ease-in-out; /* Smooth background color transition */
-
+    transition: 0.9s;
     /* Optional: Add a box shadow for depth */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Hover effect */
 .common_button:hover {
-    background-color: #0056b3; /* Change background color on hover */
+    background-color: #022B3A;
+    font-family: 'nmed',sans-serif;
+    letter-spacing: 4px;
+    font-weight: 300;
+    font-size: 16px;
+    clip-path:ellipse(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+    /* Change background color on hover */
+}
+
+/* Style the table */
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'nmed',sans-serif;
+}
+
+/* Style the table header */
+.dataframe th {
+    background-color: #000000;
+    color: rgb(226, 159, 159);
+    text-align: center;
+    padding: 10px;
+}
+
+/* Style the table rows */
+.dataframe td {
+    border: 1px solid #f70000;
+    text-align: left;
+    padding: 8px;
+}
+
+/* Hover effect on rows */
+.dataframe tbody tr:hover {
+    background-color: #339dc4;
 }
 
 /* Style the table */
@@ -113,73 +194,21 @@ body {
 
 /* Style the table header */
 .dataframe th {
-    background-color: #007BFF;
-    color: white;
+    background-color: #BFDBF7;
+    color: #000000;
     text-align: center;
     padding: 10px;
 }
 
 /* Style the table rows */
 .dataframe td {
-    border: 1px solid #ddd;
+    border: 1px solid #ffffff;
     text-align: left;
     padding: 8px;
 }
 
-/* Alternate row background color */
-.dataframe tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
 /* Hover effect on rows */
 .dataframe tbody tr:hover {
-    background-color: #e0e0e0;
+    background-color: #E1E5F2;
 }
 
-/* Style the calendar container */
-.calendar-container {
-    width: 100%;
-    margin-top: 20px;
-}
-
-/* Style the table within the calendar container */
-.calendar-container table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-/* Style the table header */
-.calendar-container th {
-    background-color: #007BFF;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-/* Style the table cells */
-.calendar-container td {
-    border: 1px solid #ddd;
-    text-align: center;
-    padding: 8px;
-}
-
-/* Bold font for day numbers */
-.calendar-container td:not(.noday) {
-    font-weight: bold;
-}
-
-/* Alternate cell background color */
-.calendar-container td:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-/* Style for today's cell */
-.calendar-container td.today {
-    background-color: #ffcc00; /* Change the background color to yellow for today's cell */
-    color: #333; /* Change the text color for better readability */
-}
-
-/* Hover effect on calendar cells */
-.calendar-container td:hover {
-    background-color: #e0e0e0;
-}
