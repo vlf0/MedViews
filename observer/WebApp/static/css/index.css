@@ -29,6 +29,18 @@ body {
     background-color: #72A276;
 }
 
+.logo{
+    text-align: center;
+    max-width: 100%;
+    height: auto;
+    }
+
+.logo img{
+    width:700px;
+    max-width: 100%;
+    height: auto;
+}
+
 .container { /*отделение*/
     margin: auto;
     margin-top: 50px;
@@ -110,10 +122,11 @@ body {
     /* Add your styling here */
     padding: 15px;
     border: 3px solid #e7ecea;
+    font-family: 'nmed',sans-serif;
     border-radius: 15px;
-    width:auto;
+    width:25pc;
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     text-align: center;
     transition: border-color 0.5s ease-in-out;
     box-sizing:border-box; /* Include padding in the element's total width/height */
@@ -138,6 +151,7 @@ body {
     border: none; /* Remove button border */
     border-radius: 10px; /* Rounded corners */
     margin: 10px;
+    margin-left: 7pc;
     font-size: 16px; /* Font size */
     clip-path:ellipse()(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
     cursor: pointer; /* Cursor style on hover */
@@ -153,7 +167,7 @@ body {
     letter-spacing: 4px;
     font-weight: 300;
     font-size: 16px;
-    clip-path:ellipse(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+    clip-path:ellipse(80% 0, 90% 40%, 80% 90%, 0% 90%, 10% 40%, 0% 0%);
     /* Change background color on hover */
 }
 
@@ -211,4 +225,3 @@ body {
 .dataframe tbody tr:hover {
     background-color: #E1E5F2;
 }
-

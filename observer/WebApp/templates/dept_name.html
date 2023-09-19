@@ -5,13 +5,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'GKB_D_sign.ico' %}">
     <title>Department choice</title>
 </head>
-<div>
-    <img src="GKB_D_logo!_gor.png" alt="22222">
-</div>
 <body>
+    <div class="logo">
+        <img src="{% static 'gkblogo.png' %}" alt="logo">
+    </div>
         <p class="center-top-text">Выберите ваше отделение</p>
     <div class="container">
     <form action="{% url 'ref_to_type' %}" method="POST">
