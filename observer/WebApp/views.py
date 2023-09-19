@@ -65,8 +65,12 @@ def ref_to_output(request, chosen_dept):
 
 
 def output(request, chosen_dept, chosen_type, from_dt, to_dt):
+    # Preparing dates in format matches with hosp personal
+    from_dt_dbformat = from_dt + ' 00:00:00'
+    to_db_dbformat = to_dt + ' 23:59:59'
     # Sql query to DB
-    query_text = Queries(dept=chosen_dept, research=chosen_type, from_dt=from_dt, to_dt=to_dt).ready_select()
+    query_text = Queries(dept=chosen_dept, research=chosen_type,
+                         from_dt=from_dt_dbformat, to_dt=to_db_dbformat).ready_select()
     # Connecting to DB and execute query
     answer = SelectAnswer(query_text).selecting()
     # Creating full reporting page contains prepared data got from DB by PANDAS
