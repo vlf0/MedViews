@@ -212,3 +212,51 @@ body {
     background-color: #E1E5F2;
 }
 
+/* Style the calendar container */
+.calendar-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Style the table within the calendar container */
+.calendar-container table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Style the table header */
+.calendar-container th {
+    background-color: #007BFF;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Style the table cells */
+.calendar-container td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+/* Bold font for day numbers */
+.calendar-container td:not(.noday) {
+    font-weight: bold;
+}
+
+/* Alternate cell background color */
+.calendar-container td:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Style for today's cell */
+.calendar-container td.today {
+    background-color: #ffcc00; /* Change the background color to yellow for today's cell */
+    color: #333; /* Change the text color for better readability */
+}
+
+/* Hover effect on calendar cells */
+.calendar-container td:hover {
+    background-color: #e0e0e0;
+}
+

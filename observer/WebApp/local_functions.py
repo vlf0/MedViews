@@ -21,17 +21,6 @@ def date_converter(date_srting: str) -> str:
     return ready_date
 
 
-def date_pg_format(func: Any) -> list:
-    """ Getting values from response and creating list containing date - both from and to
-    (in from keys requesting order).
-
-    func -- django function for get info from web response.
-    """
-    request_keys = ['from_dt_year', 'from_dt_month', 'from_dt_day', 'to_dt_year', 'to_dt_month', 'to_dt_day']
-    dates_values = [func(i) for i in request_keys]
-    return dates_values
-
-
 def chosen_date(date_string) -> Any:
     """
     Describing
