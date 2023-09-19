@@ -45,10 +45,9 @@ class ResearchType(forms.Form):
 class DateButtons(forms.Form):
     """ Represent buttons of date type on the page. It is the 3rd sql condition in query. """
     from_dt = forms.DateField(label='Начало периода',
-                              initial=date.today() - timedelta(days=14),
                               widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                               )
-    to_dt = forms.DateField(label='Конец периода', required=True, initial=date.today(),
+    to_dt = forms.DateField(label='Конец периода', required=True,
                             widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                             )
 
