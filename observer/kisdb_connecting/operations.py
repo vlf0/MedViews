@@ -9,6 +9,14 @@ from . import string_snippets
 class Queries:
     """ This object consists of gotten values from web pages
      and returns full query in string format ready to use in DB. """
+    types_converting = {
+        'Лабораторные исследования': 1,
+        'Инструментальные исследования': 2,
+        'Процедуры и манипуляции': 3,
+        'Операции': 4,
+        'Консультации': 5
+    }
+
     def __init__(self, dept, research, from_dt, to_dt):
         self.dept = dept
         self.research = research
@@ -21,8 +29,8 @@ class Queries:
                f' concat_ws (\' \',m.num,m.YEAR) AS №ИБ,' \
                f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                f' n.name AS Назначение,' \
-               f' n.create_dt AS Создано,' \
-               f' n.plan_dt AS Назначено_на_дату,' \
+               f' to_char(n.create_dt, \'DD.MM.YYYY HH:MM\') AS Создано,' \
+               f' to_char(n.plan_dt, \'MM.YYYY HH:MM\'),' \
                f' CASE n.naz_extr_id ' \
                f'\tWHEN \'0\' THEN \'Планово\' ' \
                f'\tWHEN \'1\' THEN \'Экстренно\' ' \
@@ -37,7 +45,7 @@ class Queries:
                f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
                f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
                f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
-               f' AND n.naz_view = {self.research} ' \
+               f' AND n.naz_view = \'{self.types_converting[self.research]}\'' \
                f' AND n.naz_state_id = 2 ' \
                f' AND dp.name = \'{self.dept}\''
 
