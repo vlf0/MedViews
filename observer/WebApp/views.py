@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -36,8 +37,12 @@ def ref_to_type(request):
 
 
 def research_type(request, chosen_dept):
+    # Converted to string format for insert to fields on browser in the first refer
+    from_dt_initial = (date.today() - timedelta(days=14)).strftime('%Y-%m-%d')
+    to_dt_initial = date.today().strftime('%Y-%m-%d')
+    # Form fields definite
+    date_buttons = DateButtons(initial={'from_dt': from_dt_initial, 'to_dt': to_dt_initial})
     types_list = ResearchType()
-    date_buttons = DateButtons()
     doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:
