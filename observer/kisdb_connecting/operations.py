@@ -9,6 +9,14 @@ from . import string_snippets
 class Queries:
     """ This object consists of gotten values from web pages
      and returns full query in string format ready to use in DB. """
+    types_converting = {
+        'Лабораторные исследования': 1,
+        'Инструментальные исследования': 2,
+        'Процедуры и манипуляции': 3,
+        'Операции': 4,
+        'Консультации': 5
+    }
+
     def __init__(self, dept, research, from_dt, to_dt):
         self.dept = dept
         self.research = research
@@ -17,7 +25,7 @@ class Queries:
 
     def ready_select(self):
         return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
-               f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.research}\'' \
+               f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
                f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
     # def ready_select(self):
@@ -42,7 +50,7 @@ class Queries:
     #            f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
     #            f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
     #            f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
-    #            f' AND n.naz_view = {self.research} ' \
+    #            f' AND n.naz_view = {self.types_converting[self.research]} ' \
     #            f' AND n.naz_state_id = 2 ' \
     #            f' AND dp.name = \'{self.dept}\''
 
