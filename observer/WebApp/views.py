@@ -1,16 +1,11 @@
-import http.client
-
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, JsonResponse
-from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.contrib import messages
-from django import forms
 from django.views.decorators.csrf import csrf_exempt
 import json
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
-from .local_functions import FrontDataValues, months, date_converter, date_pg_format, calendar_create
+from .local_functions import FrontDataValues, months, date_converter, calendar_create
 
 
 # Decorator that let us avoid django CSRF protection method.
@@ -42,9 +37,6 @@ def ref_to_type(request):
 
 def research_type(request, chosen_dept):
     types_list = ResearchType()
-    # if type(types_list.r_types) is str:
-    #     return render(request=request, template_name='errors.html',
-    #                   context={'error_text': types_list.r_types})
     date_buttons = DateButtons()
     doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
@@ -58,14 +50,9 @@ def research_type(request, chosen_dept):
 
 
 def ref_to_output(request, chosen_dept):
-    prep_dates = date_pg_format(request.POST.get)
     # Dates to send on page into information line
-    try:
-        from_dt = '-'.join(prep_dates[:3])
-        to_dt = '-'.join(prep_dates[3:])
-    except TypeError as er:
-        print(f'\n{er}\n')
-        pass
+    from_dt = request.POST.get('from_dt')
+    to_dt = request.POST.get('to_dt')
     # Get research type from FORM fields
     chosen_type = request.POST.get('research_types')
     return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type,
@@ -87,11 +74,10 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt):
     types_list = ResearchType(data=choice)
     date_buttons = DateButtons(data=dates)
     if request.method == 'POST':
-        prep_dates = date_pg_format(request.POST.get)
         chosen_type = request.POST.get('research_types')
         # Dates to send on page into information line
-        from_dt = '-'.join(prep_dates[:3])
-        to_dt = '-'.join(prep_dates[3:])
+        from_dt = request.POST.get('from_dt')
+        to_dt = request.POST.get('to_dt')
         return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type, from_dt=from_dt, to_dt=to_dt)
     doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept

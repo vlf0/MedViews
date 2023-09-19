@@ -43,3 +43,6 @@ tab_done = '\t<p class="center-top-text">По заданным параметр�
 tab_report = '\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n'
 
 system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
+
+depts_list = 'SELECT name FROM mm.dept d'
+
