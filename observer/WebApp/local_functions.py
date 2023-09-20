@@ -1,5 +1,8 @@
 from typing import Any
-from datetime import date
+from datetime import date, datetime
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 import calendar
 
 key_months = [i for i in range(1, 13)]
@@ -51,11 +54,27 @@ class FrontDataValues:
         self.value = value
 
     def adding(self) -> Any:
-        """
-        Adding gotten value from frontend to class
-         attribute list for further handling.
+        """ Adding gotten value from frontend to class
+        attribute list for further handling.
         """
         if len(self.val_list) == 2:
             self.val_list.clear()
         self.val_list.append(self.value)
         return self.val_list
+
+
+def validate_dates(first_date, second_date):
+    """ Do checking if second date value inserting
+    by user not less than first value.
+    """
+    first = first_date.split('-')
+    first = list(map(lambda x: int(x), first))
+    first_value = datetime(year=first[0], month=first[1], day=first[2],).timestamp()
+
+    second = second_date.split('-')
+    second = list(map(lambda x: int(x), second))
+    second_value = datetime(year=second[0], month=second[1], day=second[2]).timestamp()
+    if first_value > second_value:
+        return False
+    else:
+        return True

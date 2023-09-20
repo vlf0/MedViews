@@ -10,9 +10,8 @@ top_of_template = (
         '\t<title>Second Page</title>\n'
         '\t</head>\n\n'
         '<body>\n'
-        '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>\n'
-        '\t\t\tЗаведущий: {{ doc }}</p>\n'
-        '\t\t<p class="center-top-text">Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}</p>\n'
+        '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }}<br><br>\n'
+        '\t\t\tЗаведущий: {{ doc }}<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}</p>\n'
         '\t<div class="container">\n'
         '\t<form action="{% url \'output\' chosen_dept chosen_type \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t<table>\n'
@@ -20,7 +19,7 @@ top_of_template = (
         '\t\t{{ date_buttons }}\n'
         '\t</table>\n'
         '\t\t<div class="button-container">\n'
-        '\t\t\t<button type="submit" class="common_button"> <b>Выбрать</b> </button>\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Построить отчет</b> </button>\n'
         '\t\t</div>\n'
         '\t{% csrf_token %}\n'
         '\t\t</form>\n'
@@ -29,9 +28,11 @@ top_of_template = (
         '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
         '\t\t</div>\n'
         '\t</form>\n'
+        '\t\t<div class="table-container">\n'
     )
 
 bot_of_template = (
+        '\n\t\t</div>\n'
         '\n\t</div>\n'
         '</body>\n'
         '</html>'
@@ -39,9 +40,11 @@ bot_of_template = (
 
 tab_done = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
 
-tab_report = '\t\t<p class="center-top-text">Не выполнены следующие назначения:</p>\n'
+tab_report = '\t\t<p class="center-top-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
 
 system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
+
+date_validation_error = '\t\t<p class="center-top-text">Дата окончания периода не может быть меньше даты начала!</p>\n'
 
 depts_list = 'SELECT name FROM mm.dept d'
 

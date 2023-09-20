@@ -22,9 +22,9 @@
             {{ date_buttons }}
             </table>
         <div class="button-container">
-            <button type="submit" class="common_button">Выбрать</button>
+            <button type="submit" class="common_button">Построить отчет</button>
         </div>
-
+            {{ error }}
             {% csrf_token %}
         </form>
 
