@@ -77,6 +77,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt):
                          from_dt=from_dt_dbformat, to_dt=to_db_dbformat).ready_select()
     # Connecting to DB and execute query
     answer = SelectAnswer(query_text).selecting()
+    common_rows_number = len(answer)
     # Creating full reporting page contains prepared data got from DB by PANDAS
     ReadyReportHTML(answer).output_data()
     # Forms on page
@@ -100,5 +101,5 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt):
         doc = doc[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept,
                'doc': doc, 'date_buttons': date_buttons, 'from_dt': date_converter(from_dt),
-               'to_dt': date_converter(to_dt), 'chosen_type': chosen_type}
+               'to_dt': date_converter(to_dt), 'chosen_type': chosen_type, 'common_rows_number': common_rows_number}
     return render(request=request, template_name='output.html', context=context)
