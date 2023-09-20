@@ -14,7 +14,8 @@ class Queries:
         'Инструментальные исследования': 2,
         'Процедуры и манипуляции': 3,
         'Операции': 4,
-        'Консультации': 5
+        'Консультации': 5,
+        'Невыгруженные эпикризы': 6
     }
 
     def __init__(self, dept, research, from_dt, to_dt):
@@ -24,9 +25,13 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
-               f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
-               f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+        if self.types_converting[self.research] == 6:
+            return f'SELECT pat_fio, pat_ib, zav, sign_dt, pat_leave_dt  FROM mm.tap' \
+                   f' WHERE sign_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+        else:
+            return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
+                   f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
+                   f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
     # def ready_select(self):
     #     return f'SELECT' \
@@ -111,8 +116,13 @@ class ReadyReportHTML:
         elif type(self.db_data) is list and len(self.db_data) != 0:
             row_values = len(self.db_data[0])
             rows_number = len(self.db_data)
+            # DataFrame's headers names for all type of researches
             headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
                              'Дата создания', 'Назначено на дату', 'Статус']
+            # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
+            if row_values == 5:
+                headers_names = ['ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
+                                 'дата подписи выписного эпикриза', 'Дата выписки пациента']
             # List of lists of data separated and grouped inside
             data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
             # Creating dict for DataFrame

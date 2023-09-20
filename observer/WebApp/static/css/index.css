@@ -157,6 +157,32 @@ body {
     /* Change background color on hover */
 }
 
+.table-container {
+    max-height: 200px; /* Set a maximum height for the container */
+    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
+    width: 100%;
+}
+
+/* Style the table header */
+.dataframe th {
+    background-color: #BFDBF7;
+    color: #000000;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Style the table rows */
+.dataframe td {
+    border: 1px solid #ffffff;
+    text-align: left;
+    padding: 8px;
+}
+
+/* Hover effect on rows */
+.dataframe tbody tr:hover {
+    background-color: #E1E5F2;
+}
+
 /* Style the table */
 .dataframe {
     width: 100%;
@@ -216,6 +242,8 @@ body {
 .calendar-container {
     width: 100%;
     margin-top: 20px;
+    overflow: auto; /* Enable both horizontal and vertical scrolling */
+    max-height: 400px; /* Set a maximum height for the container */
 }
 
 /* Style the table within the calendar container */

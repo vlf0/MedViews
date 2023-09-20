@@ -4,6 +4,7 @@ from django import forms
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
 from kisdb_connecting.string_snippets import depts_list
+from .local_functions import validate_dates
 
 
 def converting(x):
@@ -36,7 +37,8 @@ class ResearchType(forms.Form):
                                                 ('Инструментальные исследования', 'Инструментальные исследования'),
                                                 ('Процедуры и манипуляции', 'Процедуры и манипуляции'),
                                                 ('Операции', 'Операции'),
-                                                ('Консультации', 'Консультации')
+                                                ('Консультации', 'Консультации'),
+                                                ('Невыгруженные эпикризы', 'Невыгруженные эпикризы')
                                                 ),
                                        widget=forms.Select(attrs={'class': 'r_type-custom'})
                                        )
@@ -50,4 +52,3 @@ class DateButtons(forms.Form):
     to_dt = forms.DateField(label='Конец периода', required=True,
                             widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                             )
-
