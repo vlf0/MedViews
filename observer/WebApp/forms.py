@@ -3,7 +3,7 @@ from django import forms
 
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
-from kisdb_connecting.string_snippets import depts_list
+from kisdb_connecting.string_snippets import depts_by_ids
 from .local_functions import validate_dates
 
 
@@ -17,7 +17,7 @@ def converting(x):
 class DeptChoose(forms.Form):
     """ Represent drop-down list of departments name from KIS DB on the starting page. """
     # Create object that contains all departments from KIS DB and create list generator
-    depts = SelectAnswer(query_text='SELECT d.name FROM mm.dept d WHERE d.bed_cnt NOTNULL AND d.end_dt ISNULL').selecting()
+    depts = SelectAnswer(query_text=depts_by_ids).selecting()
     # Call exception and redirect to page with its text
     if type(depts) is str:
         pass

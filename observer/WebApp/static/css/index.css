@@ -201,9 +201,10 @@ body {
     padding: 8px;
 }
 
+
 /* Hover effect on rows */
 .dataframe tbody tr:hover {
-    background-color: #F6BD8E;
+    background-color: #e47012;
 }
 
 /* Style the table */
@@ -217,7 +218,7 @@ body {
 /* Style the table header */
 .dataframe th {
     background-color: #000000;
-    color: rgb(226, 159, 159);
+    color: rgb(241, 0, 0);
     text-align: center;
     padding: 10px;
 }
@@ -231,7 +232,7 @@ body {
 
 /* Hover effect on rows */
 .dataframe tbody tr:hover {
-    background-color: #339dc4;
+    background-color: #011d27;
 }
 
 /* Style the table */
@@ -258,5 +259,5 @@ body {
 
 /* Hover effect on rows */
 .dataframe tbody tr:hover {
-    background-color: #E1E5F2;
+    background-color: #dfdbd8;
 }
