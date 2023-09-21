@@ -1,8 +1,10 @@
 from datetime import date, timedelta
 from django import forms
-from django.http.request import HttpRequest
+
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
+from kisdb_connecting.string_snippets import depts_list
+from .local_functions import validate_dates
 
 
 def converting(x):
@@ -28,19 +30,6 @@ class DeptChoose(forms.Form):
                                       )
 
 
-# class ResearchType(forms.Form):
-#     """ Represent drop-down list of research name from KIS DB on the starting page. """
-#     r_types = SelectAnswer(query_text='SELECT n.naz_view FROM mm.naz n WHERE n.naz_view = 5\'').selecting()
-#     print(r_types)
-#     if type(r_types) is str:
-#         pass
-#     else:
-#         str_values = [field[0] for field in r_types]
-#         research_types = forms.ChoiceField(label='Тип исследования', choices=converting(str_values),
-#                                            widget=forms.Select(attrs={'class': 'r_type-custom'})
-#                                            )
-        
-
 class ResearchType(forms.Form):
     """ Represent drop-down list of research name from KIS DB on the starting page. """
     research_types = forms.ChoiceField(label='Тип исследования',
@@ -48,7 +37,8 @@ class ResearchType(forms.Form):
                                                 ('Инструментальные исследования', 'Инструментальные исследования'),
                                                 ('Процедуры и манипуляции', 'Процедуры и манипуляции'),
                                                 ('Операции', 'Операции'),
-                                                ('Консультации', 'Консультации')
+                                                ('Консультации', 'Консультации'),
+                                                ('Невыгруженные эпикризы', 'Невыгруженные эпикризы')
                                                 ),
                                        widget=forms.Select(attrs={'class': 'r_type-custom'})
                                        )
@@ -57,10 +47,8 @@ class ResearchType(forms.Form):
 class DateButtons(forms.Form):
     """ Represent buttons of date type on the page. It is the 3rd sql condition in query. """
     from_dt = forms.DateField(label='Начало периода',
-                              initial=date.today() - timedelta(days=14),
                               widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                               )
-    to_dt = forms.DateField(label='Конец периода', required=True, initial=date.today(),
+    to_dt = forms.DateField(label='Конец периода', required=True,
                             widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                             )
-

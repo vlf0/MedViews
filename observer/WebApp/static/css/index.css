@@ -50,7 +50,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 10px; /* Add some padding to space things out Отделение*/ 
+    padding: 10px; /* Add some padding to space things out Отделение*/
     box-sizing: border-box; /* Include padding in the element's total width/height */
 
 }

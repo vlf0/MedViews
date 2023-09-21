@@ -24,12 +24,12 @@
             {{ types_list }}
             {{ date_buttons }}
             </table>
+            {{ error|safe }}
         <div class="button-container">
-            <button type="submit" class="common_button">Выбрать</button>
+            <button type="submit" class="common_button">Построить отчет</button>
         </div>
-
             {% csrf_token %}
         </form>
-
+    </div>
 </body>
 </html>
