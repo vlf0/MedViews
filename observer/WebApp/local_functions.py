@@ -11,14 +11,14 @@ val_months = ['Января', 'Февраля', 'Марта', 'Апреля', '�
 months = dict(zip(key_months, val_months))
 
 
-def date_converter(date_srting: str) -> str:
+def date_converter(date_string: str) -> str:
     """ Reversing date string to improve readability for users
     and changing months number to string on RU language.
 
     arguments:
-    date_srting -- date object in string format (result of date_pg_format function)
+    date_string -- date object in string format (result of date_pg_format function)
     """
-    prep = date_srting.split('-')
+    prep = date_string.split('-')
     month = months[int(prep[1])]
     ready_date = f'{prep[2]}  {month}  {prep[0]}'
     return ready_date

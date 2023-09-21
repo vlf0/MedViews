@@ -46,5 +46,6 @@ system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
 
 date_validation_error = '\t\t<p class="center-top-text">Дата окончания периода не может быть меньше даты начала!</p>\n'
 
-depts_list = 'SELECT name FROM mm.dept d'
+depts_list = 'SELECT name FROM mm.dept d' \
+             ' WHERE name in (\'ПО\', \'Терапия\')'
 
