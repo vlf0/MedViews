@@ -14,7 +14,8 @@ class Queries:
         'Инструментальные исследования': 2,
         'Процедуры и манипуляции': 3,
         'Операции': 4,
-        'Консультации': 5
+        'Консультации': 5,
+        'Невыгруженные эпикризы': 6
     }
 
     def __init__(self, dept, research, from_dt, to_dt):
@@ -59,29 +60,33 @@ class SelectAnswer:
         """ Connecting to DB and execute SQL query. If connect not established or
         bad query getting - throw exceptions that displaying on the web page. """
         if len(ConnectingToKIS.objects.all()) != 0:
-            for conn_data in ConnectingToKIS.objects.all():
-                if conn_data.active is True:
+            actual_db = ConnectingToKIS.objects.filter(active='True').values()
+            if len(actual_db) == 1:
+                actual_db = actual_db[0]
+                try:
+                    connection = psycopg2.connect(database=actual_db['db'],
+                                                  host=actual_db['host'],
+                                                #   port=5431,
+                                                  port=actual_db['port'],
+                                                  user=actual_db['user'],
+                                                  password=actual_db['password'])
                     try:
-                        connection = psycopg2.connect(database=conn_data.db,
-                                                      host=conn_data.host,
-                                                      #port =5431,
-                                                      port=conn_data.port,
-                                                      user=conn_data.user,
-                                                      password=conn_data.password)
-                        try:
-                            cursor = connection.cursor()
-                            cursor.execute(self.query_text)
-                            selecting_data = cursor.fetchall()
-                            return selecting_data
-                        except (Exception, Error) as e:
-                            return f'Error!\n\n{e}\n'
-                        finally:
-                            cursor.close()
-                            connection.close()
+                        cursor = connection.cursor()
+                        cursor.execute(self.query_text)
+                        selecting_data = cursor.fetchall()
+                        return selecting_data
                     except (Exception, Error) as e:
                         return f'Error!\n\n{e}\n'
-                else:
-                    return 'DB not active!\n To use it - turn on check box in the admin panel!'
+                    finally:
+                        cursor.close()
+                        connection.close()
+                except (Exception, Error) as e:
+                    return f'Error!\n\n{e}\n'
+            elif len(actual_db) > 1:
+                return 'There are more than one DataBases in ACTIVE status!\n' \
+                       ' Check DB in active in the admin panel!'
+            else:
+                return 'DB not active!\n To use it - turn on check box in the admin panel!'
         else:
             return 'There are no any records in the BD data tab!'
 
@@ -95,28 +100,40 @@ class ReadyReportHTML:
     def __init__(self, db_data):
         self.db_data = db_data
 
-    def output_data(self):
+    def output_data(self, error_value=None):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
-        if type(self.db_data) is list and len(self.db_data) == 0:
-            tab = string_snippets.tab_done
-        elif type(self.db_data) is list and len(self.db_data) != 0:
-            row_values = len(self.db_data[0])
-            rows_number = len(self.db_data)
-            headers_names = ['Назначил', 'Номер ИБ', 'Пациент', 'Назначение',
-                             'Дата создания', 'Назначено на дату', 'Статус']
-            # List of lists of data separated and grouped inside
-            data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
-            # Creating dict for DataFrame
-            data = dict(zip(headers_names, data_lists))
-            df = pd.DataFrame(data=data, index=range(1, rows_number+1))
-            # Converting to HTML block inside the <table> tag
-            # It is middle part of body of the HTML template
-            report = df.to_html()
-            tab = string_snippets.tab_report + report
-        elif type(self.db_data) is str:
-            tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
+        if error_value:
+            # Date validations error text instead data table
+            tab = string_snippets.date_validation_error
+            # Editing strings of html template
+            ReadyReportHTML.top_of_template = ReadyReportHTML.top_of_template \
+                .replace('<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}', '')
         else:
-            tab = string_snippets.system_error
+            if type(self.db_data) is list and len(self.db_data) == 0:
+                tab = string_snippets.tab_done
+            elif type(self.db_data) is list and len(self.db_data) != 0:
+                row_values = len(self.db_data[0])
+                rows_number = len(self.db_data)
+                # DataFrame's headers names for all type of researches
+                headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
+                                 'Дата создания', 'Назначено на дату', 'Статус']
+                # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
+                if row_values == 5:
+                    headers_names = ['ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
+                                     'дата подписи выписного эпикриза', 'Дата выписки пациента']
+                # List of lists of data separated and grouped inside
+                data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
+                # Creating dict for DataFrame
+                data = dict(zip(headers_names, data_lists))
+                df = pd.DataFrame(data=data, index=range(1, rows_number+1))
+                # Converting to HTML block inside the <table> tag
+                # It is middle part of body of the HTML template
+                report = df.to_html()
+                tab = string_snippets.tab_report + report
+            elif type(self.db_data) is str:
+                tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
+            else:
+                tab = string_snippets.system_error
         # Updating template by overwriting when get the new data from KIS
         with open(r'C:\Users\adm-ryadovoyaa\Documents\DMKprojects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:

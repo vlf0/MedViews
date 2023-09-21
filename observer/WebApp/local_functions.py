@@ -1,5 +1,8 @@
 from typing import Any
-from datetime import date
+from datetime import date, datetime
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 import calendar
 
 key_months = [i for i in range(1, 13)]
@@ -19,17 +22,6 @@ def date_converter(date_srting: str) -> str:
     month = months[int(prep[1])]
     ready_date = f'{prep[2]}  {month}  {prep[0]}'
     return ready_date
-
-
-def date_pg_format(func: Any) -> list:
-    """ Getting values from response and creating list containing date - both from and to
-    (in from keys requesting order).
-
-    func -- django function for get info from web response.
-    """
-    request_keys = ['from_dt_year', 'from_dt_month', 'from_dt_day', 'to_dt_year', 'to_dt_month', 'to_dt_day']
-    dates_values = [func(i) for i in request_keys]
-    return dates_values
 
 
 def chosen_date(date_string) -> Any:
@@ -62,11 +54,27 @@ class FrontDataValues:
         self.value = value
 
     def adding(self) -> Any:
-        """
-        Adding gotten value from frontend to class
-         attribute list for further handling.
+        """ Adding gotten value from frontend to class
+        attribute list for further handling.
         """
         if len(self.val_list) == 2:
             self.val_list.clear()
         self.val_list.append(self.value)
         return self.val_list
+
+
+def validate_dates(first_date, second_date):
+    """ Do checking if second date value inserting
+    by user not less than first value.
+    """
+    first = first_date.split('-')
+    first = list(map(lambda x: int(x), first))
+    first_value = datetime(year=first[0], month=first[1], day=first[2],).timestamp()
+
+    second = second_date.split('-')
+    second = list(map(lambda x: int(x), second))
+    second_value = datetime(year=second[0], month=second[1], day=second[2]).timestamp()
+    if first_value > second_value:
+        return False
+    else:
+        return True
