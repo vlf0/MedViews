@@ -26,8 +26,21 @@
 
 body {
     font-family: 'nregular', sans-serif;
-    background-color: #72A276;
+    background-color: #EDF7F6;
 }
+
+.logo {
+    text-align: center;
+    max-width: 100%;
+    height: auto;
+}
+
+.logo img{
+    width: 700px;
+    max-width: 100%;
+    height: auto;
+}
+
 
 .container { /*отделение*/
     margin: auto;
@@ -37,10 +50,12 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 10px; /* Add some padding to space things out Отделение*/ 
+    padding: 10px; /* Add some padding to space things out Отделение*/
     box-sizing: border-box; /* Include padding in the element's total width/height */
 
 }
+
+
 
 .center-top-text {      /*Выберите отделение*/
     position:relative;
@@ -50,11 +65,11 @@ body {
     text-align:center;
     color: #000000;
     font-size: 20px;
-    background-color: #72A276;
+    background-color: #F6BD8E;
     border: 0.5rem solid #ffffff;
     border-radius: 20px ;
     padding: 20px;
-    width: 80%;
+    width: 40%;
     box-shadow: 5px 5px 15px #BFDBF7;
 }
 
@@ -63,14 +78,15 @@ body {
     padding: 20px;
     border: 5px solid #1F7A8C;
     border-radius: 5px;
+    text-align:justify;
     animation: backwards;
     color: #060c0e;
-    font-family: 'nmed',sans-serif;
+    font-family: 'nbold',sans-serif;
     font-size: 18px;
     margin-bottom: 5px;
     width: 100%; /* Adjust the width as needed */
-    box-shadow: 5px 5px 15px #BFDBF7;
-    transition: border-color 0.2s ease-in-out;
+    box-shadow: 15px 15px 15px #BFDBF7;
+    transition: border-color 0.5s ease-in-out;
     background-color: #E1E5F2;
     border-style: inset;
     border-radius: 30px;
@@ -78,31 +94,32 @@ body {
 }
 
 .dept-custom:hover {
-    background-color: #fcfcfc;
+    background-color: #ffffff;
+    transition: border-color 0.5s ease-in-out;
 }
 
 /* Style the field when it is focused (clicked) */
 .dept-custom:focus {
-    border-color: #348cdf; /* Change the border color when focused */
+    border-color: #F6BD8E; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
 .r_type-custom {
     /* Add your styling here */
-    padding: 10px;
-    border: 1px solid #FFFFFF;
-    border-radius: 5px;
-    font-size: 20px;
-    margin-bottom: 20px;
-    border-width: 4px;
+    padding: 15px;
+    border: 3px solid #e7ecea;
     border-radius: 15px;
+    width:100%;
+    font-family: 'nbold',sans-serif;
+    font-size: 20px;
+    margin-bottom: 10px;
     text-align: center;
-    width: 100%; /* Adjust the width as needed */
-    transition: border-color 0.2s ease-in-out;
+    transition: border-color 0.5s ease-in-out;
+    box-sizing:border-box;
 }
 
 .r_type-custom:focus {
-    border-color: #1F7A8C; /* Change the border color when focused */
+    border-color: #D89C6F; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
@@ -111,33 +128,38 @@ body {
     padding: 15px;
     border: 3px solid #e7ecea;
     border-radius: 15px;
-    width:auto;
+    width:100%;
+    font-family: 'nbold',sans-serif;
     font-size: 20px;
     margin-bottom: 10px;
     text-align: center;
     transition: border-color 0.5s ease-in-out;
-    box-sizing:border-box; /* Include padding in the element's total width/height */
+    box-sizing:border-box;
+   /* Include padding in the element's total width/height */
 }
 
 /* Style the field when it is focused (clicked) */
 .datefield-custom:focus {
-    border-color: #1F7A8C; /* Change the border color when focused */
+    border-color: #D89C6F; /* Change the border color when focused */
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
 .button-container {
     text-align: center;
+    width: auto;
+    height: auto;
 }
 
 .common_button {
     padding: 20px 180px; /* Adjust padding to control button size */
-    background-color: rgb(54, 73, 88); /* Background color */
-    color: white; /* Text color */
-    font-family: 'nmed',sans-serif;
+    background-color: #F6BD8E; /* Background color */
+    color: rgb(0, 0, 0); /* Text color */
+    font-family: 'nbold',sans-serif;
     text-transform: uppercase;
     border: none; /* Remove button border */
     border-radius: 10px; /* Rounded corners */
-    margin: 10px;
+    margin: 20px;
+    margin-left: 7pc;
     font-size: 16px; /* Font size */
     clip-path:ellipse()(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
     cursor: pointer; /* Cursor style on hover */
@@ -148,24 +170,25 @@ body {
 
 /* Hover effect */
 .common_button:hover {
-    background-color: #022B3A;
-    font-family: 'nmed',sans-serif;
-    letter-spacing: 4px;
-    font-weight: 300;
+    background-color: #C47335;
+    font-family: 'nbold',sans-serif;
+    letter-spacing: 2px;
+    font-weight: 400;
     font-size: 16px;
-    clip-path:ellipse(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+    clip-path:ellipse(50% 0, 60% 30%, 60% 70%, 0% 80%, 10% 30%, 0% 0%);
     /* Change background color on hover */
 }
 
+
 .table-container {
-    max-height: 200px; /* Set a maximum height for the container */
+    max-height: 700px; /* Set a maximum height for the container */
     overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
     width: 100%;
 }
 
 /* Style the table header */
 .dataframe th {
-    background-color: #BFDBF7;
+    background-color: #D89C6F;
     color: #000000;
     text-align: center;
     padding: 10px;
@@ -173,14 +196,14 @@ body {
 
 /* Style the table rows */
 .dataframe td {
-    border: 1px solid #ffffff;
+    border: 1px solid #D89C6F;
     text-align: left;
     padding: 8px;
 }
 
 /* Hover effect on rows */
 .dataframe tbody tr:hover {
-    background-color: #E1E5F2;
+    background-color: #F6BD8E;
 }
 
 /* Style the table */
@@ -188,7 +211,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    font-family: 'nmed',sans-serif;
+    font-family: 'nbold',sans-serif;
 }
 
 /* Style the table header */
@@ -220,7 +243,7 @@ body {
 
 /* Style the table header */
 .dataframe th {
-    background-color: #BFDBF7;
+    background-color: #be875c;
     color: #000000;
     text-align: center;
     padding: 10px;
@@ -228,7 +251,7 @@ body {
 
 /* Style the table rows */
 .dataframe td {
-    border: 1px solid #ffffff;
+    border: 1px solid #C47335;
     text-align: left;
     padding: 8px;
 }
@@ -237,54 +260,3 @@ body {
 .dataframe tbody tr:hover {
     background-color: #E1E5F2;
 }
-
-/* Style the calendar container */
-.calendar-container {
-    width: 100%;
-    margin-top: 20px;
-    overflow: auto; /* Enable both horizontal and vertical scrolling */
-    max-height: 400px; /* Set a maximum height for the container */
-}
-
-/* Style the table within the calendar container */
-.calendar-container table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-/* Style the table header */
-.calendar-container th {
-    background-color: #007BFF;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-/* Style the table cells */
-.calendar-container td {
-    border: 1px solid #ddd;
-    text-align: center;
-    padding: 8px;
-}
-
-/* Bold font for day numbers */
-.calendar-container td:not(.noday) {
-    font-weight: bold;
-}
-
-/* Alternate cell background color */
-.calendar-container td:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-/* Style for today's cell */
-.calendar-container td.today {
-    background-color: #ffcc00; /* Change the background color to yellow for today's cell */
-    color: #333; /* Change the text color for better readability */
-}
-
-/* Hover effect on calendar cells */
-.calendar-container td:hover {
-    background-color: #e0e0e0;
-}
-

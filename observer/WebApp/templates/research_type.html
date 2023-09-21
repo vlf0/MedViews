@@ -27,12 +27,6 @@
         </div>
             {% csrf_token %}
         </form>
-
-        <div class="calendar-container">
-            {{ calendar|safe }}
-        </div>
     </div>
-    <script src="{% static 'calendar_handler.js' %}"></script>
-
 </body>
 </html>

@@ -6,20 +6,8 @@ import json
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
-from .local_functions import FrontDataValues, months, date_converter, calendar_create, validate_dates
+from .local_functions import months, date_converter, validate_dates
 from kisdb_connecting.string_snippets import date_validation_error
-
-
-# Decorator that let us avoid django CSRF protection method.
-@csrf_exempt
-def api_func(request):
-    """ Getting data values gotten from frontend by JS
-    and create class's obj based for them.
-     Workpiece for future.
-    """
-    data = json.loads(request.body)
-    FrontDataValues(value=data).adding()
-    return JsonResponse({'message': 'GOT DATA'}, status=200)
 
 
 def dept(request):
@@ -51,12 +39,12 @@ def research_type(request, chosen_dept, research_type=None):
     else:
         doc = doc[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc,
-               'date_buttons': date_buttons, 'calendar': calendar_create()}
+               'date_buttons': date_buttons}
 
     if research_type:
         types_list = ResearchType(initial={'research_types': research_type})
         context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc,
-                   'date_buttons': date_buttons, 'calendar': calendar_create(), 'error': date_validation_error}
+                   'date_buttons': date_buttons, 'error': date_validation_error}
 
     return render(request=request, template_name='research_type.html', context=context)
 
