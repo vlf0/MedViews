@@ -21,17 +21,16 @@
             {{ types_list }}
             {{ date_buttons }}
             </table>
+            {{ error|safe }}
         <div class="button-container">
             <button type="submit" class="common_button">Построить отчет</button>
         </div>
-            {{ error }}
             {% csrf_token %}
         </form>
 
         <div class="calendar-container">
             {{ calendar|safe }}
         </div>
-
     </div>
     <script src="{% static 'calendar_handler.js' %}"></script>
 
