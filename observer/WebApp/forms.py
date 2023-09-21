@@ -8,6 +8,8 @@ from .local_functions import validate_dates
 
 
 def converting(x):
+    """ Converting list of gotten from db data
+     to tuple - format to choices field. """
     result = []
     for i in x:
         result.append((i, i))
@@ -52,3 +54,8 @@ class DateButtons(forms.Form):
     to_dt = forms.DateField(label='Конец периода', required=True,
                             widget=forms.DateInput(attrs={'type': 'date', 'class': 'datefield-custom'}),
                             )
+
+
+class FreeSelectField(forms.Form):
+    """ Represent simple textarea field for inputting free user's sql query. """
+    select_field = forms.CharField(widget=forms.Textarea)

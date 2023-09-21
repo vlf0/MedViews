@@ -105,11 +105,12 @@ class ReadyReportHTML:
     The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models. """
     top_of_template = string_snippets.top_of_template
     bot_of_template = string_snippets.bot_of_template
+    free_query_template = string_snippets.top_free_template
 
     def __init__(self, db_data):
         self.db_data = db_data
 
-    def output_data(self, error_value=None):
+    def output_data(self, error_value=None, page=None):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
         if error_value:
             # Date validations error text instead data table
@@ -144,8 +145,15 @@ class ReadyReportHTML:
             else:
                 tab = string_snippets.system_error
         # Updating template by overwriting when get the new data from KIS
-        with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
-                  encoding='utf-8') as template:
-            template.write(ReadyReportHTML.top_of_template)
-            template.writelines(tab)
-            template.writelines(ReadyReportHTML.bot_of_template)
+        if page:
+            with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\test.html', 'wt',
+                      encoding='utf-8') as template:
+                template.write(ReadyReportHTML.free_query_template)
+                template.writelines(tab)
+                template.writelines(ReadyReportHTML.bot_of_template)
+        else:
+            with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
+                      encoding='utf-8') as template:
+                template.write(ReadyReportHTML.top_of_template)
+                template.writelines(tab)
+                template.writelines(ReadyReportHTML.bot_of_template)

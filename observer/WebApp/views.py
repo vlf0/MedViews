@@ -4,10 +4,20 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 import json
 # My own modules
-from .forms import DeptChoose, ResearchType, DateButtons
+from .forms import DeptChoose, ResearchType, DateButtons, FreeSelectField
 from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
 from .local_functions import months, date_converter, validate_dates
 from kisdb_connecting.string_snippets import date_validation_error
+
+
+def test(request):
+    sql_field = FreeSelectField()
+    context = {'sql_field': sql_field}
+    if request.method == 'POST':
+        query = request.POST.get('select_field')
+        answer = SelectAnswer(query).selecting()
+        ReadyReportHTML(answer).output_data(page='test')
+    return render(request=request, template_name='test.html', context=context)
 
 
 def dept(request):

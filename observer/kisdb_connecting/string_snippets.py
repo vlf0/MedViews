@@ -48,3 +48,33 @@ date_validation_error = '\t\t<p class="center-top-text">Дата окончан�
 
 depts_list = 'SELECT name FROM mm.dept d'
 
+top_free_template = (
+        '<!DOCTYPE html>\n'
+        '<html lang="ru">\n'
+        '<head>\n'
+        '\t{% load static %}\n'
+        '\t<link rel="stylesheet" type="text/css" href="{% static \'index.css\' %}">\n'
+        '\t<meta charset="UTF-8">\n'
+        '\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+        '\t<link rel="shortcut icon" type="image/png" href="{% static \'favicon.ico\' %}">\n'
+        '\t<title>Second Page</title>\n'
+        '\t</head>\n\n'
+        '<body>\n'
+        '\t<div class="container">\n'
+        '\t<form action="{% url \'test\' %}" method="POST">\n'
+        '\t<table>\n'
+        '\t\t{{ sql_field }}\n'
+        '\t</table>\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Построить отчет</b> </button>\n'
+        '\t\t</div>\n'
+        '\t{% csrf_token %}\n'
+        '\t\t</form>\n'
+        '\t<form action="{% url \'dept\' %}" method="GET">\n'
+        '\t\t<div class="button-container">\n'
+        '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t</div>\n'
+        '\t</form>\n'
+        '\t\t<div class="table-container">\n'
+    )
+
