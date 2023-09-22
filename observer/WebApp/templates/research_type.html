@@ -16,17 +16,18 @@
 
     <div class="container">
 
-        <form action="{% url 'ref_to_output' chosen_dept %}" method="POST">
+        <form id="research_choice" action="{% url 'ref_to_output' chosen_dept %}" method="POST">
             <table>
             {{ types_list }}
             {{ date_buttons }}
             </table>
             {{ error|safe }}
-        <div class="button-container">
-            <button type="submit" class="common_button">Построить отчет</button>
-        </div>
             {% csrf_token %}
         </form>
     </div>
+        <div class="button-container">
+            <button form="research_choice" type="submit" class="common_button">Построить отчет</button>
+        </div>
+
 </body>
 </html>
