@@ -25,57 +25,13 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        if self.types_converting[self.research] == 7:
-            return f'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
-                f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
-                f' mm.emp_get_fio_by_id (d.manager_emp_id ) AS Заведующий_отделением,' \
-                f' to_char(tt.sign_dt,\'DD.MM.YYYY HH24:MM:SS \') AS Дата_подписи_леч_врачом,' \
-                f' to_char (h.leave_dt,\'DD.MM.YYYY HH24:MM:SS\') AS Дата_выписки_пациента' \
-                f' FROM mm.hospdoc h' \
-                f' JOIN mm.mdoc m ON m.id = h.mdoc_id' \
-                f' JOIN mm.people p ON p.id = m.people_id' \
-                f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
-                f' LEFT JOIN mm.dept d ON d.id = h.dept_id' \
-                f' JOIN (SELECT et.ehr_case_id, et.sign_dt,' \
-                f' et.epic_code,' \
-                f' et.creator_emp_id AS emp_id' \
-                f' FROM mm.epic_text et' \
-                f' WHERE  et.epic_code IN  (\'Z00.001.008\', \'Z00.001.012\', \'Z00.004.032\', \'Z00.001.014\', \'Z00.001.009\', \'Z00.001.016\')' \
-                f' AND et.create_dt >= \'01.01.2023\'' \
-                f' and et.allow_export = 2' \
-                f' AND et.ehr_case_id NOT IN' \
-                f' (SELECT hoer.ehr_case_id' \
-                f' FROM mm.hospdoc_out_emiac_remd hoer' \
-                f' WHERE hoer.create_dt >= \'01.01.2023\'' \
-                f' AND hoer.status = 1)' \
-                f' AND et.sign_dt NOTNULL) tt ON tt.ehr_case_id = h.ehr_case_id' \
-                f' AND h.leave_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
-                f' AND d.name = \'{self.dept}\''
+        if self.types_converting[self.research] == 6:
+            return f'SELECT pat_fio, pat_ib, zav, sign_dt, pat_leave_dt  FROM mm.tap' \
+                   f' WHERE sign_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
         else:
-            return f'SELECT' \
-                f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,' \
-                f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
-                f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
-                f' n.name AS Назначение,' \
-                f' to_char(n.create_dt, \'DD.MM.YYYY HH24:MM:SS\') AS Создано,' \
-                f' to_char(n.plan_dt, \'MM.YYYY HH24:MM:SS\'),' \
-                f' CASE n.naz_extr_id ' \
-                f'\tWHEN \'0\' THEN \'Планово\' ' \
-                f'\tWHEN \'1\' THEN \'Экстренно\' ' \
-                f' ELSE n.naz_extr_id::TEXT ' \
-                f' END ' \
-                f' FROM mm.mdoc AS m ' \
-                f' JOIN mm.hospdoc h ON h.mdoc_id = m.id ' \
-                f' JOIN mm.naz n ON n.mdoc_id = m.id ' \
-                f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id ' \
-                f' JOIN mm.dept AS dp ON  dp.id = em.dept_id ' \
-                f' JOIN mm.people AS p ON  p.id = em.people_id ' \
-                f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id ' \
-                f' LEFT JOIN mm.naz_action na  ON na.id = n.id ' \
-                f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
-                f' AND n.naz_view = \'{self.types_converting[self.research]}\'' \
-                f' AND n.naz_state_id = 2 ' \
-                f' AND dp.name = \'{self.dept}\''
+            return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
+                   f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
+                   f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
 
 
 class SelectAnswer:
@@ -160,14 +116,14 @@ class ReadyReportHTML:
                 # It is middle part of body of the HTML template
                 ReadyReportHTML.top_of_template = ReadyReportHTML.top_of_template\
                     .replace('\t<div class="table-container">\n',
-                             string_snippets.tab_report+'\t<div class="table-container">\n')
+                             string_snippets.tab_report + '\t<div class="table-container">\n')
                 tab = df.to_html()
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
                 tab = string_snippets.system_error
         # Updating template by overwriting when get the new data from KIS
-        with open(r'C:\Users\adm-ryadovoyaa\Documents\DMKprojects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
+        with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(ReadyReportHTML.top_of_template)
             template.writelines(tab)
