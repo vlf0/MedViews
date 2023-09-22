@@ -137,8 +137,10 @@ class ReadyReportHTML:
                 df = pd.DataFrame(data=data, index=range(1, rows_number+1))
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
-                report = df.to_html()
-                tab = string_snippets.tab_report + report
+                ReadyReportHTML.top_of_template = ReadyReportHTML.top_of_template\
+                    .replace('\t<div class="table-container">\n',
+                             string_snippets.tab_report+'\t<div class="table-container">\n')
+                tab = df.to_html()
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
@@ -149,3 +151,4 @@ class ReadyReportHTML:
             template.write(ReadyReportHTML.top_of_template)
             template.writelines(tab)
             template.writelines(ReadyReportHTML.bot_of_template)
+        ReadyReportHTML.top_of_template = string_snippets.top_of_template
