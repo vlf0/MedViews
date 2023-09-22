@@ -144,6 +144,10 @@ body {
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
+.container naz {
+    text-align: left;
+}
+
 .button-container {
     text-align: center;
     width: auto;
