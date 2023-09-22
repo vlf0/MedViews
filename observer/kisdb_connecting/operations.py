@@ -154,10 +154,11 @@ class ReadyReportHTML:
                 # Creating dict for DataFrame
                 data = dict(zip(headers_names, data_lists))
                 df = pd.DataFrame(data=data, index=range(1, rows_number+1))
+                string_snippets.top_of_template.replace('\t\t<div class="table-container">\n',
+                                                        '\t\t<p class="center-top-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n\t\t<div class="table-container">\n')
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
-                report = df.to_html()
-                tab = string_snippets.tab_report + report
+                tab = df.to_html()
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
