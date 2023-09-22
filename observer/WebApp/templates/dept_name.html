@@ -11,16 +11,18 @@
 <body>
         <p class="center-top-text">Выберите ваше отделение</p>
     <div class="container">
-    <form action="{% url 'ref_to_type' %}" method="POST">
-        <table>
+        <form id="dept_choice" action="{% url 'ref_to_type' %}" method="POST">
+            <table>
             {{ depts_list }}
-        </table>
-        <div class="button-container">
-            <button type="submit" class="common_button">Выбрать</button>
-        </div>
-                          {% csrf_token %}
-    </form>
+            {% csrf_token %}
+            </table>
+        </form>
+    </div>
+    <div class="button-container">
+            <button form="dept_choice" type="submit" class="common_button">Выбрать</button>
 
     </div>
+
+
 </body>
 </html>

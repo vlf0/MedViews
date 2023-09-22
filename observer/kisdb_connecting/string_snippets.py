@@ -12,23 +12,24 @@ top_of_template = (
         '<body>\n'
         '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }}<br><br>\n'
         '\t\t\tЗаведущий: {{ doc }}<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}</p>\n'
-        '\t<div class="container">\n'
-        '\t<form action="{% url \'output\' chosen_dept chosen_type \'from_dt\' \'to_dt\' %}" method="POST">\n'
-        '\t<table>\n'
-        '\t\t{{ types_list }}\n'
-        '\t\t{{ date_buttons }}\n'
-        '\t</table>\n'
-        '\t\t<div class="button-container">\n'
-        '\t\t\t<button type="submit" class="common_button"> <b>Построить отчет</b> </button>\n'
-        '\t\t</div>\n'
-        '\t{% csrf_token %}\n'
+        '\t<div class="container"\n>'
+        '\t\t<form id="create_report" action="{% url \'output\' chosen_dept'
+        ' chosen_type \'from_dt\' \'to_dt\' %}" method="POST"\n>'
+        '\t\t\t<table>\n'
+        '\t\t\t\t{{ types_list }}\n'
+        '\t\t\t\t{{ date_buttons }}\n'
+        '\t\t\t\t{% csrf_token %}\n'
+        '\t\t\t</table>\n'
         '\t\t</form>\n'
-        '\t<form action="{% url \'dept\' %}" method="GET">\n'
-        '\t\t<div class="button-container">\n'
-        '\t\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
-        '\t\t</div>\n'
-        '\t</form>\n'
-        '\t\t<div class="table-container">\n'
+        '\t</div>\n'
+        '\t<div class="button-container">\n'
+        '\t\t<button form="create_report" type="submit" class="common_button"> <b>Построить отчет</b> </button>\n'
+        
+        '\t\t<form action="{% url \'dept\' %}" method="GET">\n'
+        '\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
+        '\t\t</form>\n'
+        '\t</div>\n'
+        '\t<div class="table-container">\n'
     )
 
 bot_of_template = (
@@ -46,6 +47,5 @@ system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
 
 date_validation_error = '\t\t<p class="center-top-text">Дата окончания периода не может быть меньше даты начала!</p>\n'
 
-depts_list = 'SELECT name FROM mm.dept d' \
-             ' WHERE name in (\'ПО\', \'Терапия\')'
+depts_list = 'SELECT name FROM mm.dept d'
 
