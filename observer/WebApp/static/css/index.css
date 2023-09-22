@@ -185,9 +185,13 @@ body {
 
 
 .table-container {
-    max-height: 700px; /* Set a maximum height for the container */
+    max-height: 200px; /* Set a maximum height for the container */
     overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
     width: 100%;
+}
+
+.dataframe thead {
+    position: sticky;
 }
 
 /* Style the table header */
