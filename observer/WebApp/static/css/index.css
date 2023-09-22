@@ -190,16 +190,14 @@ body {
     width: 100%;
 }
 
-.dataframe thead {
-    position: sticky;
-}
-
 /* Style the table header */
 .dataframe th {
     background-color: #D89C6F;
     color: #000000;
     text-align: center;
     padding: 10px;
+    position: sticky;
+    top: -3px;
 }
 
 /* Style the table rows */

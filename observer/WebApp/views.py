@@ -10,6 +10,10 @@ from .local_functions import months, date_converter, validate_dates
 from kisdb_connecting.string_snippets import date_validation_error
 
 
+def test(request):
+    return render(request=request, template_name='test.html')
+
+
 def dept(request):
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
