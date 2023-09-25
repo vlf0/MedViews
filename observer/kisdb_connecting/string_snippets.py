@@ -25,12 +25,12 @@ top_of_template = (
         '\t\t\t</table>\n'
         '\t\t</form>\n'
         '\t</div>\n'
+        '\t\t<form id="dept_choice" action="{% url \'dept\' %}" method="GET"></form>\n'
         '\t<div class="button-container">\n'
         '\t\t<button form="create_report" type="submit" class="common_button"> <b>Построить отчет</b> </button>\n'
-        
-        '\t\t<form action="{% url \'dept\' %}" method="GET">\n'
-        '\t\t<button type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
-        '\t\t</form>\n'
+        '\t</div>\n'
+        '\t<div class="button-container">\n'
+        '\t\t<button form="dept_choice" type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
         '\t</div>\n'
         '\t<div class="table-container">\n'
     )

@@ -13,10 +13,11 @@
     <div class="logo">
         <img src="{% static 'gkblogo.png' %}" alt="logo">
     </div>
+    <div class="classes_wrap">
         <p class="center-top-text">Отделение: {{ chosen_dept }} <br><br>
             Заведующий: {{ doc }}</p>
         <p class="center-top-text">Выберите тип исследований и нажмите кнопку "выбрать"</p>
-
+    </div>
     <div class="container">
 
         <form id="research_choice" action="{% url 'ref_to_output' chosen_dept %}" method="POST">
