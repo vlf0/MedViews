@@ -36,7 +36,7 @@ def research_type(request, chosen_dept, research_type=None):
     # Form fields definite
     date_buttons = DateButtons(initial={'from_dt': from_dt_initial, 'to_dt': to_dt_initial})
     types_list = ResearchType()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:
         doc = 'заведующий не может быть назначен неработающему отделению.'
@@ -101,7 +101,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
                             from_dt=from_dt, to_dt=to_dt, error='error')
         return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type, from_dt=from_dt, to_dt=to_dt)
 
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:
         doc = 'заведующий не может быть назначен неработающему отделению.'
