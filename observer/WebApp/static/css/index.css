@@ -51,6 +51,7 @@ body {
 
 .logo {
     text-align: center;
+    margin-left: 150px;
     max-width: 100%;
     height: auto;
 }
@@ -66,6 +67,7 @@ body {
     margin: auto;
     margin-top: 50px;
     display: flex;
+    font-family: 'nmed',sans-serif;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -75,16 +77,21 @@ body {
     box-sizing: border-box; /* Include padding in the element's total width/height */
 }
 
-.center-top-text {
-    font-family: 'nbold', sans-serif;
-    margin-top: 20px;
-    text-align: center;
+
+
+.center-top-text {      /*Выберите отделение*/
+    position:relative;
+    font-family: 'nbold',sans-serif;
+    margin: auto;
+    text-align:center;
     color: #000000;
     font-size: 20px;
     background-color: #F6BD8E;
     border: 0.5rem solid #ffffff;
     border-radius: 20px;
     padding: 20px;
+    text-align: center;
+    max-width: 100%;
     box-shadow: 5px 5px 15px #BFDBF7;
     width: 40pc; /* Allow text to expand as needed */
 }
@@ -170,10 +177,6 @@ body {
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
-.container naz {
-    text-align: left;
-}
-
 .button-container {
     margin: 15px;
     display: flex;
@@ -215,6 +218,27 @@ body {
 }
 
 
+.table-container {
+    max-height: 700px; /* Set a maximum height for the container */
+    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
+    width: 100%;
+}
+
+.center-top-cnt {
+    position:relative;
+    font-family: 'nbold',sans-serif;
+    margin: auto;
+    text-align:center;
+    color: #000000;
+    font-size: 20px;
+    background-color: #F6BD8E;
+    border: 0.5rem solid #ffffff;
+    border-radius: 20px ;
+    padding: 20px;
+    text-align: center;
+    max-width: 100%;
+    box-shadow: 5px 5px 15px #BFDBF7;
+}
 
 /* Style the table header */
 .dataframe th {
@@ -276,8 +300,10 @@ body {
 
 /* Style the table header */
 .dataframe th {
-    background-color: #be875c;
+    background-color: #F6BD8E;
     color: #000000;
+    font-family: 'nbold',sans-serif;
+    font-size: 20px;
     text-align: center;
     padding: 10px;
 }
