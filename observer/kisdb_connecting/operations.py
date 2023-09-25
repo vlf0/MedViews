@@ -25,8 +25,8 @@ class Queries:
         self.to_dt = to_dt
 
     def ready_select(self):
-        if self.types_converting[self.research] == 6:
-            return f'SELECT pat_fio, pat_ib, zav, sign_dt, pat_leave_dt  FROM mm.tap' \
+        if self.types_converting[self.research] == 7:
+            return f'SELECT pat_fio, pat_ib, zav, sign_dt, pat_leave_dt FROM mm.tap' \
                    f' WHERE sign_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
         else:
             return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt FROM mm.dbkis' \
@@ -109,8 +109,9 @@ class ReadyReportHTML:
                 df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
-                report = df.to_html()
+                report = df.to_html(justify="center")
                 tab = string_snippets.tab_report + string_snippets.tab_table + report + string_snippets.tab_table_end
+                tab = tab.replace('<tr>', '<tr align="center">')
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:

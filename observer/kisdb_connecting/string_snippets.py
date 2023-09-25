@@ -35,7 +35,6 @@ top_of_template = (
     )
 
 bot_of_template = (
-        '\n\t</div>\n'
         '</body>\n'
         '</html>'
 )
