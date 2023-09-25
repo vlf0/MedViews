@@ -91,27 +91,12 @@ body {
     width: 40pc; /* Allow text to expand as needed */
 }
 
-.left-text {
-    font-family: 'nbold', sans-serif;
-    margin-top: 20px;
-    margin-right: 48pc;
-    text-align: left !important; /* Add this property to left-align the text */
-    color: #000000;
-    font-size: 20px;
-    background-color: #F6BD8E;
-    border: 0.5rem solid #ffffff;
-    border-radius: 20px;
-    padding: 15px;
-    box-shadow: 5px 5px 15px #BFDBF7;
-    width: 40pc; /* Allow text to expand as needed */
-}
-
 .container {
     margin-top: 50px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     padding: 2%;
     width: 40pc;
 }
@@ -121,13 +106,13 @@ body {
     padding: 20px;
     border: 5px solid #1F7A8C;
     border-radius: 5px;
-    text-align:justify;
+    text-align: center;
     animation: backwards;
     color: #060c0e;
     font-family: 'nbold',sans-serif;
     font-size: 18px;
     margin-bottom: 5px;
-    width: 100%; /* Adjust the width as needed */
+    width: 500px; /* Adjust the width as needed */
     box-shadow: 15px 15px 15px #BFDBF7;
     transition: border-color 0.5s ease-in-out;
     background-color: #E1E5F2;
@@ -230,6 +215,11 @@ body {
     clip-path:ellipse(50% 0, 60% 30%, 60% 70%, 0% 80%, 10% 30%, 0% 0%);
     /* Change background color on hover */
 }
+
+.dept_custom {
+    text-align: center;
+}
+
 
 
 .table-container {
