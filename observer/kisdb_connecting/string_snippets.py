@@ -32,19 +32,21 @@ top_of_template = (
         '\t<div class="button-container">\n'
         '\t\t<button form="dept_choice" type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
         '\t</div>\n'
-        '\t<div class="table-container">\n'
     )
 
 bot_of_template = (
-        '\n\t\t</div>\n'
         '\n\t</div>\n'
         '</body>\n'
         '</html>'
 )
 
+tab_table = '\t<div class="table-container">\n'
+
+tab_table_end = '\n\t\t</div>\n'
+
 tab_done = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
 
-tab_report = '\t\t<p class="center-top-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
+tab_report = '\t\t<p class="left-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
 
 system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
 

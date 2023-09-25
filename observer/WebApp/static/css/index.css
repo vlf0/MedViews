@@ -75,6 +75,8 @@ body {
     box-sizing: border-box; /* Include padding in the element's total width/height */
 }
 
+
+
 .center-top-text {
     font-family: 'nbold', sans-serif;
     margin-top: 20px;
@@ -85,6 +87,21 @@ body {
     border: 0.5rem solid #ffffff;
     border-radius: 20px;
     padding: 20px;
+    box-shadow: 5px 5px 15px #BFDBF7;
+    width: 40pc; /* Allow text to expand as needed */
+}
+
+.left-text {
+    font-family: 'nbold', sans-serif;
+    margin-top: 20px;
+    margin-right: 48pc;
+    text-align: left !important; /* Add this property to left-align the text */
+    color: #000000;
+    font-size: 20px;
+    background-color: #F6BD8E;
+    border: 0.5rem solid #ffffff;
+    border-radius: 20px;
+    padding: 15px;
     box-shadow: 5px 5px 15px #BFDBF7;
     width: 40pc; /* Allow text to expand as needed */
 }
@@ -215,6 +232,11 @@ body {
 }
 
 
+.table-container {
+    max-height: 200px; /* Set a maximum height for the container */
+    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
+    width: 1400px;
+}
 
 /* Style the table header */
 .dataframe th {
