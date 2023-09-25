@@ -75,8 +75,6 @@ body {
     box-sizing: border-box; /* Include padding in the element's total width/height */
 }
 
-
-
 .center-top-text {
     font-family: 'nbold', sans-serif;
     margin-top: 20px;
@@ -172,10 +170,6 @@ body {
     outline: none; /* Remove the default focus outline (if desired) */
 }
 
-.container naz {
-    text-align: left;
-}
-
 .button-container {
     margin: 15px;
     display: flex;
@@ -216,12 +210,6 @@ body {
     /* Change background color on hover */
 }
 
-.dept_custom {
-    text-align: center;
-}
-
-
-
 .table-container {
     max-height: 200px; /* Set a maximum height for the container */
     overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
@@ -241,7 +229,7 @@ body {
 /* Style the table rows */
 .dataframe td {
     border: 1px solid #D89C6F;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -270,7 +258,7 @@ body {
 /* Style the table rows */
 .dataframe td {
     border: 1px solid #f70000;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -297,7 +285,7 @@ body {
 /* Style the table rows */
 .dataframe td {
     border: 1px solid #C47335;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
