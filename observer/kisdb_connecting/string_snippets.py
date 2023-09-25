@@ -46,7 +46,7 @@ tab_table_end = '\n\t\t</div>\n'
 
 tab_done = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
 
-tab_report = '\t\t<p class="left-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
+tab_report = '\t\t<p class="center-top-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
 
 system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
 
