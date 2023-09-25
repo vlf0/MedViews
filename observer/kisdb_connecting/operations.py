@@ -49,7 +49,7 @@ class SelectAnswer:
                 try:
                     connection = psycopg2.connect(database=actual_db['db'],
                                                   host=actual_db['host'],
-                                                #   port=5431,
+                                                  #   port=5431,
                                                   port=actual_db['port'],
                                                   user=actual_db['user'],
                                                   password=actual_db['password'])
@@ -78,9 +78,6 @@ class SelectAnswer:
 class ReadyReportHTML:
     """ Represent HTML page and contains selected required data.
     The data converts to HTML code by Pandas DataFrame. Data for connecting get from app DB models. """
-    top_of_template = string_snippets.top_of_template
-    bot_of_template = string_snippets.bot_of_template
-
     def __init__(self, db_data):
         self.db_data = db_data
 
@@ -90,7 +87,7 @@ class ReadyReportHTML:
             # Date validations error text instead data table
             tab = string_snippets.date_validation_error
             # Editing strings of html template
-            ReadyReportHTML.top_of_template = ReadyReportHTML.top_of_template \
+            string_snippets.top_of_template = string_snippets.top_of_template\
                 .replace('<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}', '')
         else:
             if type(self.db_data) is list and len(self.db_data) == 0:
@@ -109,15 +106,11 @@ class ReadyReportHTML:
                 data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
                 # Creating dict for DataFrame
                 data = dict(zip(headers_names, data_lists))
-                df = pd.DataFrame(data=data, index=range(1, rows_number+1))
-                string_snippets.top_of_template.replace('\t\t<div class="table-container">\n',
-                                                        '\t\t<p class="center-top-text">Количество невыполненных назначений: {{ common_rows_number }}</p>\n\t\t<div class="table-container">\n')
+                df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
-                ReadyReportHTML.top_of_template = ReadyReportHTML.top_of_template\
-                    .replace('\t<div class="table-container">\n',
-                             string_snippets.tab_report + '\t<div class="table-container">\n')
-                tab = df.to_html()
+                report = df.to_html()
+                tab = string_snippets.tab_report + report
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
@@ -125,7 +118,6 @@ class ReadyReportHTML:
         # Updating template by overwriting when get the new data from KIS
         with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:
-            template.write(ReadyReportHTML.top_of_template)
+            template.write(string_snippets.top_of_template)
             template.writelines(tab)
-            template.writelines(ReadyReportHTML.bot_of_template)
-        ReadyReportHTML.top_of_template = string_snippets.top_of_template
+            template.writelines(string_snippets.bot_of_template)

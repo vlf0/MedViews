@@ -1,3 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
 @font-face {
     font-family: 'nbold';
     src: url('Nunito-Bold.ttf');
@@ -25,8 +32,21 @@
 }
 
 body {
+    font-size: 16px;
     font-family: 'nregular', sans-serif;
     background-color: #EDF7F6;
+    margin: 0; /* Remove default margin */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive Typography with rem units */
+.dept-custom,
+.r_type-custom,
+.datefield-custom {
+    font-size: 1rem; /* Use 1rem as the base font size and adjust accordingly */
 }
 
 .logo {
@@ -42,7 +62,7 @@ body {
 }
 
 
-.container { /*отделение*/
+.classes_wrap {
     margin: auto;
     margin-top: 50px;
     display: flex;
@@ -50,27 +70,33 @@ body {
     align-items: center;
     justify-content: center;
     height: 100%;
+    width: 100%;
     padding: 10px; /* Add some padding to space things out Отделение*/
     box-sizing: border-box; /* Include padding in the element's total width/height */
-
 }
 
-
-
-.center-top-text {      /*Выберите отделение*/
-    position:relative;
-    font-family: 'nbold',sans-serif;
-    margin: auto;
+.center-top-text {
+    font-family: 'nbold', sans-serif;
     margin-top: 20px;
-    text-align:center;
+    text-align: center;
     color: #000000;
     font-size: 20px;
     background-color: #F6BD8E;
     border: 0.5rem solid #ffffff;
-    border-radius: 20px ;
+    border-radius: 20px;
     padding: 20px;
-    width: 40%;
     box-shadow: 5px 5px 15px #BFDBF7;
+    width: 40pc; /* Allow text to expand as needed */
+}
+
+.container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2%;
+    width: 40pc;
 }
 
 .dept-custom {
@@ -149,26 +175,31 @@ body {
 }
 
 .button-container {
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    width: auto;
-    height: auto;
+    width: 10pc;
+    height: 3pc;
 }
 
 .common_button {
-    padding: 20px 180px; /* Adjust padding to control button size */
-    background-color: #F6BD8E; /* Background color */
-    color: rgb(0, 0, 0); /* Text color */
-    font-family: 'nbold',sans-serif;
+    /* ... Other styles ... */
+    /* overflow: hidden; /* Hide any overflowing text */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    text-overflow: ellipsis; /* Show ellipsis (...) for truncated text */
+    padding: 15% 180%;
+    background-color: #F6BD8E;
+    color: rgb(0, 0, 0);
+    font-family: 'nbold', sans-serif;
     text-transform: uppercase;
-    border: none; /* Remove button border */
-    border-radius: 10px; /* Rounded corners */
+    border: none;
+    border-radius: 10px;
     margin: 20px;
-    margin-left: 7pc;
-    font-size: 16px; /* Font size */
-    clip-path:ellipse()(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
-    cursor: pointer; /* Cursor style on hover */
-    transition: 0.9s;
-    /* Optional: Add a box shadow for depth */
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -184,11 +215,6 @@ body {
 }
 
 
-.table-container {
-    max-height: 200px; /* Set a maximum height for the container */
-    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
-    width: 100%;
-}
 
 /* Style the table header */
 .dataframe th {

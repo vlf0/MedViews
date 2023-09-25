@@ -15,10 +15,8 @@
         <p class="center-top-text">Выберите ваше отделение</p>
     <div class="container">
         <form id="dept_choice" action="{% url 'ref_to_type' %}" method="POST">
-            <table>
             {{ depts_list }}
             {% csrf_token %}
-            </table>
         </form>
     </div>
     <div class="button-container">
