@@ -110,7 +110,7 @@ class ReadyReportHTML:
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
                 report = df.to_html()
-                tab = string_snippets.tab_report + report
+                tab = string_snippets.tab_report + string_snippets.tab_table + report + string_snippets.tab_table_end
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
