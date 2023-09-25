@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing:content-box;
 }
 
 
@@ -51,7 +51,6 @@ body {
 
 .logo {
     text-align: center;
-    margin-left: 150px;
     max-width: 100%;
     height: auto;
 }
@@ -83,25 +82,26 @@ body {
     position:relative;
     font-family: 'nbold',sans-serif;
     margin: auto;
+    margin-top: 30px;
     text-align:center;
     color: #000000;
     font-size: 20px;
     background-color: #F6BD8E;
     border: 0.5rem solid #ffffff;
     border-radius: 20px;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
     max-width: 100%;
-    box-shadow: 5px 5px 15px #BFDBF7;
-    width: 40pc; /* Allow text to expand as needed */
+    box-shadow: 15px 15px 15px #BFDBF7;
+    width: 70pc; /* Allow text to expand as needed */
 }
 
 .container {
     margin-top: 50px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     padding: 2%;
     width: 40pc;
 }
@@ -124,6 +124,7 @@ body {
     border-style: inset;
     border-radius: 30px;
     border-top-color: #cf6b6b;
+    width: 60pc;
 }
 
 .dept-custom:hover {
@@ -139,7 +140,7 @@ body {
 
 .r_type-custom {
     /* Add your styling here */
-    padding: 15px;
+    padding: 20px;
     border: 3px solid #e7ecea;
     border-radius: 15px;
     width:100%;
@@ -184,7 +185,7 @@ body {
     align-items: center;
     text-align: center;
     width: 10pc;
-    height: 3pc;
+    height: 4pc;
 }
 
 .common_button {
@@ -196,14 +197,14 @@ body {
     background-color: #F6BD8E;
     color: rgb(0, 0, 0);
     font-family: 'nbold', sans-serif;
-    text-transform: uppercase;
     border: none;
     border-radius: 10px;
     margin: 20px;
+    text-transform: uppercase;
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 6px rgba(236, 0, 0, 0.2);
 }
 
 /* Hover effect */
@@ -211,18 +212,13 @@ body {
     background-color: #C47335;
     font-family: 'nbold',sans-serif;
     letter-spacing: 2px;
+    text-transform: uppercase;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 18px;
     clip-path:ellipse(50% 0, 60% 30%, 60% 70%, 0% 80%, 10% 30%, 0% 0%);
     /* Change background color on hover */
 }
 
-
-.table-container {
-    max-height: 700px; /* Set a maximum height for the container */
-    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
-    width: 100%;
-}
 
 .center-top-cnt {
     position:relative;
@@ -230,14 +226,15 @@ body {
     margin: auto;
     text-align:center;
     color: #000000;
-    font-size: 20px;
-    background-color: #F6BD8E;
+    font-size: 25px;
+    background-color: #e97c7c;
     border: 0.5rem solid #ffffff;
     border-radius: 20px ;
     padding: 20px;
     text-align: center;
     max-width: 100%;
     box-shadow: 5px 5px 15px #BFDBF7;
+    width: 60pc;
 }
 
 /* Style the table header */
