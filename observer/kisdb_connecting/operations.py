@@ -119,14 +119,28 @@ class ReadyReportHTML:
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
                 if second_column_name == 'ФИО пациента':
-                    df.insert(loc=6, column='Не выгружено (кол-во дней)',
+                    # Adding new column contains the different between today and sign date in DF
+                    df.insert(loc=6, column='Не выгружено',
                               value=(today - df['Дата подписи выписного эпикриза'].array).days)
                     # Applying format to cells by condition
-                    report = df.to_html(formatters={
-                                        'ID': lambda x: f'over{x}'
-                                        if (today - df.at[x, 'Дата подписи выписного эпикриза'])
-                                        > three_days else f'{x}'
-                                        }, justify='center', index=False)
+                    report = df.to_html(formatters=
+                                        {   
+                                            # Formatting by condition
+                                            'ID': lambda x: f'over{x}'
+                                            if (today - df.at[x, 'Дата подписи выписного эпикриза'])
+                                            > three_days else f'{x}',
+                                            # Dates formatting a newer column "Не выгружено"
+                                            'Не выгружено': lambda y: f'center{y} дней' if y not in [1, 2, 3, 4]
+                                            or y in list(range(11, 21))
+                                            and str(y)[-1] not in ['1', '2', '3', '4'] else f'center{y}'
+                                            f' день' if y == 1 else f'center{y}'
+                                            f' дня' if y in [2, 3, 4] and str(y)[-1] in ['2', '3', '4']
+                                            and y not in list(range(11, 21))
+                                            else ''
+                                        },
+                                        justify='center', index=False)
+
+                    report = report.replace('<td>center', '<td style="text-align: center;">')
                     # Changing color and style in the all ID's cells
                     report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">',
                                     report)
