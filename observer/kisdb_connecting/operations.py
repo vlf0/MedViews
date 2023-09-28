@@ -119,15 +119,21 @@ class ReadyReportHTML:
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
                 if second_column_name == 'ФИО пациента':
+                    df.insert(loc=6, column='Не выгружено (кол-во дней)',
+                              value=(today - df['Дата подписи выписного эпикриза'].array).days)
                     # Applying format to cells by condition
-                    report = df.to_html(formatters={'ID': lambda x: f'over{x}'
-                                        if (today - df.at[x, 'Дата подписи выписного эпикриза']) > three_days else f'{x}'},
-                                        justify='center', index=False)
+                    report = df.to_html(formatters={
+                                        'ID': lambda x: f'over{x}'
+                                        if (today - df.at[x, 'Дата подписи выписного эпикриза'])
+                                        > three_days else f'{x}'
+                                        }, justify='center', index=False)
                     # Changing color and style in the all ID's cells
-                    report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">', report)
+                    report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">',
+                                    report)
                     # Applying entire row color style where is text "over" (it is condition for dates comparison)
                     report = re.sub(r'<tr>\s*<td bgcolor="#be875c" style="text-align: center;">over',
-                                    '<tr bgcolor="yellow">\n\t  <td bgcolor="#be875c" style="text-align: center;">', report)
+                                    '<tr bgcolor="yellow">\n\t  <td bgcolor="#be875c" style="text-align: center;">',
+                                    report)
                 else:
                     df.columns.rename('ID', inplace=True)
                     report = df.to_html(justify="center")
