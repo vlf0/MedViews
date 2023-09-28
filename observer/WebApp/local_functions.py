@@ -2,7 +2,6 @@ from typing import Any
 from datetime import date, datetime
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
 import calendar
 
 key_months = [i for i in range(1, 13)]

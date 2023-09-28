@@ -2,13 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
-test.py
-test2.py
-test.html
+test*.*
 output.html
 config_data.txt
 settings_prod.py
-
+# all python files in the root dir
+/*.py
 # C extensions
 *.so
 

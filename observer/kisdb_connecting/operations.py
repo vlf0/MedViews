@@ -1,9 +1,14 @@
+import re
 import pandas as pd
 import psycopg2
 from psycopg2 import Error
-
+from datetime import date, datetime, timedelta
 from WebApp.models import ConnectingToKIS
 from . import string_snippets
+
+
+today = datetime.today()
+three_days = timedelta(days=3, hours=0, minutes=0, microseconds=0, milliseconds=0)
 
 
 class Queries:
@@ -95,23 +100,43 @@ class ReadyReportHTML:
             elif type(self.db_data) is list and len(self.db_data) != 0:
                 row_values = len(self.db_data[0])
                 rows_number = len(self.db_data)
+                # List of lists of data separated and grouped inside
+                data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
                 # DataFrame's headers names for all type of researches
                 headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
                                  'Дата создания', 'Назначено на дату', 'Статус']
+
                 # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
                 if row_values == 5:
-                    headers_names = ['ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
-                                     'дата подписи выписного эпикриза', 'Дата выписки пациента']
-                # List of lists of data separated and grouped inside
-                data_lists = [list(map(lambda x: x[i], self.db_data)) for i in range(row_values)]
+                    headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
+                                     'Дата подписи выписного эпикриза', 'Дата выписки пациента']
+                    # Adding list of row numbers into begin headers_names (creating own column of indexes)
+                    data_lists.insert(0, [i for i in range(1, rows_number+1)])
                 # Creating dict for DataFrame
                 data = dict(zip(headers_names, data_lists))
-                df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
+                df = pd.DataFrame(data=data, index=range(1, rows_number+1))
+                second_column_name = df.head(0).columns.values[1]
                 # Converting to HTML block inside the <table> tag
                 # It is middle part of body of the HTML template
-                report = df.to_html(justify="center")
+                if second_column_name == 'ФИО пациента':
+                    # Applying format to cells by condition
+                    report = df.to_html(formatters={'ID': lambda x: f'over{x}'
+                                        if (today - df.at[x, 'Дата подписи выписного эпикриза']) > three_days else f'{x}'},
+                                        justify='center', index=False)
+                    # Changing color and style in the all ID's cells
+                    report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">', report)
+                    # Applying entire row color style where is text "over" (it is condition for dates comparison)
+                    report = re.sub(r'<tr>\s*<td bgcolor="#be875c" style="text-align: center;">over',
+                                    '<tr bgcolor="yellow">\n\t  <td bgcolor="#be875c" style="text-align: center;">', report)
+                else:
+                    df.columns.rename('ID', inplace=True)
+                    report = df.to_html(justify="center")
+                    # Adding own class for further applying css for column "ID"
+                    report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
+                                    '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
+                # Result of creating dataframe and formatting to HTML
                 tab = string_snippets.tab_report + string_snippets.tab_table + report + string_snippets.tab_table_end
-                tab = tab.replace('<tr>', '<tr align="center">')
+
             elif type(self.db_data) is str:
                 tab = f'\t<p class="center-top-text">{self.db_data}</p>\n'
             else:
