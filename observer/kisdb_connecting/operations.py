@@ -124,7 +124,7 @@ class ReadyReportHTML:
                               value=(today - df['Дата подписи выписного эпикриза'].array).days)
                     # Applying format to cells by condition
                     report = df.to_html(formatters=
-                                        {   
+                                        {
                                             # Formatting by condition
                                             'ID': lambda x: f'over{x}'
                                             if (today - df.at[x, 'Дата подписи выписного эпикриза'])
