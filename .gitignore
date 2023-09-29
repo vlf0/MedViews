@@ -10,6 +10,9 @@ settings_prod.py
 /*.py
 # C extensions
 *.so
+*.xls
+*.xlsx
+
 
 # Distribution / packaging
 .Python

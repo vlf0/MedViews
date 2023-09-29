@@ -126,6 +126,7 @@ STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'css',
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'images',
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'js',
+                    Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
 
 # Default primary key field type
