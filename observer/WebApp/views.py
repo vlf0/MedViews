@@ -1,11 +1,9 @@
 from datetime import date, timedelta
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-import json
+from django.http import FileResponse
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
-from kisdb_connecting.operations import ReadyReportHTML, SelectAnswer, Queries
+from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
 from .local_functions import months, date_converter, validate_dates
 from kisdb_connecting.string_snippets import date_validation_error
 
@@ -15,6 +13,7 @@ def test(request):
 
 
 def dept(request):
+    print(request)
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
         return render(request=request, template_name='errors.html',
@@ -77,9 +76,10 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
     answer = SelectAnswer(query_text).selecting()
     common_rows_number = len(answer)
     # Creating full reporting page contains prepared data got from DB by PANDAS
-    ReadyReportHTML(answer).output_data()
+    ReadyReport(answer).to_excel(dept=chosen_dept)
+    ReadyReport(answer).to_html()
     if error:
-        ReadyReportHTML(answer).output_data(error_value=True)
+        ReadyReport(answer).to_html(error_value=True)
     # Forms on page
     # Dict containing date values user inserted
     choice = {'research_types': chosen_type}
@@ -112,3 +112,6 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
                'to_dt': date_converter(to_dt), 'chosen_type': chosen_type, 'common_rows_number': common_rows_number}
     return render(request=request, template_name='output.html', context=context)
 
+
+def downloading(request, chosen_dept):
+    return FileResponse(open(f'WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))

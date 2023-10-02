@@ -111,13 +111,13 @@ body {
     padding: 20px;
     border: 5px solid #1F7A8C;
     border-radius: 5px;
-    text-align:justify;
+    text-align: center;
     animation: backwards;
     color: #060c0e;
     font-family: 'nbold',sans-serif;
     font-size: 18px;
     margin-bottom: 5px;
-    width: 100%; /* Adjust the width as needed */
+    width: 500px; /* Adjust the width as needed */
     box-shadow: 15px 15px 15px #BFDBF7;
     transition: border-color 0.5s ease-in-out;
     background-color: #E1E5F2;
@@ -237,6 +237,12 @@ body {
     width: 60pc;
 }
 
+.table-container {
+    max-height: 200px; /* Set a maximum height for the container */
+    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
+    width: 1400px;
+}
+
 /* Style the table header */
 .dataframe th {
     background-color: #D89C6F;
@@ -247,10 +253,20 @@ body {
     top: -3px;
 }
 
+.dataframe th.index-name {
+  background-color: #be875c;
+  color: #000000;
+  text-align: center;
+  padding: 10px;
+  position: sticky;
+  left: 0; /* Sticky to the left */
+  z-index: 1; /* Ensure it stays on top */
+}
+
 /* Style the table rows */
 .dataframe td {
     border: 1px solid #D89C6F;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -279,7 +295,7 @@ body {
 /* Style the table rows */
 .dataframe td {
     border: 1px solid #f70000;
-    text-align: left;
+    text-align: center;
     padding: 8px;
 }
 
@@ -316,3 +332,4 @@ body {
 .dataframe tbody tr:hover {
     background-color: #dfdbd8;
 }
+
