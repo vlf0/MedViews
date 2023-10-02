@@ -24,6 +24,8 @@ top_of_template = (
         '\t\t\t\t{% csrf_token %}\n'
         '\t\t\t</table>\n'
         '\t\t</form>\n'
+        '\t\t<form id="download_report" action="{% url \'downloading\' chosen_dept %}" method="GET">\n'
+        '\t\t</form>\n'
         '\t</div>\n'
         '\t\t<form id="dept_choice" action="{% url \'dept\' %}" method="GET"></form>\n'
         '\t<div class="button-container">\n'
@@ -32,12 +34,19 @@ top_of_template = (
         '\t<div class="button-container">\n'
         '\t\t<button form="dept_choice" type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>\n'
         '\t</div>\n'
-    )
+        )
+
+
+download_button = (
+        '\t<div class="button-container">\n'
+        '\t\t<button form="download_report" type="submit" class="common_button">Скачать отчет в excel файле</button>\n'
+        '\t</div>\n'
+        )
 
 bot_of_template = (
         '</body>\n'
         '</html>'
-)
+        )
 
 tab_table = '\t<div class="table-container">\n'
 
