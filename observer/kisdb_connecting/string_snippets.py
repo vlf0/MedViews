@@ -15,9 +15,9 @@ top_of_template = (
         '\t</div>\n'
         '\t\t<p class="center-top-text">Отделение: {{ chosen_dept }}<br><br>\n'
         '\t\t\tЗаведущий: {{ doc }}<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}</p>\n'
-        '\t<div class="container"\n>'
+        '\t<div class="container">\n'
         '\t\t<form id="create_report" action="{% url \'output\' chosen_dept'
-        ' chosen_type \'from_dt\' \'to_dt\' %}" method="POST"\n>'
+        ' chosen_type \'from_dt\' \'to_dt\' %}" method="POST">\n'
         '\t\t\t<table>\n'
         '\t\t\t\t{{ types_list }}\n'
         '\t\t\t\t{{ date_buttons }}\n'
@@ -38,8 +38,9 @@ top_of_template = (
 
 
 download_button = (
-        '\t<div class="button-container">\n'
-        '\t\t<button form="download_report" type="submit" class="common_button">Скачать отчет в excel файле</button>\n'
+        '\t<div class="download_button-container">\n'
+        '\t\t<button form="download_report" type="submit" class="download_button">\n'
+        '\t\t<img src="{% static \'dwnld_logo.png\' %}">\t\t\t<span>Сохранить в Excel</span>\n</button>\n'
         '\t</div>\n'
         )
 
