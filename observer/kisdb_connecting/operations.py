@@ -252,7 +252,7 @@ class ReadyReport:
             # Result of creating dataframe and formatting to HTML
             tab = string_snippets.tab_report + string_snippets.download_button +\
                   string_snippets.tab_table + report + string_snippets.tab_table_end
-        with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
+        with open('./WebApp/templates/output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(string_snippets.top_of_template)
             template.writelines(tab)
