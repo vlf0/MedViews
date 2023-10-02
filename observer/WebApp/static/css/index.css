@@ -87,7 +87,6 @@ body {
     color: #000000;
     font-size: 20px;
     background-color: #F6BD8E;
-    border: 0.5rem solid #ffffff;
     border-radius: 20px;
     padding: 25px;
     text-align: center;
@@ -97,7 +96,7 @@ body {
 }
 
 .container {
-    margin-top: 50px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -141,14 +140,18 @@ body {
 .r_type-custom {
     /* Add your styling here */
     padding: 20px;
-    border: 3px solid #e7ecea;
+    border: 5px solid;
+    border-bottom-color: #D89C6F;
+    border-top-color: white;
+    border-left-color:white;
+    border-right-color:white;
     border-radius: 15px;
     width:100%;
     font-family: 'nbold',sans-serif;
     font-size: 20px;
     margin-bottom: 10px;
     text-align: center;
-    transition: border-color 0.5s ease-in-out;
+    transition: border-color 0.9s ease-in-out;
     box-sizing:border-box; 
 }
 
@@ -160,7 +163,11 @@ body {
 .datefield-custom {
     /* Add your styling here */
     padding: 15px;
-    border: 3px solid #e7ecea;
+    border: 5px solid;
+    border-bottom-color: #D89C6F;
+    border-top-color: white;
+    border-left-color:white;
+    border-right-color:white;
     border-radius: 15px;
     width:100%;
     font-family: 'nbold',sans-serif;
@@ -188,6 +195,35 @@ body {
     height: 4pc;
 }
 
+
+
+.download_button-container {
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 2pc;
+    height: 3pc;
+}
+
+.download_button {
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    cursor: pointer;
+    border: none;
+}
+/* Style the logo image */
+.download_button img {
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+.download_button :hover {
+    background-color: #bcddc4;
+}
+
+
 .common_button {
     /* ... Other styles ... */
     /* overflow: hidden; /* Hide any overflowing text */
@@ -204,7 +240,7 @@ body {
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s;
-    box-shadow: 0px 5px 6px rgba(236, 0, 0, 0.2);
+    box-shadow: 0px 5px 6px #BFDBF7;
 }
 
 /* Hover effect */
@@ -238,9 +274,10 @@ body {
 }
 
 .table-container {
-    max-height: 200px; /* Set a maximum height for the container */
-    overflow: auto; /* Enable both vertical and horizontal scrolling if needed */
-    width: 1400px;
+    /*max-height: 800px; /* Set a maximum height for the container */
+    overflow:auto;
+    width: 150pc;
+    height: 700px;
 }
 
 /* Style the table header */

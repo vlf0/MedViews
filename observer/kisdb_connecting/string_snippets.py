@@ -38,8 +38,9 @@ top_of_template = (
 
 
 download_button = (
-        '\t<div class="button-container">\n'
-        '\t\t<button form="download_report" type="submit" class="common_button">Скачать отчет в excel файле</button>\n'
+        '\t<div class="download_button-container">\n'
+        '\t\t<button form="download_report" type="submit" class="download_button">'
+        '<img src="{% static \'excel_logo.png\' %}" alt="Logo"></button> Скачать отчет\n'
         '\t</div>\n'
         )
 
