@@ -199,7 +199,8 @@ class ReadyReport:
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
             # Result of creating dataframe and formatting to HTML
-            tab = string_snippets.tab_report + string_snippets.tab_table + report + string_snippets.tab_table_end
+            tab = string_snippets.tab_report + string_snippets.download_button +\
+                  string_snippets.tab_table + report + string_snippets.tab_table_end
         with open(r'D:\Programming\DjangoProjects\MedVeiws\observer\WebApp\templates\output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(string_snippets.top_of_template)

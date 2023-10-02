@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 from django.shortcuts import render, redirect
+from django.http import FileResponse
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
@@ -12,6 +13,7 @@ def test(request):
 
 
 def dept(request):
+    print(request)
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
         return render(request=request, template_name='errors.html',
@@ -110,3 +112,6 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
                'to_dt': date_converter(to_dt), 'chosen_type': chosen_type, 'common_rows_number': common_rows_number}
     return render(request=request, template_name='output.html', context=context)
 
+
+def downloading(request, chosen_dept):
+    return FileResponse(open(f'WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))
