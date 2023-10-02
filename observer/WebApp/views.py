@@ -114,4 +114,4 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
 
 
 def downloading(request, chosen_dept):
-    return FileResponse(open(f'WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))
+    return FileResponse(open(f'./WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))
