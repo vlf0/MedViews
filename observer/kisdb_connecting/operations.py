@@ -11,12 +11,20 @@ today = datetime.today()
 three_days = timedelta(days=3, hours=0, minutes=0, microseconds=0, milliseconds=0)
 
 
+def dates(x):
+    x = datetime.strftime(x, '%d.%m.%Y %H:%M:%S')
+    dt, tm = x.split(' ')
+    result = '-'.join(dt.split('-')[::-1]) + ' ' + str(tm)
+    return result
+
+
 class ReportExcelWriter:
     """ Applying styles to dataframe going to excel file.
     Has two methods for two different reports. """
     @staticmethod
     def xlsx_styles_researches(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx')
+        writer = pd.ExcelWriter(fr'./WebApp/static/reports/rep_{dept_name}.xlsx',
+                                date_format='dd.mm.yyyy', datetime_format='dd.mm.yyyy')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 45)
         writer.sheets['Отчёт'].set_column(1, 1, 10)
@@ -27,7 +35,8 @@ class ReportExcelWriter:
 
     @staticmethod
     def xlsx_styles_epicrisis(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx')
+        writer = pd.ExcelWriter(fr'./WebApp/static/reports/rep_{dept_name}.xlsx',
+                                date_format='dd.mm.yyyy', datetime_format='dd.mm.yyyy')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 5)
         writer.sheets['Отчёт'].set_column(1, 1, 45)
@@ -58,7 +67,7 @@ class Queries:
 
     def ready_select(self):
         if self.types_converting[self.research] == 7:
-            return f'SELECT pat_fio, pat_ib, zav, sign_dt, pat_leave_dt FROM mm.tap' \
+            return f'SELECT pat_fio, pat_ib, sign_dt, pat_leave_dt FROM mm.tap' \
                    f' WHERE sign_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
         else:
             return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt, status FROM mm.dbkis' \
@@ -126,8 +135,8 @@ class ReadyReport:
                              'Дата создания', 'Назначено на дату', 'Статус']
 
             # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
-            if row_values == 5:
-                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
+            if row_values == 4:
+                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
                 # Adding column with ID's
                 data_lists.insert(0, [i for i in range(1, rows_number + 1)])
@@ -139,7 +148,7 @@ class ReadyReport:
             # It is middle part of body of the HTML template
             if second_column_name == 'ФИО пациента':
                 # Adding new column contains the different between today and sign date in DF
-                df.insert(loc=6, column='Не выгружено',
+                df.insert(loc=5, column='Не выгружено',
                           value=(today - df['Дата подписи выписного эпикриза'].array).days)
             else:
                 df.columns.rename('ID', inplace=True)
@@ -172,6 +181,8 @@ class ReadyReport:
                 report = self.dataframe.to_html(formatters=
                                         {
                                             # Formatting by condition
+                                            'Дата подписи выписного эпикриза': dates,
+                                            'Дата выписки пациента': dates,
                                             'ID': lambda x: f'over{x}'
                                             if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
                                             > three_days else f'{x}',
@@ -192,6 +203,8 @@ class ReadyReport:
                 report = re.sub(r'<tr>\s*<td bgcolor="#be875c" style="text-align: center;">over',
                                 '<tr bgcolor="yellow">\n\t  <td bgcolor="#be875c" style="text-align: center;">',
                                 report)
+                tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
+                      string_snippets.tab_table + report + string_snippets.tab_table_end
 
             else:
                 report = self.dataframe.to_html(justify="center")
@@ -199,8 +212,8 @@ class ReadyReport:
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
             # Result of creating dataframe and formatting to HTML
-            tab = string_snippets.tab_report + string_snippets.download_button +\
-                  string_snippets.tab_table + report + string_snippets.tab_table_end
+                tab = string_snippets.tab_report + string_snippets.download_button +\
+                      string_snippets.tab_table + report + string_snippets.tab_table_end
         with open('./WebApp/templates/output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(string_snippets.top_of_template)
