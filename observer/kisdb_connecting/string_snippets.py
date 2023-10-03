@@ -40,7 +40,7 @@ top_of_template = (
 download_button = (
         '\t<div class="download_button-container">\n'
         '\t\t<button form="download_report" type="submit" class="download_button">'
-        '<img src="{% static \'excel_logo.png\' %}" alt="Logo"></button> Скачать отчет\n'
+        '<img src="{% static \'excel_logo.png\' %}" alt="Logo"><p>Скачать отчет</p></button>\n'
         '\t</div>\n'
         )
 
@@ -60,6 +60,8 @@ tab_table_end = '\n\t\t</div>\n'
 tab_done = '\t<p class="center-top-text">По заданным параметрам все исследования выполнены.</p>\n'
 
 tab_report = '\t\t<p class="center-top-cnt">Количество невыполненных назначений: {{ common_rows_number }}</p>\n'
+
+tab_report_epicrisis = '\t\t<p class="center-top-text">Невыгруженные эпикризы: {{ common_rows_number }}</p>\n'
 
 system_error = '\t<p class="center-top-text">SYSTEM ERROR!</p>\n'
 

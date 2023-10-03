@@ -10,6 +10,11 @@ from . import string_snippets
 today = datetime.today()
 three_days = timedelta(days=3, hours=0, minutes=0, microseconds=0, milliseconds=0)
 
+def dates(x):
+    dt, tm = x.split(' ')
+    result = '-'.join(dt.split('-')[::-1]) + ' ' + str(tm)
+    return result
+
 
 class ReportExcelWriter:
     """ Applying styles to dataframe going to excel file.
@@ -61,8 +66,8 @@ class Queries:
             return f'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                 f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
                 f' mm.emp_get_fio_by_id (d.manager_emp_id ) AS Заведующий_отделением,' \
-                f' to_char(tt.sign_dt,\'DD.MM.YYYY HH24:MM:SS \') AS Дата_подписи_леч_врачом,' \
-                f' to_char (h.leave_dt,\'DD.MM.YYYY HH24:MM:SS\') AS Дата_выписки_пациента' \
+                f' tt.sign_dt AS Дата_подписи_леч_врачом,' \
+                f' h.leave_dt AS Дата_выписки_пациента' \
                 f' FROM mm.hospdoc h' \
                 f' JOIN mm.mdoc m ON m.id = h.mdoc_id' \
                 f' JOIN mm.people p ON p.id = m.people_id' \
@@ -83,6 +88,35 @@ class Queries:
                 f' AND et.sign_dt NOTNULL) tt ON tt.ehr_case_id = h.ehr_case_id' \
                 f' AND h.leave_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
                 f' AND d.name = \'{self.dept}\''
+        elif self.dept =='Приемное отделение':
+            return f'SELECT' \
+            f' n.creator_emp_fio AS Назначил,' \
+            f' concat_ws (\'-\',md.num,md.YEAR,md.num_type) AS №ИБ,' \
+            f' concat_ws (\' \',p.surname,p.name,p.patron) AS ФИО_Пациента,' \
+            f' n.name AS Назначение,' \
+            f' to_char(n.create_dt, \'DD.MM.YYYY HH24:MI:SS\') AS создано,' \
+            f' to_char(n.plan_dt, \'DD.MM.YYY HH24:MI:SS\') AS Назначено_на_дату,' \
+            f' CASE n.naz_extr_id' \
+            f' \tWHEN \'0\' THEN \'Планово\' '\
+            f' \tWHEN \'1\' THEN \'Экстренно\' '\
+            f' ELSE n.naz_extr_id::TEXT ' \
+            f' END AS Срочность' \
+            f' FROM mm.naz n' \
+            f' JOIN mm.naz_type nt ON nt.id = n.naz_type_id' \
+            f' JOIN mm.naz_action na ON na."id" = n.last_action_id' \
+            f' JOIN mm.naz_type_dir ntd on ntd.id = nt.naz_type_dir_id' \
+            f' JOIN mm.ambticket a on a.mdoc_id = n.mdoc_id' \
+            f' JOIN mm.hosp_refuse hr on hr.ambticket_id = a.id' \
+            f' JOIN mm.emp ce ON ce.id = n.creator_emp_id' \
+            f' JOIN mm.dept cd ON cd.id = ce.dept_id' \
+            f' JOIN mm.mdoc md ON md.id = n.mdoc_id' \
+            f' JOIN mm.mdoc_type mt on md.mdoc_type_id = mt.id' \
+            f' JOIN mm.people p ON p.id = md.people_id' \
+            f' WHERE n.naz_view = 1' \
+            f' AND n.create_dt between hr.input_dt and hr.end_dt' \
+            f' AND hr.end_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+            f' AND na.state_value not in (\'cancelled\', \'postponed\', \'completed\')' \
+            f' AND cd.name = \'{self.dept}\''
         else:
             return f'SELECT' \
             f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,'\
@@ -189,7 +223,6 @@ class ReadyReport:
             # Converting to HTML block inside the <table> tag
             # It is middle part of body of the HTML template
             if second_column_name == 'ФИО пациента':
-                df = df.astype({'Дата подписи выписного эпикриза': 'datetime64[ns]', 'Дата выписки пациента': 'datetime64[ns]'})
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=6, column='Не выгружено',
                           value=(today - df['Дата подписи выписного эпикриза'].array).days)
@@ -220,9 +253,13 @@ class ReadyReport:
         else:
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ID':
+                self.dataframe = self.dataframe.astype({'Дата подписи выписного эпикриза': 'object', 'Дата выписки пациента': 'object'})
+                print(self.dataframe.dtypes)
                 # Applying format to cells by condition
                 report = self.dataframe.to_html(formatters=
                                         {
+                                            # 'Дата подписи выписного эпикриза': dates,
+                                            # 'Дата выписки пациента': dates,
                                             # Formatting by condition
                                             'ID': lambda x: f'over{x}'
                                             if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
@@ -242,17 +279,18 @@ class ReadyReport:
                                 report)
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
                 report = re.sub(r'<tr>\s*<td bgcolor="#be875c" style="text-align: center;">over',
-                                '<tr bgcolor="yellow">\n\t  <td bgcolor="#be875c" style="text-align: center;">',
+                                '<tr bgcolor="#e97c7c">\n\t  <td bgcolor="#be875c" style="text-align: center;">',
                                 report)
-
+                tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
+                      string_snippets.tab_table + report + string_snippets.tab_table_end
             else:
                 report = self.dataframe.to_html(justify="center")
                 # Adding own class for further applying css for column "ID"
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
-            # Result of creating dataframe and formatting to HTML
-            tab = string_snippets.tab_report + string_snippets.download_button +\
-                  string_snippets.tab_table + report + string_snippets.tab_table_end
+                # Result of creating dataframe and formatting to HTML
+                tab = string_snippets.tab_report + string_snippets.download_button +\
+                    string_snippets.tab_table + report + string_snippets.tab_table_end
         with open('./WebApp/templates/output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(string_snippets.top_of_template)
