@@ -189,6 +189,7 @@ class ReadyReport:
             # Converting to HTML block inside the <table> tag
             # It is middle part of body of the HTML template
             if second_column_name == 'ФИО пациента':
+                df = df.astype({'Дата подписи выписного эпикриза': 'datetime64[ns]', 'Дата выписки пациента': 'datetime64[ns]'})
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=6, column='Не выгружено',
                           value=(today - df['Дата подписи выписного эпикриза'].array).days)
