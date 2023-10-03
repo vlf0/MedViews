@@ -275,9 +275,10 @@ body {
 
 .table-container {
     /*max-height: 800px; /* Set a maximum height for the container */
-    overflow:auto;
+    /*overflow:auto;*/
     width: 150pc;
     height: 700px;
+
 }
 
 /* Style the table header */
