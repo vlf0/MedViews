@@ -11,10 +11,10 @@ today = datetime.today()
 three_days = timedelta(days=3, hours=0, minutes=0, microseconds=0, milliseconds=0)
 
 def dates(x):
+    x = datetime.strftime(x, '%d.%m.%Y %H:%M:%S')
     dt, tm = x.split(' ')
     result = '-'.join(dt.split('-')[::-1]) + ' ' + str(tm)
     return result
-
 
 class ReportExcelWriter:
     """ Applying styles to dataframe going to excel file.
@@ -65,7 +65,7 @@ class Queries:
         if self.types_converting[self.research] == 7:
             return f'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                 f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
-                f' mm.emp_get_fio_by_id (d.manager_emp_id ) AS Заведующий_отделением,' \
+                f' mm.emp_get_fio_by_id (h.doctor_emp_id ) AS Лечащий_врач,' \
                 f' tt.sign_dt AS Дата_подписи_леч_врачом,' \
                 f' h.leave_dt AS Дата_выписки_пациента' \
                 f' FROM mm.hospdoc h' \
@@ -87,15 +87,16 @@ class Queries:
                 f' AND hoer.status = 1)' \
                 f' AND et.sign_dt NOTNULL) tt ON tt.ehr_case_id = h.ehr_case_id' \
                 f' AND h.leave_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
-                f' AND d.name = \'{self.dept}\''
+                f' AND d.name = \'{self.dept}\'' \
+                f' ORDER BY h.leave_dt ASC' 
         elif self.dept =='Приемное отделение':
             return f'SELECT' \
             f' n.creator_emp_fio AS Назначил,' \
             f' concat_ws (\'-\',md.num,md.YEAR,md.num_type) AS №ИБ,' \
             f' concat_ws (\' \',p.surname,p.name,p.patron) AS ФИО_Пациента,' \
             f' n.name AS Назначение,' \
-            f' to_char(n.create_dt, \'DD.MM.YYYY HH24:MI:SS\') AS создано,' \
-            f' to_char(n.plan_dt, \'DD.MM.YYY HH24:MI:SS\') AS Назначено_на_дату,' \
+            f' n.create_dt AS создано,' \
+            f' n.plan_dt AS Назначено_на_дату,' \
             f' CASE n.naz_extr_id' \
             f' \tWHEN \'0\' THEN \'Планово\' '\
             f' \tWHEN \'1\' THEN \'Экстренно\' '\
@@ -112,7 +113,7 @@ class Queries:
             f' JOIN mm.mdoc md ON md.id = n.mdoc_id' \
             f' JOIN mm.mdoc_type mt on md.mdoc_type_id = mt.id' \
             f' JOIN mm.people p ON p.id = md.people_id' \
-            f' WHERE n.naz_view = 1' \
+            f' WHERE n.naz_view = \'{self.types_converting[self.research]}\'' \
             f' AND n.create_dt between hr.input_dt and hr.end_dt' \
             f' AND hr.end_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
             f' AND na.state_value not in (\'cancelled\', \'postponed\', \'completed\')' \
@@ -123,8 +124,8 @@ class Queries:
             f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
             f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
             f' n.name,' \
-            f' to_char(n.create_dt, \'DD.MM.YYYY HH24:MI:SS\') AS создано,' \
-            f' to_char(n.plan_dt, \'DD.MM.YYYY HH24:MI:SS\') AS Назначено_на_дату,' \
+            f' n.create_dt AS создано,' \
+            f' n.plan_dt AS Назначено_на_дату,' \
             f' CASE n.naz_extr_id ' \
             f'\tWHEN \'0\' THEN \'Планово\' ' \
             f'\tWHEN \'1\' THEN \'Экстренно\' ' \
@@ -212,7 +213,7 @@ class ReadyReport:
 
             # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
             if row_values == 5:
-                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Заведующий отделения',
+                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Лечащий врач',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
                 # Adding column with ID's
                 data_lists.insert(0, [i for i in range(1, rows_number + 1)])
@@ -253,13 +254,11 @@ class ReadyReport:
         else:
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ID':
-                self.dataframe = self.dataframe.astype({'Дата подписи выписного эпикриза': 'object', 'Дата выписки пациента': 'object'})
-                print(self.dataframe.dtypes)
                 # Applying format to cells by condition
                 report = self.dataframe.to_html(formatters=
                                         {
-                                            # 'Дата подписи выписного эпикриза': dates,
-                                            # 'Дата выписки пациента': dates,
+                                            'Дата подписи выписного эпикриза': dates,
+                                            'Дата выписки пациента': dates,
                                             # Formatting by condition
                                             'ID': lambda x: f'over{x}'
                                             if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
@@ -275,19 +274,20 @@ class ReadyReport:
 
                 report = report.replace('<td>center', '<td style="text-align: center;">')
                 # Changing color and style in the all ID's cells
-                report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">',
+                report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#F6BD8E" style="text-align: center;">',
                                 report)
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
-                report = re.sub(r'<tr>\s*<td bgcolor="#be875c" style="text-align: center;">over',
-                                '<tr bgcolor="#e97c7c">\n\t  <td bgcolor="#be875c" style="text-align: center;">',
+                report = re.sub(r'<tr>\s*<td bgcolor="#F6BD8E" style="text-align: center;">over',
+                                '<tr bgcolor="#e97c7c">\n\t  <td bgcolor="#F6BD8E" style="text-align: center;">',
                                 report)
                 tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
                       string_snippets.tab_table + report + string_snippets.tab_table_end
             else:
-                report = self.dataframe.to_html(justify="center")
+                report = self.dataframe.to_html(justify="center", formatters={'Дата создания': dates,
+                                                                'Назначено на дату': dates})
                 # Adding own class for further applying css for column "ID"
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
-                                '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
+                                r'<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
                 # Result of creating dataframe and formatting to HTML
                 tab = string_snippets.tab_report + string_snippets.download_button +\
                     string_snippets.tab_table + report + string_snippets.tab_table_end

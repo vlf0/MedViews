@@ -198,7 +198,7 @@ body:not(.download_button-container) {
 .download_button-container {
     position: fixed;
     top: 40px;
-    right: 140px;
+    right: 240px;
     margin: 15px;
     display: flex;
     justify-content: center;
@@ -238,7 +238,7 @@ body:not(.download_button-container) {
     background-color: #187930;  
     border-color: #4dbe69;
     color:white;
-    font-size:70px;
+    font-size:15px;
     border-style:dashed
 }
 
@@ -312,8 +312,8 @@ body:not(.download_button-container) {
 }
 
 .table-container {
-    /*max-height: 800px; /* Set a maximum height for the container */
-    /*overflow:auto;*/
+    max-height: 800px; /* Set a maximum height for the container */
+    overflow:auto;
     width: 150pc;
     height: 700px;
 
