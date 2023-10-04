@@ -100,13 +100,12 @@ class SelectAnswer:
                         selecting_data = cursor.fetchall()
                         return selecting_data
                     except (Exception, Error) as e:
-                        return f'Error!\n\n{e}\n'
+                        return f'Ошибка в SQL запросе!\n\n{e}\n'
                     finally:
                         cursor.close()
                         connection.close()
                 except (Exception, Error) as e:
-                    print(e)
-                    return f'Error!\n\n{e}\n'
+                    return f'Ошибка подключения к БД!\n\n{e}\n'
             elif len(actual_db) > 1:
                 return 'There are more than one DataBases in ACTIVE status!\n' \
                        ' Check DB in active in the admin panel!'
@@ -180,9 +179,10 @@ class ReadyReport:
                 # Applying format to cells by condition
                 report = self.dataframe.to_html(formatters=
                                         {
-                                            # Formatting by condition
+                                            # Formatting dates to string
                                             'Дата подписи выписного эпикриза': dates,
                                             'Дата выписки пациента': dates,
+                                            # Formatting by condition
                                             'ID': lambda x: f'over{x}'
                                             if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
                                             > three_days else f'{x}',
@@ -194,7 +194,6 @@ class ReadyReport:
                                             and str(y)[-1] in ['2', '3', '4'] and y not in list(range(11, 21)) else ''
                                         },
                                         justify='center', index=False)
-
                 report = report.replace('<td>center', '<td style="text-align: center;">')
                 # Changing color and style in the all ID's cells
                 report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#be875c" style="text-align: center;">',
@@ -207,7 +206,8 @@ class ReadyReport:
                       string_snippets.tab_table + report + string_snippets.tab_table_end
 
             else:
-                report = self.dataframe.to_html(justify="center")
+                report = self.dataframe.to_html(justify="center", formatters={'Дата создания': dates,
+                                                                              'Назначено на дату': dates})
                 # Adding own class for further applying css for column "ID"
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)

@@ -13,7 +13,6 @@ def test(request):
 
 
 def dept(request):
-    print(request)
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
         return render(request=request, template_name='errors.html',
