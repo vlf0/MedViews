@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="{% static 'GKB_D_sign.ico' %}">
-    <title>Выбор отделения</title>
+    <title>Department choice</title>
 </head>
 <body>
     <div class="logo">
@@ -20,9 +20,13 @@
             {% csrf_token %}
             </table>
         </form>
+        <form id="simi_report" action="{% url 'simi_report' %}" method="GET"></form>
     </div>
     <div class="button-container">
             <button form="dept_choice" type="submit" class="common_button">Выбрать</button>
+    </div>
+    <div class="button-container_simi">
+            <button form="simi_report" type="submit" class="common_button_simi">Невыгруженные эпикризы по всем отделениям</button>
     </div>
 </body>
 </html>
