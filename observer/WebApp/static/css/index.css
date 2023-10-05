@@ -311,6 +311,86 @@ body:not(.download_button-container) {
     width: 60pc;
 }
 
+
+p.center-top-text_simi {
+    position:relative;
+    font-family: 'nbold',sans-serif;
+    margin: 20px;
+    text-align:center;
+    color: #000000;
+    font-size: 25px;
+    background-color: #e97c7c;
+    border: 0.2rem solid #f1b0b5;
+    border-radius: 20px ;
+    padding: 20px;
+    text-align: center;
+    max-width: 100%;
+    box-shadow: 5px 5px 15px #f1b0b5;
+    width: 60pc;
+}
+
+div.table-container_simi {
+    max-height: 800px; /* Set a maximum height for the container */
+    overflow:auto;
+    width: 150pc;
+    height: 900px;
+}
+
+.button-container_simi {
+    position: fixed;
+    top: 60px;
+    right: 400px;
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 2pc;
+    height: 3pc;
+}
+.common_button_simi { /* Prevent text from wrapping to the next line */
+        cursor: pointer;
+        background-color: #ffffff;
+        border: solid;
+        border-color: #eb2b6d;
+        border-radius: 20px;
+        border-width: 10px;
+        padding: 10px;
+        position: fixed;
+        font-family: 'nbold',sans-serif;
+        font-size: 15px;
+        color:black;
+        width: 250px;
+    }
+
+.common_button_simi:hover {
+        background-color: #eb2b6d; 
+        border-color: #00263f;
+        color:white;
+        font-size:15px;
+        border-style:solid
+
+    }
+    
+
+.common_button_simi:active {
+        background-color: #f1bd79; 
+        border-color: #ffffff; 
+    }
+    
+    /* Add a pseudo-element for the clickable effect */
+.common_button_simi:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 10px;
+        background-color: #126a7033;
+        pointer-events: none; /* Ensure the pseudo-element doesn't interfere with clicks */
+    }
+
 .table-container {
     max-height: 800px; /* Set a maximum height for the container */
     overflow:auto;

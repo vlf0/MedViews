@@ -5,7 +5,7 @@ from django.http import FileResponse
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
 from .local_functions import months, date_converter, validate_dates
-from kisdb_connecting.string_snippets import date_validation_error
+from kisdb_connecting import string_snippets
 
 
 def test(request):
@@ -21,6 +21,15 @@ def dept(request):
     # Fields to be sending to page (from our forms)
     context = {'depts_list': depts_list}
     return render(request=request, template_name='dept_name.html', context=context)
+
+
+def simi_report(request):
+    answer = SelectAnswer(string_snippets.common_simi_query).selecting()
+    common_rows_number = len(answer)
+    report = ReadyReport(answer).to_html()
+
+    return render(request=request, template_name='common_report_SIMI.html',
+                  context={'report': report, 'common_rows_number': common_rows_number})
 
 
 def ref_to_type(request):
@@ -47,7 +56,7 @@ def research_type(request, chosen_dept, research_type=None):
     if research_type:
         types_list = ResearchType(initial={'research_types': research_type})
         context = {'types_list': types_list, 'chosen_dept': chosen_dept, 'doc': doc,
-                   'date_buttons': date_buttons, 'error': date_validation_error}
+                   'date_buttons': date_buttons, 'error': string_snippets.date_validation_error}
 
     return render(request=request, template_name='research_type.html', context=context)
 

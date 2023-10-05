@@ -210,10 +210,16 @@ class ReadyReport:
             # DataFrame's headers names for all type of researches
             headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
                              'Дата создания', 'Назначено на дату', 'Статус']
-
             # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
             if row_values == 5:
                 headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Лечащий врач',
+                                 'Дата подписи выписного эпикриза', 'Дата выписки пациента']
+                # Adding column with ID's
+                data_lists.insert(0, [i for i in range(1, rows_number + 1)])
+            # 6 values in 1 row - if user chosen "Невыгруженные эпикризы по всем отделениям"
+
+            elif row_values == 6:
+                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Заведующий отделением', 'Отделение',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
                 # Adding column with ID's
                 data_lists.insert(0, [i for i in range(1, rows_number + 1)])
@@ -223,9 +229,13 @@ class ReadyReport:
             second_column_name = df.columns[1]
             # Converting to HTML block inside the <table> tag
             # It is middle part of body of the HTML template
-            if second_column_name == 'ФИО пациента':
+            if second_column_name == 'ФИО пациента' and len(df.columns) == 6:
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=6, column='Не выгружено',
+                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
+            elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
+                # Adding new column contains the different between today and sign date in DF
+                df.insert(loc=7, column='Не выгружено',
                           value=(today - df['Дата подписи выписного эпикриза'].array).days)
             else:
                 df.columns.rename('ID', inplace=True)
@@ -291,8 +301,11 @@ class ReadyReport:
                 # Result of creating dataframe and formatting to HTML
                 tab = string_snippets.tab_report + string_snippets.download_button +\
                     string_snippets.tab_table + report + string_snippets.tab_table_end
-        with open('./WebApp/templates/output.html', 'wt',
-                  encoding='utf-8') as template:
-            template.write(string_snippets.top_of_template)
-            template.writelines(tab)
-            template.writelines(string_snippets.bot_of_template)
+        if len(self.dataframe.columns) == 8:
+            return report
+        else:
+            with open('./WebApp/templates/output.html', 'wt',
+                      encoding='utf-8') as template:
+                template.write(string_snippets.top_of_template)
+                template.writelines(tab)
+                template.writelines(string_snippets.bot_of_template)

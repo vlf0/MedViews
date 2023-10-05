@@ -83,3 +83,31 @@ depts_by_ids = 'SELECT d.name FROM mm.dept d' \
               ' \'863d276b-abe3-4b50-a920-6901292d70f0\', \'b3046a27-2ed1-4cb7-8150-e70f68e75810\',' \
               ' \'5fe0204b-e340-486a-94db-2bcc75fc6e64\', \'7168f375-ac21-4c66-9575-f033c3ac0cd3\','\
               ' \'85489221-1971-4a7a-9878-52ea814769ee\')'
+
+common_simi_query = 'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+                    ' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
+                    ' mm.emp_get_fio_by_id (d.manager_emp_id ) AS Заведующий_отделением,' \
+                    ' d.name AS Отделение,' \
+                    ' tt.sign_dt AS Дата_подписи_леч_врачом,' \
+                    ' h.leave_dt AS Дата_выписки_пациента' \
+                    ' FROM mm.hospdoc h' \
+                    ' JOIN mm.mdoc m ON m.id = h.mdoc_id' \
+                    ' JOIN mm.people p ON p.id = m.people_id' \
+                    ' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
+                    ' LEFT JOIN mm.dept d ON d.id = h.dept_id' \
+                    ' JOIN (SELECT et.ehr_case_id, et.sign_dt,' \
+                    ' et.epic_code,' \
+                    ' et.creator_emp_id AS emp_id' \
+                    ' FROM mm.epic_text et' \
+                    ' WHERE  et.epic_code IN  (\'Z00.001.008\', \'Z00.001.012\', \'Z00.004.032\', \'Z00.001.014\', \'Z00.001.009\', \'Z00.001.016\')' \
+                    ' AND et.create_dt >= \'01.01.2023\'' \
+                    ' and et.allow_export = 2' \
+                    ' AND et.ehr_case_id NOT IN' \
+                    ' (SELECT hoer.ehr_case_id' \
+                    ' FROM mm.hospdoc_out_emiac_remd hoer' \
+                    ' WHERE hoer.create_dt >= \'01.01.2023\'' \
+                    ' AND hoer.status = 1)' \
+                    ' AND et.sign_dt NOTNULL)tt ON tt.ehr_case_id = h.ehr_case_id' \
+                    ' AND h.leave_dt NOTNULL' \
+                    ' ORDER BY h.leave_dt ASC'
+
