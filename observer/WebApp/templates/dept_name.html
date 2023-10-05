@@ -20,9 +20,13 @@
             {% csrf_token %}
             </table>
         </form>
+        <form id="simi_report" action="{% url 'simi_report' %}" method="GET"></form>
     </div>
     <div class="button-container">
             <button form="dept_choice" type="submit" class="common_button">Выбрать</button>
+    </div>
+    <div class="download_button-container">
+            <button form="simi_report" type="submit" class="common_button">Невыгруженные в СИМИ эпикризы</button>
     </div>
 </body>
 </html>
