@@ -21,6 +21,7 @@ environ.Env.read_env()  # reading .env file
 
 SITE_ROOT = root()
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -128,6 +129,8 @@ STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'js',
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
+
+STATIC_ROOT = '/MedViews/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
