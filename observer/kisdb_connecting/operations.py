@@ -301,11 +301,10 @@ class ReadyReport:
                 # Result of creating dataframe and formatting to HTML
                 tab = string_snippets.tab_report + string_snippets.download_button +\
                     string_snippets.tab_table + report + string_snippets.tab_table_end
-        if len(self.dataframe.columns) == 8:
-            return report
-        else:
-            with open('./WebApp/templates/output.html', 'wt',
-                      encoding='utf-8') as template:
-                template.write(string_snippets.top_of_template)
-                template.writelines(tab)
-                template.writelines(string_snippets.bot_of_template)
+            if len(self.dataframe.columns) == 8:
+                return report
+        with open('./WebApp/templates/output.html', 'wt',
+                  encoding='utf-8') as template:
+            template.write(string_snippets.top_of_template)
+            template.writelines(tab)
+            template.writelines(string_snippets.bot_of_template)
