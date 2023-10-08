@@ -47,12 +47,6 @@ class ReportExcelWriter:
         writer.close()
 
 
-# class GlobalReportSIMI:
-#     """ Represent separated query to getting common report by all depts. """
-#     simi_query = 'SELECT * FROM mm.tap'
-#
-
-
 class Queries:
     """ This object consists of gotten values from web pages
      and returns full query in string format ready to use in DB. """
@@ -154,17 +148,15 @@ class ReadyReport:
             data = dict(zip(headers_names, data_lists))
             df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
             second_column_name = df.columns[1]
-            # Converting to HTML block inside the <table> tag
-            # It is middle part of body of the HTML template
             if second_column_name == 'ФИО пациента' and len(df.columns) == 5:
-                # Adding new column contains the different between today and sign date in DF
-                df.insert(loc=5, column='Не выгружено',
-                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
+                col_num = 5
             elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
-                # Adding new column contains the different between today and sign date in DF
-                df.insert(loc=6, column='Не выгружено',
-                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
-            else:
+                col_num = 6
+            # Adding new column contains the different between today and sign date in DF
+            df.insert(loc=col_num, column='Не выгружено',
+                      value=(today - df['Дата выписки пациента'].array).days)
+            df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
+            if second_column_name == 'Номер ИБ':
                 df.columns.rename('ID', inplace=True)
             self.dataframe = df
 
@@ -175,8 +167,7 @@ class ReadyReport:
                 ReportExcelWriter.xlsx_styles_epicrisis(dept_name=dept, frame=self.dataframe)
             else:
                 ReportExcelWriter.xlsx_styles_researches(dept_name=dept, frame=self.dataframe)
-        else:
-            pass
+        return
 
     def to_html(self, error_value=None):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
@@ -197,14 +188,19 @@ class ReadyReport:
                                             # Formatting dates to string
                                             'Дата подписи выписного эпикриза': dates,
                                             'Дата выписки пациента': dates,
-                                            # Formatting by condition
+                                            # Formatting row by condition
                                             'ID': lambda x: f'over{x}'
-                                            if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
+                                            if (today - self.dataframe.at[x, 'Дата выписки пациента'])
                                             > three_days else f'{x}',
+
                                             # Dates formatting a newer column "Не выгружено"
+                                            # 'Не выгружено': lambda y: f'center{y}' if y == 'Подписано будущей датой'
+                                            # else ''
+                                            
                                             'Не выгружено': lambda y: f'center{y} дней' if y not in [1, 2, 3, 4]
                                             or y in list(range(11, 21)) and str(y)[-1] not in ['1', '2', '3', '4']
                                             else f'center{y}'
+                                                 
                                             f' день' if y == 1 else f'center{y}' f' дня' if y in [2, 3, 4]
                                             and str(y)[-1] in ['2', '3', '4'] and y not in list(range(11, 21)) else ''
                                         },
