@@ -12,7 +12,7 @@ settings_prod.py
 *.so
 *.xls
 *.xlsx
-
+db.sqlite3
 
 # Distribution / packaging
 .Python
