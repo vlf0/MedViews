@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 import psycopg2
+import pathlib
 from psycopg2 import Error
 from datetime import datetime, timedelta
 from WebApp.models import ConnectingToKIS
@@ -162,6 +163,10 @@ class ReadyReport:
 
     def to_excel(self, dept):
         if type(self.dataframe) is not str:
+            try:
+                pathlib.Path('../observer/WebApp/static/reports/').mkdir()
+            except (FileExistsError, FileNotFoundError) as error:
+                pass
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ID':
                 ReportExcelWriter.xlsx_styles_epicrisis(dept_name=dept, frame=self.dataframe)
