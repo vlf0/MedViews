@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 import psycopg2
+import pathlib
 from psycopg2 import Error
 from datetime import datetime, timedelta
 from WebApp.models import ConnectingToKIS
@@ -227,22 +228,26 @@ class ReadyReport:
             data = dict(zip(headers_names, data_lists))
             df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
             second_column_name = df.columns[1]
-            # Converting to HTML block inside the <table> tag
-            # It is middle part of body of the HTML template
+
             if second_column_name == 'ФИО пациента' and len(df.columns) == 6:
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=6, column='Не выгружено',
-                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
+                          value=(today - df['Дата выписки пациента'].array).days)
+                df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
-                # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=7, column='Не выгружено',
-                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
+                          value=(today - df['Дата выписки пациента'].array).days)
+                df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             else:
                 df.columns.rename('ID', inplace=True)
             self.dataframe = df
 
     def to_excel(self, dept):
         if type(self.dataframe) is not str:
+            try:
+                pathlib.Path('../observer/WebApp/static/reports/').mkdir()
+            except (FileExistsError, FileNotFoundError) as error:
+                pass   
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ID':
                 ReportExcelWriter.xlsx_styles_epicrisis(dept_name=dept, frame=self.dataframe)
@@ -271,7 +276,7 @@ class ReadyReport:
                                             'Дата выписки пациента': dates,
                                             # Formatting by condition
                                             'ID': lambda x: f'over{x}'
-                                            if (today - self.dataframe.at[x, 'Дата подписи выписного эпикриза'])
+                                            if (today - self.dataframe.at[x, 'Дата выписки пациента'])
                                             > three_days else f'{x}',
                                             # Dates formatting a newer column "Не выгружено"
                                             'Не выгружено': lambda y: f'center{y} дней' if y not in [1, 2, 3, 4]
