@@ -149,16 +149,18 @@ class ReadyReport:
             data = dict(zip(headers_names, data_lists))
             df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
             second_column_name = df.columns[1]
-            if second_column_name == 'ФИО пациента' and len(df.columns) == 5:
-                col_num = 5
-            elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
-                col_num = 6
-            # Adding new column contains the different between today and sign date in DF
-            df.insert(loc=col_num, column='Не выгружено',
-                      value=(today - df['Дата выписки пациента'].array).days)
-            df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             if second_column_name == 'Номер ИБ':
                 df.columns.rename('ID', inplace=True)
+            elif second_column_name == 'ФИО пациента' and len(df.columns) == 5:
+                # Adding new column contains the different between today and sign date in DF
+                df.insert(loc=5, column='Не выгружено',
+                          value=(today - df['Дата выписки пациента'].array).days)
+                df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
+            elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
+                # Adding new column contains the different between today and sign date in DF
+                df.insert(loc=7, column='Не выгружено',
+                          value=(today - df['Дата выписки пациента'].array).days)
+                df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             self.dataframe = df
 
     def to_excel(self, dept):
