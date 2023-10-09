@@ -108,12 +108,12 @@ class SelectAnswer:
                 except (Exception, Error) as e:
                     return f'Ошибка подключения к БД!\n\n{e}\n'
             elif len(actual_db) > 1:
-                return 'There are more than one DataBases in ACTIVE status!\n' \
-                       ' Check DB in active in the admin panel!'
+                return 'Проверьте настройки записей подключения к базе данных KIS.\n' \
+                       ' Не должно быть более одной записи в статусе "active".'
             else:
-                return 'DB not active!\n To use it - turn on check box in the admin panel!'
+                return 'Записи о подключении к базе данных KIS в статусе "inactive" \n'
         else:
-            return 'There are no any records in the BD data tab!'
+            return 'Чтобы начать работу необходимо внести данные подключения к базе данных KIS через админ-панель.'
 
 
 class ReadyReport:

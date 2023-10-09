@@ -10,10 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <p class="center-top-text">{{ error_text }}</p>
-            <div class="center-top-text">
-                <p> Что-то пошло не так, обратитесь к Администратору</p>
-            </div>
+        <p class="center-top-text">{{ error_text }}.<br>Обратитесь к Администратору</p>
     <form action="{% url 'dept' %}" method="GET">
 		<button type="submit" class="comm_button" id="gt"> <b>Перезагрузить страницу</b> </button>
 	</form>
