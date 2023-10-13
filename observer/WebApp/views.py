@@ -25,6 +25,7 @@ def dept(request):
 
 def simi_report(request):
     answer = SelectAnswer(string_snippets.common_simi_query).selecting()
+
     common_rows_number = len(answer)
     report = ReadyReport(answer).to_html()
 

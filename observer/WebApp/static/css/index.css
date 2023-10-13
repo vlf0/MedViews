@@ -271,6 +271,7 @@ body:not(.download_button-container) {
     top: -3px;
 }
 
+
 .dataframe th.index-name {
   background-color: #be875c;
   color: #000000;
