@@ -11,11 +11,33 @@ from . import string_snippets
 today = datetime.today()
 three_days = timedelta(days=3, hours=0, minutes=0, microseconds=0, milliseconds=0)
 
+
 def dates(x):
     x = datetime.strftime(x, '%d.%m.%Y %H:%M:%S')
     dt, tm = x.split(' ')
     result = '-'.join(dt.split('-')[::-1]) + ' ' + str(tm)
     return result
+
+
+def overstay(x):
+    if x in list(range(11, 21)) or (x not in [1, 2, 3, 4] and str(x)[-1] not in ['1', '2', '3', '4']):
+        x = f'Center {x} дней'
+    elif str(x)[-1] == '1':
+        x = f'Center {x} день'
+    elif x in [2, 3, 4] or str(x)[-1] in ['2', '3', '4'] and x not in list(range(11, 21)):
+        x = f'Center {x} дня'
+    if int(x.split(' ')[1]) > 3:
+        x = f'Over{x}'
+    return x
+
+
+def style_and_remove_overcenter(row):
+    if 'OverCenter' in row:
+        # Remove 'OverCenter' text and apply background color
+        styled_row = re.sub(r'<td>OverCenter', '<td style="text-align: center;">', row)
+        return f'<tr style="background-color: #FFCCCB;">{styled_row}</tr>'
+    return f'<tr>{row}</tr>'
+
 
 class ReportExcelWriter:
     """ Applying styles to dataframe going to excel file.
@@ -213,33 +235,24 @@ class ReadyReport:
                              'Дата создания', 'Назначено на дату', 'Статус']
             # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
             if row_values == 5:
-                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Лечащий врач',
+                headers_names = ['ФИО пациента', 'ИБ пациента', 'Лечащий врач',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
-                # Adding column with ID's
-                data_lists.insert(0, [i for i in range(1, rows_number + 1)])
             # 6 values in 1 row - if user chosen "Невыгруженные эпикризы по всем отделениям"
-
             elif row_values == 6:
-                headers_names = ['ID', 'ФИО пациента', 'ИБ пациента', 'Заведующий отделением', 'Отделение',
+                headers_names = ['ФИО пациента', 'ИБ пациента', 'Заведующий отделением', 'Отделение',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
-                # Adding column with ID's
-                data_lists.insert(0, [i for i in range(1, rows_number + 1)])
             # Creating dict for DataFrame
             data = dict(zip(headers_names, data_lists))
-            df = pd.DataFrame(data=data, index=range(1, rows_number + 1))
-            second_column_name = df.columns[1]
-
-            if second_column_name == 'ФИО пациента' and len(df.columns) == 6:
+            df = pd.DataFrame(data=data)
+            first_column = df.columns[0]
+            if first_column == 'ФИО пациента' and (len(df.columns) == 5 or len(df.columns) == 6):
                 # Adding new column contains the different between today and sign date in DF
-                df.insert(loc=6, column='Не выгружено',
+                df.insert(loc=len(df.columns), column='Не выгружено',
                           value=(today - df['Дата выписки пациента'].array).days)
+                df.loc[df['Не выгружено'] < 0, 'Не выгружено'] = 0
                 df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
-            elif second_column_name == 'ФИО пациента' and len(df.columns) == 7:
-                df.insert(loc=7, column='Не выгружено',
-                          value=(today - df['Дата выписки пациента'].array).days)
-                df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
-            else:
-                df.columns.rename('ID', inplace=True)
+            df.columns.rename('ID', inplace=True)
+            df.index = range(1, rows_number + 1)
             self.dataframe = df
 
     def to_excel(self, dept):
@@ -268,33 +281,24 @@ class ReadyReport:
             tab = self.dataframe
         else:
             first_column_name = self.dataframe.columns[0]
-            if first_column_name == 'ID':
+            if first_column_name == 'ФИО пациента':
                 # Applying format to cells by condition
                 report = self.dataframe.to_html(formatters=
                                         {
+                                            # Formatting dates to string
                                             'Дата подписи выписного эпикриза': dates,
                                             'Дата выписки пациента': dates,
-                                            # Formatting by condition
-                                            'ID': lambda x: f'over{x}'
-                                            if (today - self.dataframe.at[x, 'Дата выписки пациента'])
-                                            > three_days else f'{x}',
-                                            # Dates formatting a newer column "Не выгружено"
-                                            'Не выгружено': lambda y: f'center{y} дней' if y not in [1, 2, 3, 4]
-                                            or y in list(range(11, 21)) and str(y)[-1] not in ['1', '2', '3', '4']
-                                            else f'center{y}'
-                                            f' день' if y == 1 else f'center{y}' f' дня' if y in [2, 3, 4]
-                                            and str(y)[-1] in ['2', '3', '4'] and y not in list(range(11, 21)) else ''
+                                            # Formatting row by condition in a newer column "Не выгружено"
+                                            'Не выгружено': overstay,
                                         },
-                                        justify='center', index=False)
+                                        justify='center')
 
-                report = report.replace('<td>center', '<td style="text-align: center;">')
+                report = report.replace('<th>ID</th>', '<th class="index-name">ID')
+                report = report.replace('<td>Center', '<td style="text-align: center;">')
                 # Changing color and style in the all ID's cells
-                report = re.sub(r'<tr>\s*<td>', '<tr>\n\t  <td bgcolor="#F6BD8E" style="text-align: center;">',
-                                report)
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
-                report = re.sub(r'<tr>\s*<td bgcolor="#F6BD8E" style="text-align: center;">over',
-                                '<tr bgcolor="#e97c7c">\n\t  <td bgcolor="#F6BD8E" style="text-align: center;">',
-                                report)
+                report = re.sub(r'<tr>(.*?)</tr>', lambda match: style_and_remove_overcenter(match.group(1)),
+                                report, flags=re.DOTALL)
                 tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
                       string_snippets.tab_table + report + string_snippets.tab_table_end
             else:
@@ -306,7 +310,8 @@ class ReadyReport:
                 # Result of creating dataframe and formatting to HTML
                 tab = string_snippets.tab_report + string_snippets.download_button +\
                     string_snippets.tab_table + report + string_snippets.tab_table_end
-            if len(self.dataframe.columns) == 8:
+
+            if self.dataframe.columns[0] == 'ФИО пациента' and len(self.dataframe.columns) == 7:
                 return report
         with open('./WebApp/templates/output.html', 'wt',
                   encoding='utf-8') as template:
