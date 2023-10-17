@@ -394,8 +394,8 @@ div.table-container_simi {
 .table-container {
     max-height: 800px; /* Set a maximum height for the container */
     overflow:auto;
-    width: 150pc;
-    height: 700px;
+    width: auto;
+    height: auto;
 
 }
 
