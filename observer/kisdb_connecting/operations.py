@@ -114,7 +114,8 @@ class SelectAnswer:
                                                   #   port=5431,
                                                   port=actual_db['port'],
                                                   user=actual_db['user'],
-                                                  password=actual_db['password'])
+                                                  password=actual_db['password'],
+                                                  )
                     try:
                         cursor = connection.cursor()
                         cursor.execute(self.query_text)
