@@ -15,12 +15,12 @@ import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 root = environ.Path(__file__) - 3  # get root of the project
 env = environ.Env()
 environ.Env.read_env()  # reading .env file
 
 SITE_ROOT = root()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -85,7 +85,6 @@ WSGI_APPLICATION = 'observer.wsgi.application'
 
 DATABASES = {'default': env.db('DATABASE_URL')}
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -127,6 +126,7 @@ STATIC_URL = env.str('STATIC_URL', default='static/')
 STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'css',
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'images',
+                    Path(BASE_DIR) / 'WebApp' / 'static' / 'js',
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
 
