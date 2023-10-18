@@ -108,20 +108,6 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
     # Parameter data is actual values that will initial
     types_list = ResearchType(data=choice)
     date_buttons = DateButtons(data=dates)
-
-    if request.method == 'POST':
-        chosen_type = request.POST.get('research_types')
-        # Dates to send on page into information line
-        from_dt = request.POST.get('from_dt')
-        to_dt = request.POST.get('to_dt')
-        # Dates validating
-        if not validate_dates(first_date=from_dt, second_date=to_dt):
-            from_dt = (date.today() - timedelta(days=14)).strftime('%Y-%m-%d')
-            to_dt = date.today().strftime('%Y-%m-%d')
-            return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type,
-                            from_dt=from_dt, to_dt=to_dt, error='error')
-        return redirect(to=output, chosen_dept=chosen_dept, chosen_type=chosen_type, from_dt=from_dt, to_dt=to_dt)
-
     doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:

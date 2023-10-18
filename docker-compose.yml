@@ -4,8 +4,6 @@ services:
   app:
     build: ./observer/.
     ports:
-      - "8000:8000"
+      - "8081:8081"
     restart: on-failure:5
-    volumes:
-      - "./observer/app_database/.:/MedViews/app_database"  # attach one volume only with DB
 
