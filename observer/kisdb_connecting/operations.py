@@ -111,7 +111,6 @@ class SelectAnswer:
                 try:
                     connection = psycopg2.connect(database=actual_db['db'],
                                                   host=actual_db['host'],
-                                                  #   port=5431,
                                                   port=actual_db['port'],
                                                   user=actual_db['user'],
                                                   password=actual_db['password'],

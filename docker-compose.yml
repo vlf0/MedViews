@@ -1,10 +1,32 @@
 version: '3'
 
 services:
+  database:
+    build: .
+    environment:
+      - POSTGRES_PASSWORD=root
+      - PGUSER=postgres  # just POSTGRES_USER does not working
+      - POSTGRES_DB=postgres
+      - PGDATABASE=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./pg_data/.:/var/lib/postgresql/data"
+      - "./init_script/:/docker-entrypoint-initdb.d"
+    networks:
+      - db_network
   app:
     build: ./observer/.
     ports:
-      - '8000:8000'
+      - "8000:8000"
+    links:
+      - "database:database"
+    depends_on:
+      - database
+    networks:
+      - db_network
     volumes:
-      - ./observer/app_db/.:/usr/src/MedViews/app_db
-
+      - "./observer/sqlite_db/.:/MedViews/sqlite_db"  # attach one volume only with DB
+networks:
+  db_network:
+    driver: bridge
