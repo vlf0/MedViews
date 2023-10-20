@@ -27,6 +27,10 @@ services:
       - db_network
     volumes:
       - "./observer/sqlite_db/.:/MedViews/sqlite_db"  # attach one volume only with DB
+#  nginx:
+#    build: ./nginx/.
+#    networks:
+#      - db_network
 networks:
   db_network:
     driver: bridge
