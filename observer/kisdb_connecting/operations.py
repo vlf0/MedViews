@@ -44,7 +44,7 @@ class ReportExcelWriter:
     Has two methods for two different reports. """
     @staticmethod
     def xlsx_styles_researches(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx')
+        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 45)
         writer.sheets['Отчёт'].set_column(1, 1, 10)
@@ -55,7 +55,7 @@ class ReportExcelWriter:
 
     @staticmethod
     def xlsx_styles_epicrisis(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx')
+        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 5)
         writer.sheets['Отчёт'].set_column(1, 1, 45)

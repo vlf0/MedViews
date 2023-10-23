@@ -26,15 +26,13 @@ SITE_ROOT = root()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = 'django-insecure-id+v#u8xfc+t1!3*v@bx)@x@rhljs@1$src#(d@3n^mr=l^bdl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=False)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.123.8.17']
 # Application definition
 
 INSTALLED_APPS = [
@@ -121,7 +119,7 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = env.str('STATIC_URL', default='static/')
+STATIC_URL = "/static/"
 # Added access to folders contains our project static files
 STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'css',
@@ -130,7 +128,7 @@ STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
 
-STATIC_ROOT = '/MedViews/static/'
+STATIC_ROOT = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
