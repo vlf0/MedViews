@@ -1,8 +1,5 @@
 FROM postgres:15.4
 
-# Updating system indexes
-RUN apt-get update
-
 # Set up Ru locale in container
 RUN apt-get install locales -y
 

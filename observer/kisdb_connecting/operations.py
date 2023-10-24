@@ -235,5 +235,6 @@ class ReadyReport:
         with open('./WebApp/templates/output.html', 'wt',
                   encoding='utf-8') as template:
             template.write(string_snippets.top_of_template)
-            template.writelines(tab)
-            template.writelines(string_snippets.bot_of_template)
+            template.write(tab)
+            template.write(string_snippets.bot_of_template)
+        return
