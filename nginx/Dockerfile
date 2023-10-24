@@ -1,7 +1,5 @@
 FROM nginx:1.25-alpine
 
-# Creating working directory
-WORKDIR /app_static/
-
+COPY ./default.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
