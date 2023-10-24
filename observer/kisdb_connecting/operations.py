@@ -193,12 +193,12 @@ class ReadyReport:
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
         if error_value:
             # Date validations error text instead data table
-            tab = string_snippets.date_validation_error
+            report = string_snippets.date_validation_error
             # Editing strings of html template
             string_snippets.top_of_template = string_snippets.top_of_template\
                 .replace('<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}', '')
         elif type(self.dataframe) is str:
-            tab = self.dataframe
+            report = self.dataframe
         else:
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ФИО пациента':
@@ -218,7 +218,7 @@ class ReadyReport:
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
                 report = re.sub(r'<tr>(.*?)</tr>', lambda match: style_and_remove_overcenter(match.group(1)),
                                 report, flags=re.DOTALL)
-                tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
+                report = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
                       string_snippets.tab_table + report + string_snippets.tab_table_end
             else:
                 report = self.dataframe.to_html(justify="center", formatters={'Дата создания': dates,
@@ -227,14 +227,7 @@ class ReadyReport:
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
                 # Result of creating dataframe and formatting to HTML
-                tab = string_snippets.tab_report + string_snippets.download_button +\
-                      string_snippets.tab_table + report + string_snippets.tab_table_end
-            # Create common SIMI report
-            if self.dataframe.columns[0] == 'ФИО пациента' and len(self.dataframe.columns) == 7:
-                return report
-        # Create output.html
-        with open('./WebApp/templates/output.html', 'wt',
-                  encoding='utf-8') as template:
-            template.write(string_snippets.top_of_template)
-            template.writelines(tab)
-            template.writelines(string_snippets.bot_of_template)
+                report = string_snippets.tab_report + string_snippets.download_button +\
+                         string_snippets.tab_table + report + string_snippets.tab_table_end
+        return report
+

@@ -100,9 +100,15 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
     common_rows_number = len(answer)
     # Creating full reporting page contains prepared data got from DB by PANDAS
     ReadyReport(answer).to_excel(dept=chosen_dept)
-    ReadyReport(answer).to_html()
+    rep = ReadyReport(answer).to_html()
     if error:
         ReadyReport(answer).to_html(error_value=True)
+    # Create output.html
+    with open('./WebApp/templates/output.html', 'wt',
+              encoding='utf-8') as template:
+        template.write(string_snippets.top_of_template)
+        template.writelines(rep)
+        template.writelines(string_snippets.bot_of_template)
     # Forms on page
     # Dict containing date values user inserted
     choice = {'research_types': chosen_type}
