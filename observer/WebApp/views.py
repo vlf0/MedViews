@@ -97,12 +97,12 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
                          from_dt=from_dt_dbformat, to_dt=to_db_dbformat).ready_select()
     # Connecting to DB and execute query
     answer = SelectAnswer(query_text).selecting()
-    common_rows_number = len(answer)
     # Creating full reporting page contains prepared data got from DB by PANDAS
     ReadyReport(answer).to_excel(dept=chosen_dept)
-    ReadyReport(answer).to_html()
     if error:
-        ReadyReport(answer).to_html(error_value=True)
+        report = ReadyReport(answer).to_html(error_value=True)
+    else:
+        report = ReadyReport(answer).to_html()
     # Forms on page
     # Dict containing date values user inserted
     choice = {'research_types': chosen_type}
@@ -118,7 +118,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
         doc = doc[0][0]
     context = {'types_list': types_list, 'chosen_dept': chosen_dept,
                'doc': doc, 'date_buttons': date_buttons, 'from_dt': date_converter(from_dt),
-               'to_dt': date_converter(to_dt), 'chosen_type': chosen_type, 'common_rows_number': common_rows_number}
+               'to_dt': date_converter(to_dt), 'chosen_type': chosen_type, 'report': report}
     return render(request=request, template_name='output.html', context=context)
 
 

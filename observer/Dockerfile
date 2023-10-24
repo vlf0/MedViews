@@ -16,3 +16,4 @@ EXPOSE 8000
 
 # Running the app
 ENTRYPOINT ["sh", "-c", "python3 manage.py collectstatic --no-input && gunicorn observer.wsgi -b 0.0.0.0:8000"]
+#ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]

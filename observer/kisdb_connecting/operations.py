@@ -188,18 +188,16 @@ class ReadyReport:
                 ReportExcelWriter.xlsx_styles_researches(dept_name=dept, frame=self.dataframe)
         return
 
-    def to_html(self, error_value=None):
+    def to_html(self, error_value=False):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """
         if error_value:
             # Date validations error text instead data table
-            tab = string_snippets.date_validation_error
-            # Editing strings of html template
-            string_snippets.top_of_template = string_snippets.top_of_template\
-                .replace('<br><br>Невыполненные {{chosen_type}} за перод с {{from_dt}} по {{to_dt}}', '')
+            report = string_snippets.date_validation_error
         elif type(self.dataframe) is str:
-            tab = self.dataframe
+            report = self.dataframe
         else:
             first_column_name = self.dataframe.columns[0]
+            cnt = len(self.dataframe)
             if first_column_name == 'ФИО пациента':
                 # Applying format to cells by condition
                 report = self.dataframe.to_html(formatters=
@@ -217,8 +215,8 @@ class ReadyReport:
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
                 report = re.sub(r'<tr>(.*?)</tr>', lambda match: style_and_remove_overcenter(match.group(1)),
                                 report, flags=re.DOTALL)
-                tab = string_snippets.tab_report_epicrisis + string_snippets.download_button +\
-                      string_snippets.tab_table + report + string_snippets.tab_table_end
+                report = string_snippets.download_button + f'\t\t<p class="center-top-text">Невыгруженные эпикризы:' \
+                                                           f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
             else:
                 report = self.dataframe.to_html(justify="center", formatters={'Дата создания': dates,
                                                                               'Назначено на дату': dates})
@@ -226,15 +224,8 @@ class ReadyReport:
                 report = re.sub(r'<tr style="text-align: center;">\s*<th>ID',
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
                 # Result of creating dataframe and formatting to HTML
-                tab = string_snippets.tab_report + string_snippets.download_button +\
-                      string_snippets.tab_table + report + string_snippets.tab_table_end
-            # Create common SIMI report
-            if self.dataframe.columns[0] == 'ФИО пациента' and len(self.dataframe.columns) == 7:
-                return report
-        # Create output.html
-        with open('./WebApp/templates/output.html', 'wt',
-                  encoding='utf-8') as template:
-            template.write(string_snippets.top_of_template)
-            template.write(tab)
-            template.write(string_snippets.bot_of_template)
-        return
+                report = string_snippets.download_button + \
+                         f'\t\t<p class="center-top-text">Количество невыполненных назначений:' \
+                         f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
+        return report
+

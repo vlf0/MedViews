@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" type="image/png" href="{% static 'GKB_D_sign.ico' %}">
+	<title>Second Page</title>
+	</head>
+
+<body>
+	<div class="logo">
+	<img src="{% static 'gkblogo.png' %}" alt="logo">
+	</div>
+		<p class="center-top-text">Отделение: {{ chosen_dept }}<br><br>
+			Заведущий: {{ doc }}<br><br>{{chosen_type}} за период с {{from_dt}} по {{to_dt}}</p>
+	<div class="container">
+		<form id="create_report" action="{% url 'output' chosen_dept chosen_type 'from_dt' 'to_dt' %}" method="POST">
+			<table>
+				{{ types_list }}
+				{{ date_buttons }}
+				{% csrf_token %}
+			</table>
+		</form>
+		<form id="download_report" action="{% url 'downloading' chosen_dept %}" method="GET">
+		</form>
+	</div>
+		<form id="dept_choice" action="{% url 'dept' %}" method="GET"></form>
+	<div class="button-container">
+		<button form="create_report" type="submit" class="common_button"> <b>Построить отчет</b> </button>
+	</div>
+	<div class="button-container">
+		<button form="dept_choice" type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>
+	</div>
+
+    {{ report|safe }}
+    </div>
+</body>
+</html>

@@ -25,8 +25,9 @@ services:
     networks:
       - db_network
     volumes:
-      - "./observer/sqlite_db/.:/usr/src/MedViews/sqlite_db"  # attach one volume only with DB
-      - "static:/usr/src/MedViews/static"
+      - "./observer/.:/usr/src/MedViews/"
+#      - "./observer/sqlite_db/.:/usr/src/MedViews/sqlite_db"  # attach one volume only with DB
+#      - "static:/usr/src/MedViews/static"
 #  nginx:
 #    build: ./nginx/.
 #    volumes:
@@ -36,8 +37,8 @@ services:
 #      - "8080:80"
 #    networks:
 #      - db_network
-volumes:
-  static:
+#volumes:
+#  static:
 networks:
   db_network:
     driver: bridge
