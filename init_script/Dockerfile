@@ -1,5 +1,7 @@
 FROM postgres:15.4
 
+COPY init.sql /docker-entrypoint-initdb.d/.
+
 # Set up Ru locale in container
 RUN apt-get install locales -y
 
