@@ -1,7 +1,7 @@
 download_button = (
         '\t<div class="download_button-container">\n'
         '\t\t<button form="download_report" type="submit" class="download_button">\n'
-        '\t\t<img src="{%static \'excel_logo.png\'%}"><span>Сохранить в Excel</span> </button>\n'
+        '\t\t<img src="/static/excel_logo.png"><p>Сохранить в Excel</p> </button>\n'
         '\t</div>\n'
         )
 
@@ -27,7 +27,7 @@ depts_by_ids = 'SELECT d.name FROM mm.dept d' \
               ' \'5fe0204b-e340-486a-94db-2bcc75fc6e64\', \'7168f375-ac21-4c66-9575-f033c3ac0cd3\','\
               ' \'85489221-1971-4a7a-9878-52ea814769ee\')'
 
-common_simi_query = 'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+common_simi_query = 'SELECT mm.famaly_io(m.surname,m.name,m.patron) AS ФИО_Пациента,' \
                     ' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
                     ' mm.emp_get_fio_by_id (d.manager_emp_id ) AS Заведующий_отделением,' \
                     ' d.name AS Отделение,' \

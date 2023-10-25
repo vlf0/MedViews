@@ -44,7 +44,7 @@ class ReportExcelWriter:
     Has two methods for two different reports. """
     @staticmethod
     def xlsx_styles_researches(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx', engine='xlsxwriter')
+        writer = pd.ExcelWriter(f'./WebApp/static/reports/rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 45)
         writer.sheets['Отчёт'].set_column(1, 1, 10)
@@ -55,7 +55,7 @@ class ReportExcelWriter:
 
     @staticmethod
     def xlsx_styles_epicrisis(dept_name, frame):
-        writer = pd.ExcelWriter(fr'.\WebApp\static\reports\rep_{dept_name}.xlsx', engine='xlsxwriter')
+        writer = pd.ExcelWriter(f'./WebApp/static/reports/rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 5)
         writer.sheets['Отчёт'].set_column(1, 1, 45)
@@ -86,7 +86,8 @@ class Queries:
 
     def ready_select(self):
         if self.types_converting[self.research] == 7:
-            return f'SELECT concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+            return f'SELECT' \
+                f' mm.famaly_io(p.surname,p.name,p.patron) AS ФИО_Пациента,' \
                 f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
                 f' mm.emp_get_fio_by_id (h.doctor_emp_id ) AS Лечащий_врач,' \
                 f' tt.sign_dt AS Дата_подписи_леч_врачом,' \
@@ -116,7 +117,7 @@ class Queries:
             return f'SELECT' \
             f' n.creator_emp_fio AS Назначил,' \
             f' concat_ws (\'-\',md.num,md.YEAR,md.num_type) AS №ИБ,' \
-            f' concat_ws (\' \',p.surname,p.name,p.patron) AS ФИО_Пациента,' \
+            f' mm.famaly_io (p.surname,p.name,p.patron) AS ФИО_Пациента,' \
             f' n.name AS Назначение,' \
             f' n.create_dt AS создано,' \
             f' n.plan_dt AS Назначено_на_дату,' \
@@ -145,7 +146,7 @@ class Queries:
             return f'SELECT' \
             f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,'\
             f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
-            f' concat_ws(\' \',m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+            f' mm.famaly_io(m.surname,m.name,m.patron) AS ФИО_Пациента,' \
             f' n.name,' \
             f' n.create_dt AS создано,' \
             f' n.plan_dt AS Назначено_на_дату,' \
@@ -258,7 +259,7 @@ class ReadyReport:
     def to_excel(self, dept):
         if type(self.dataframe) is not str:
             try:
-                pathlib.Path('../observer/WebApp/static/reports/').mkdir()
+                pathlib.Path('./WebApp/static/reports/').mkdir()
             except (FileExistsError, FileNotFoundError) as error:
                 pass   
             first_column_name = self.dataframe.columns[0]
