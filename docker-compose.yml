@@ -1,8 +1,32 @@
 version: '3'
 
 services:
-  app:
-    network_mode: 'host'
+  observer:
     build: ./observer/.
-    restart: on-failure
+    # network_mode: host
+    networks:
+      - app_net
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./observer/db.sqlite3:/usr/src/MedViews/db.sqlite3"  # attach the SQLite DB
+      - "static:/usr/src/MedViews/static"
+  nginx:
+    build: ./nginx/.
+    depends_on:
+      - observer
+    links:
+      - "observer:observer"
+    # network_mode: host
+    networks:
+      - app_net
+    ports:
+      - "8080:80"
+    volumes:
+      - "static:/static"
+volumes:
+  static:
+networks:
+  app_net:
+    driver: bridge
 

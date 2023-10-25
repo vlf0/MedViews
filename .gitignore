@@ -13,6 +13,7 @@ settings_prod.py
 *.xls
 *.xlsx
 db.sqlite3
+/static/*
 
 # Distribution / packaging
 .Python

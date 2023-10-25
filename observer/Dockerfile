@@ -1,10 +1,21 @@
 FROM python:3.11-slim
+
+# Making container logs unbuffered
 ENV PYTHONUNBUFFERED 1
 
+# Creating working directory
+WORKDIR /usr/src/MedViews
 
-WORKDIR /MedViews
+# Copy content
 COPY . .
-RUN pip3 install -r requirements.txt
+
+COPY ./entry.sh /
+
+# Installing dependencies
+RUN pip3 install -r ./requirements.txt
+
 EXPOSE 8000
 
-ENTRYPOINT ["gunicorn", "observer.wsgi", "-b", "10.123.8.17:8000"]
+# Running the app
+ENTRYPOINT ["sh", "/entry.sh"]
+
