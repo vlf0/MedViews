@@ -1,8 +1,7 @@
-
 download_button = (
         '\t<div class="download_button-container">\n'
         '\t\t<button form="download_report" type="submit" class="download_button">\n'
-        '\t\t<img src="{% static \'dwnld_logo.png\' %}"><span>Сохранить в Excel</span> </button>\n'
+        '\t\t<img src="/static/dwnld_logo.png"><p>Сохранить в Excel</p> </button>\n'
         '\t</div>\n'
         )
 

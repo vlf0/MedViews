@@ -215,7 +215,9 @@ class ReadyReport:
                 # Applying entire row color style where is text "over" (it is condition for dates comparison)
                 report = re.sub(r'<tr>(.*?)</tr>', lambda match: style_and_remove_overcenter(match.group(1)),
                                 report, flags=re.DOTALL)
-                report = string_snippets.download_button + f'\t\t<p class="center-top-text">Невыгруженные эпикризы:' \
+                if self.dataframe.columns[0] == 'ФИО пациента' and len(self.dataframe.columns) == 7:
+                    return report
+                report = string_snippets.download_button + f'\t\t<p class="center-top-cnt">Невыгруженные эпикризы:' \
                                                            f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
             else:
                 report = self.dataframe.to_html(justify="center", formatters={'Дата создания': dates,
@@ -225,7 +227,7 @@ class ReadyReport:
                                 '<tr style="text-align: center;">\n\t  <th class="index-name">ID', report)
                 # Result of creating dataframe and formatting to HTML
                 report = string_snippets.download_button + \
-                         f'\t\t<p class="center-top-text">Количество невыполненных назначений:' \
+                         f'\t\t<p class="center-top-cnt">Количество невыполненных назначений:' \
                          f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
         return report
 

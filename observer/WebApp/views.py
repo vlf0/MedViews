@@ -4,16 +4,12 @@ from django.http import FileResponse
 # My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
-from .local_functions import months, date_converter, validate_dates
-# from kisdb_connecting.string_snippets import date_validation_error, common_simi_query
+from .local_functions import date_converter, validate_dates
 from kisdb_connecting import string_snippets
 
 
-def test(request):
-    return render(request=request, template_name='test.html')
-
-
 def dept(request):
+    """ Displaying the first page where you make a choice dept. """
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
         print(depts_list.depts)
@@ -25,6 +21,7 @@ def dept(request):
 
 
 def simi_report(request):
+    """ Displaying page with the all not uploaded documents across all depts. """
     answer = SelectAnswer(string_snippets.common_simi_query).selecting()
 
     common_rows_number = len(answer)
@@ -35,11 +32,15 @@ def simi_report(request):
 
 
 def ref_to_type(request):
+    """ Getting data from page forms across POST request
+     and redirecting to next page with received data. """
     chosen_dept = request.POST.get('dept_name')
     return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
 def research_type(request, chosen_dept, research_type=None):
+    """ Displaying the second page with chosen dept where you make a choice
+     research type and dates period. """
     # Converted to string format for insert to fields on browser in the first refer
     from_dt_initial = (date.today() - timedelta(days=14)).strftime('%Y-%m-%d')
     to_dt_initial = date.today().strftime('%Y-%m-%d')
@@ -64,6 +65,8 @@ def research_type(request, chosen_dept, research_type=None):
 
 
 def ref_to_output(request, chosen_dept):
+    """ Getting data from page forms across POST request
+     and redirecting to next page with received data. """
     # Dates to send on page into information line
     from_dt = request.POST.get('from_dt')
     to_dt = request.POST.get('to_dt')
@@ -77,6 +80,8 @@ def ref_to_output(request, chosen_dept):
 
 
 def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
+    """ Displaying the third page with chosen dept, research type,
+     dates period and requested report. """
     if request.method == 'POST':
         chosen_type = request.POST.get('research_types')
         # Dates to send on page into information line
@@ -123,4 +128,6 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
 
 
 def downloading(request, chosen_dept):
+    """  Saving received dataframe data to excel file on the server
+     for further downloading from page.  """
     return FileResponse(open(f'./WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))

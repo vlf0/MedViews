@@ -14,7 +14,7 @@ services:
       - "./posrtges/pg_data/.:/var/lib/postgresql/data"
     networks:
       - db_network
-  app:
+  observer:
     build: ./observer/.
     ports:
       - "8000:8000"

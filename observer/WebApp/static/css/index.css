@@ -77,7 +77,6 @@ body:not(.download_button-container) {
 }
 
 
-
 .center-top-text {      /*Выберите отделение*/
     position:relative;
     font-family: 'nbold',sans-serif;
@@ -195,29 +194,31 @@ body:not(.download_button-container) {
     height: 4pc;
 }
 
+
 .download_button-container {
-    position: fixed;
-    top: 40px;
-    right: 240px;
-    margin: 15px;
-    display: flex;
+    position: absolute;
+    top: 43px;
+    right: 60px;
+    margin: 10px;
     justify-content: center;
     align-items: center;
     text-align: center;
     width: 2pc;
     height: 3pc;
+    z-index: 1;
+    display: flex;
 }
 
 .download_button {
     white-space: nowrap; /* Prevent text from wrapping to the next line */
     cursor: pointer;
-    background-color: #bcddc4; 
+    background-color: #bcddc4;
     border: solid;
-    border-color: #bcddc4; 
+    border-color: #bcddc4;
     border-radius: 20px;
     border-width: 5px;
     padding: 10px;
-    position: fixed;
+    position: relative;
 }
 
 /* Style the logo image */
@@ -235,7 +236,7 @@ body:not(.download_button-container) {
 
 /* Hover effect */
 .download_button:hover {
-    background-color: #187930;  
+    background-color: #187930;
     border-color: #4dbe69;
     color:white;
     font-size:15px;
@@ -244,8 +245,8 @@ body:not(.download_button-container) {
 
 /* Active (Clicked) effect */
 .download_button:active {
-    background-color: #4de072; 
-    border-color: #54da75; 
+    background-color: #4de072;
+    border-color: #54da75;
 }
 
 /* Add a pseudo-element for the clickable effect */
@@ -293,11 +294,10 @@ body:not(.download_button-container) {
     /* Change background color on hover */
 }
 
-
 .center-top-cnt {
     position:relative;
     font-family: 'nbold',sans-serif;
-    margin: 20px;
+    margin-top: 20px;
     text-align:center;
     color: #000000;
     font-size: 25px;
@@ -312,22 +312,6 @@ body:not(.download_button-container) {
 }
 
 
-p.center-top-text_simi {
-    position:relative;
-    font-family: 'nbold',sans-serif;
-    margin: 20px;
-    text-align:center;
-    color: #000000;
-    font-size: 25px;
-    background-color: #e97c7c;
-    border: 0.2rem solid #f1b0b5;
-    border-radius: 20px ;
-    padding: 20px;
-    text-align: center;
-    max-width: 100%;
-    box-shadow: 5px 5px 15px #f1b0b5;
-    width: 60pc;
-}
 
 div.table-container_simi {
     max-height: 800px; /* Set a maximum height for the container */
@@ -336,18 +320,6 @@ div.table-container_simi {
     height: 900px;
 }
 
-.button-container_simi {
-    position: fixed;
-    top: 60px;
-    right: 400px;
-    margin: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 2pc;
-    height: 3pc;
-}
 .common_button_simi { /* Prevent text from wrapping to the next line */
         cursor: pointer;
         background-color: #ffffff;
@@ -361,23 +333,26 @@ div.table-container_simi {
         font-size: 15px;
         color:black;
         width: 250px;
-    }
+        position: fixed;
+        top: 10px;
+        right: 10px;
+}
 
 .common_button_simi:hover {
-        background-color: #eb2b6d; 
+        background-color: #eb2b6d;
         border-color: #00263f;
         color:white;
         font-size:15px;
         border-style:solid
 
-    }
-    
+}
+
 
 .common_button_simi:active {
-        background-color: #f1bd79; 
-        border-color: #ffffff; 
-    }
-    
+        background-color: #f1bd79;
+        border-color: #ffffff;
+}
+
     /* Add a pseudo-element for the clickable effect */
 .common_button_simi:after {
         content: "";
@@ -389,7 +364,7 @@ div.table-container_simi {
         border-radius: 10px;
         background-color: #126a7033;
         pointer-events: none; /* Ensure the pseudo-element doesn't interfere with clicks */
-    }
+}
 
 .table-container {
     max-height: 800px; /* Set a maximum height for the container */
@@ -436,7 +411,7 @@ div.table-container_simi {
 .dataframe {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 5px;
     font-family: 'nbold',sans-serif;
 }
 
@@ -460,12 +435,7 @@ div.table-container_simi {
     background-color: #011d27;
 }
 
-/* Style the table */
-.dataframe {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+
 
 /* Style the table header */
 .dataframe th {

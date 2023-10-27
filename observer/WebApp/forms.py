@@ -1,10 +1,7 @@
-from datetime import date, timedelta
 from django import forms
-
 # Import my own modules
 from kisdb_connecting.operations import SelectAnswer, Queries
 from kisdb_connecting.string_snippets import depts_by_ids
-from .local_functions import validate_dates
 
 
 def converting(x):
