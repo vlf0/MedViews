@@ -249,7 +249,7 @@ class ReadyReport:
             if first_column == 'ФИО пациента' and (len(df.columns) == 5 or len(df.columns) == 6):
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=len(df.columns), column='Не выгружено',
-                          value=(today - df['Дата выписки пациента'].array).days)
+                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
                 df.loc[df['Не выгружено'] < 0, 'Не выгружено'] = 0
                 df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             df.columns.rename('ID', inplace=True)
