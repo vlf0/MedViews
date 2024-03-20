@@ -10,9 +10,7 @@ tab_done = '\t<p class="center-top-text">По заданным параметр�
 
 date_validation_error = '\t\t<p class="center-top-text">Дата окончания периода не может быть меньше даты начала!</p>\n'
 
+depts_by_ids = 'SELECT d.name FROM mm.dept d;'
 
-
-depts_by_ids = 'SELECT d.name FROM mm.dept d'
-
-common_simi_query = 'SELECT pat_fio, pat_ib, zav, dept, sign_dt, pat_leave_dt FROM mm.tap'
+common_simi_query = 'SELECT pat_fio, pat_ib, zav, dept, sign_dt, pat_leave_dt FROM mm.tap;'
 
