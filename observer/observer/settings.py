@@ -33,7 +33,7 @@ DEBUG = env.bool('DEBUG', default=False)
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.123.8.17']
-CSRF_TRUSTED_ORIGINS = ['http://10.123.8.17'] 
+CSRF_TRUSTED_ORIGINS = ['http://10.123.8.17', 'http://localhost', 'http://0.0.0.0', 'http://127.0.0.1'] 
 # Application definition
 
 INSTALLED_APPS = [
@@ -129,7 +129,7 @@ STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = f'{SITE_ROOT}/observer/static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
