@@ -1,11 +1,14 @@
 from datetime import date, timedelta
 from django.shortcuts import render, redirect
 from django.http import FileResponse
-# My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
-from .local_functions import date_converter, validate_dates
+from .local_functions import months, date_converter, validate_dates
 from kisdb_connecting import string_snippets
+
+
+def test(request):
+    return render(request=request, template_name='test.html')
 
 
 def dept(request):
@@ -21,9 +24,7 @@ def dept(request):
 
 
 def simi_report(request):
-    """ Displaying page with the all not uploaded documents across all depts. """
     answer = SelectAnswer(string_snippets.common_simi_query).selecting()
-
     common_rows_number = len(answer)
     report = ReadyReport(answer).to_html()
 
@@ -47,7 +48,7 @@ def research_type(request, chosen_dept, research_type=None):
     # Form fields definite
     date_buttons = DateButtons(initial={'from_dt': from_dt_initial, 'to_dt': to_dt_initial})
     types_list = ResearchType()
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:
         doc = 'заведующий не может быть назначен неработающему отделению.'
@@ -80,8 +81,6 @@ def ref_to_output(request, chosen_dept):
 
 
 def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
-    """ Displaying the third page with chosen dept, research type,
-     dates period and requested report. """
     if request.method == 'POST':
         chosen_type = request.POST.get('research_types')
         # Dates to send on page into information line
@@ -115,7 +114,7 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
     # Parameter data is actual values that will initial
     types_list = ResearchType(data=choice)
     date_buttons = DateButtons(data=dates)
-    doc = SelectAnswer(query_text=f'SELECT doc_fio FROM mm.dbkis WHERE dept = \'{chosen_dept}\'').selecting()
+    doc = SelectAnswer(query_text=f'SELECT mm.emp_get_fio_by_id(dp.manager_emp_id) as Заведующий_отделением FROM mm.dept dp WHERE dp.name = \'{chosen_dept}\'').selecting()
     # Checking if doctor belong this dept
     if len(doc) == 0:
         doc = 'заведующий не может быть назначен неработающему отделению.'
@@ -128,6 +127,4 @@ def output(request, chosen_dept, chosen_type, from_dt, to_dt, error=None):
 
 
 def downloading(request, chosen_dept):
-    """  Saving received dataframe data to excel file on the server
-     for further downloading from page.  """
     return FileResponse(open(f'./WebApp/static/reports/rep_{chosen_dept}.xlsx', 'rb'))

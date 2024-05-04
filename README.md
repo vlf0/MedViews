@@ -1,15 +1,5 @@
 # MedVeiws
 
-_ATTENTION:
-It is the test bench.
-The files .env and db.sqlite3 are here because it allows because this allows you
-to make the process of launching a test bench locally as easy as possible 
-and no contains important / secret information or any CREDs._\
-**db.sqlite3** contains already created superuser only; SECRET_KEY in the **.env** file was created for testing goals special.
-**<center><p>NOTES: superuser for SQLite DB:</p></center>**
-__<center>login: admin</center>__
-__<center>password: root</center>__
-
 This project - Django multiuser app which allow to users getting data from database
 of **KIS.EMIAS** very fast and easy in real time.
 
@@ -43,33 +33,5 @@ In the process of creating I learn many useful things, such as Git and GitHub, D
 HTML, CSS, API, linux OS, world of networks, project design also improved Python knowing lvl.
 
 
-To run the application locally you need install Docker and Docker-Compose and follow these steps:
-
-NOTES: if you are using Windows OS, you need insert this command in terminal before all other steps:\
-`git config --global core.autocrlf input`\
-This configures Git to handle line endings correctly for your operating system
-by setting the core.autocrlf configuration option.\
-Since we are using docker containers based on the *nix OS we need do it
-for shell can read the commands correct  on starting app. 
-After you testing the app you need switch back docker settings using this command:\
-`git config --global core.autocrlf true`\
-This is return settings to default for your OS.\
-_If you are a developer/programmer you can just switch CRLF to LF in your IDE and then go to steps below._ 
-
-1. Open your any favourite console and go to folder where you want to place the app;
-
-2. Copy and past this command to download repo:
-
-    `git clone https://github.com/vlf0/MedVeiws.git`
-
-3. Go to _MedVeiws_ folder and type this command to change working branch:
-
-   `git checkout docker_dev`
-
-4. Insert next command to run the app:
-
-   `docker-compose up`
-
-5. After this steps the app will be run in docker container, just go to your localhost on 8080 port:
-
-   [localhost](http://localhost:8080) 
+We also have a test bench for running the app locally fast and easy.
+To run the application locally - go to branch "docker_dev" and check detail instruction.

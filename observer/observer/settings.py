@@ -32,10 +32,8 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'observer']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080', 'http://127.0.0.1:8080']
-
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.123.8.17']
+CSRF_TRUSTED_ORIGINS = ['http://10.123.8.17'] 
 # Application definition
 
 INSTALLED_APPS = [
@@ -122,7 +120,7 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 # Added access to folders contains our project static files
 STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'css',
@@ -131,7 +129,7 @@ STATICFILES_DIRS = [
                     Path(BASE_DIR) / 'WebApp' / 'static' / 'reports',
                     ]
 
-STATIC_ROOT = Path(BASE_DIR, 'static')
+STATIC_ROOT = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

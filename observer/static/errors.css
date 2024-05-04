@@ -1,0 +1,68 @@
+@font-face {
+    font-family: 'nbold';
+    src: url('Nunito-Bold.ttf');
+    font-size: 50px;
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'nbold', sans-serif;
+    background-color: #72A276;
+    position: center;
+    text-align: center;
+    margin-top: 200px;
+    margin-left: 120px;
+    margin-right: 25pc;
+    text-transform: uppercase;
+    font-size: 20px;
+    
+}
+
+.center-top-text {
+    position: relative;
+    background-color:#a0daa4;
+}
+
+.comm_button {
+    position:relative;
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'nbold',sans-serif;
+    padding: 20px 180px; /* Adjust padding to control button size */
+    background-color: rgb(54, 73, 88); /* Background color */
+    color: white; /* Text color */
+    font-family: 'nmed',sans-serif;
+    text-transform: uppercase;
+    border: none; /* Remove button border */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    clip-path:ellipse()(100% 0, 90% 50%, 100% 100%, 10% 100%, 0% 50%, 10% 0%);
+    cursor: pointer; /* Cursor style on hover */
+    transition: 0.9s;
+    /* Optional: Add a box shadow for depth */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.comm_button:hover
+{
+    text-align: center;
+    background-color: #022B3A;
+    font-family: 'nmed',sans-serif;
+    letter-spacing: 4px;
+    font-weight: 300;
+    font-size: 16px;
+    clip-path:ellipse(90% 0, 100% 50%, 90% 100%, 0% 100%, 10% 50%, 0% 0%);
+}
+
+.center-top-text p {
+    text-align: center;
+    margin-left: 45pc;
+    margin-top: 10pc;
+    margin-right: 45pc;
+    font-family: 'nbold',sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+
+
+}

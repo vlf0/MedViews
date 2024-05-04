@@ -44,8 +44,7 @@ class ReportExcelWriter:
     Has two methods for two different reports. """
     @staticmethod
     def xlsx_styles_researches(dept_name, frame):
-        writer = pd.ExcelWriter(fr'./WebApp/static/reports/rep_{dept_name}.xlsx',
-                                date_format='dd.mm.yyyy', datetime_format='dd.mm.yyyy')
+        writer = pd.ExcelWriter(f'./WebApp/static/reports/rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 45)
         writer.sheets['Отчёт'].set_column(1, 1, 10)
@@ -56,8 +55,7 @@ class ReportExcelWriter:
 
     @staticmethod
     def xlsx_styles_epicrisis(dept_name, frame):
-        writer = pd.ExcelWriter(fr'./WebApp/static/reports/rep_{dept_name}.xlsx',
-                                date_format='dd.mm.yyyy', datetime_format='dd.mm.yyyy')
+        writer = pd.ExcelWriter(f'./WebApp/static/reports/rep_{dept_name}.xlsx', engine='xlsxwriter')
         frame.to_excel(excel_writer=writer, sheet_name='Отчёт', engine='xlsxwriter', index=False)
         writer.sheets['Отчёт'].set_column(0, 0, 5)
         writer.sheets['Отчёт'].set_column(1, 1, 45)
@@ -88,13 +86,95 @@ class Queries:
 
     def ready_select(self):
         if self.types_converting[self.research] == 7:
-            return f'SELECT pat_fio, pat_ib, sign_dt, pat_leave_dt FROM mm.tap' \
-                   f' WHERE sign_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
+            return f'SELECT' \
+                f' mm.famaly_io(p.surname,p.name,p.patron) AS ФИО_Пациента,' \
+                f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
+                f' mm.emp_get_fio_by_id (h.doctor_emp_id ) AS Лечащий_врач,' \
+                f' tt.sign_dt AS Дата_подписи_леч_врачом,' \
+                f' h.leave_dt AS Дата_выписки_пациента' \
+                f' FROM mm.hospdoc h' \
+                f' JOIN mm.mdoc m ON m.id = h.mdoc_id' \
+                f' JOIN mm.people p ON p.id = m.people_id' \
+                f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
+                f' LEFT JOIN mm.dept d ON d.id = h.dept_id' \
+                f' JOIN (SELECT et.ehr_case_id, et.sign_dt,' \
+                f' et.epic_code,' \
+                f' et.creator_emp_id AS emp_id' \
+                f' FROM mm.epic_text et' \
+                f' WHERE et.epic_code IN  (\'Z00.001.008\', \'Z00.001.012\', \'Z00.004.032\', \'Z00.001.014\', \'Z00.001.009\', \'Z00.001.016\')' \
+                f' AND et.create_dt >= \'01.01.2023\'' \
+                f' and et.allow_export = 2' \
+                f' AND et.ehr_case_id NOT IN' \
+                f' (SELECT hoer.ehr_case_id' \
+                f' FROM mm.hospdoc_out_emiac_remd hoer' \
+                f' WHERE hoer.create_dt >= \'01.01.2023\'' \
+                f' AND hoer.status = 1)' \
+                f' AND et.sign_dt NOTNULL) tt ON tt.ehr_case_id = h.ehr_case_id' \
+                f' AND h.leave_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\'' \
+                f' AND d.name = \'{self.dept}\'' \
+                f' ORDER BY h.leave_dt ASC' 
+        elif self.dept =='Приемное отделение':
+            return f'SELECT' \
+            f' n.creator_emp_fio AS Назначил,' \
+            f' concat_ws (\'-\',md.num,md.YEAR,md.num_type) AS №ИБ,' \
+            f' mm.famaly_io (p.surname,p.name,p.patron) AS ФИО_Пациента,' \
+            f' n.name AS Назначение,' \
+            f' n.create_dt AS создано,' \
+            f' n.plan_dt AS Назначено_на_дату,' \
+            f' CASE n.naz_extr_id' \
+            f' \tWHEN \'0\' THEN \'Планово\' '\
+            f' \tWHEN \'1\' THEN \'Экстренно\' '\
+            f' ELSE n.naz_extr_id::TEXT ' \
+            f' END AS Срочность' \
+            f' FROM mm.naz n' \
+            f' JOIN mm.naz_type nt ON nt.id = n.naz_type_id' \
+            f' JOIN mm.naz_action na ON na."id" = n.last_action_id' \
+            f' JOIN mm.naz_type_dir ntd on ntd.id = nt.naz_type_dir_id' \
+            f' JOIN mm.ambticket a on a.mdoc_id = n.mdoc_id' \
+            f' JOIN mm.hosp_refuse hr on hr.ambticket_id = a.id' \
+            f' JOIN mm.emp ce ON ce.id = n.creator_emp_id' \
+            f' JOIN mm.dept cd ON cd.id = ce.dept_id' \
+            f' JOIN mm.mdoc md ON md.id = n.mdoc_id' \
+            f' JOIN mm.mdoc_type mt on md.mdoc_type_id = mt.id' \
+            f' JOIN mm.people p ON p.id = md.people_id' \
+            f' WHERE n.naz_view = \'{self.types_converting[self.research]}\'' \
+            f' AND n.create_dt between hr.input_dt and hr.end_dt' \
+            f' AND hr.end_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+            f' AND na.state_value not in (\'cancelled\', \'postponed\', \'completed\')' \
+            f' AND cd.name = \'{self.dept}\''
         else:
-            return f'select doc_fio, ib_num, pat_fio, research, create_dt, plan_dt, status FROM mm.dbkis' \
-                   f' WHERE dept = \'{self.dept}\' AND r_type = \'{self.types_converting[self.research]}\'' \
-                   f' AND create_dt between \'{self.from_dt}\' and \'{self.to_dt}\''
-
+            return f'SELECT' \
+            f' concat_ws (\' \',p.surname,p.name,p.patron) AS Назначил,'\
+            f' concat_ws (\' - \',m.num,m.YEAR) AS №ИБ,' \
+            f' mm.famaly_io(m.surname,m.name,m.patron) AS ФИО_Пациента,' \
+            f' n.name,' \
+            f' n.create_dt AS создано,' \
+            f' n.plan_dt AS Назначено_на_дату,' \
+            f' CASE n.naz_extr_id ' \
+            f'\tWHEN \'0\' THEN \'Планово\' ' \
+            f'\tWHEN \'1\' THEN \'Экстренно\' ' \
+            f' ELSE n.naz_extr_id::TEXT ' \
+            f' END ' \
+            f' FROM mm.mdoc AS m' \
+            f' JOIN mm.hospdoc h ON h.mdoc_id = m.id' \
+            f' JOIN mm.naz n ON n.mdoc_id = m.id' \
+            f' JOIN mm.naz_type nt ON nt.id = n.naz_type_id' \
+            f' JOIN mm.naz_type_dir ntd on ntd.id = nt.naz_type_dir_id' \
+            f' JOIN mm.naz_action na ON na."id" = n.last_action_id' \
+            f' JOIN mm.emp AS em ON  em.id = n.creator_emp_id' \
+            f' JOIN mm.dept AS dp ON  dp.id = em.dept_id' \
+            f' JOIN mm.people AS p ON  p.id = em.people_id' \
+            f' JOIN mm.ehr_case ec ON ec.id = h.ehr_case_id' \
+            f' JOIN mm.naz_state ns ON ns.id = n.naz_state_id ' \
+            f' WHERE n.create_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+            f' AND n.actual_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+            f' AND n.plan_dt BETWEEN \'{self.from_dt}\' AND \'{self.to_dt}\' ' \
+            f' and n.create_dt between h.hosp_dt and coalesce(h.leave_dt,\'infinity\')' \
+            f' and not ntd.path <@ (select array_agg(path) from mm.naz_type_dir where tags && array[\'GROUP_PAT\'::varchar])' \
+            f' AND n.naz_view = \'{self.types_converting[self.research]}\'' \
+            f' and na.state_value not in (\'cancelled\', \'postponed\' , \'completed\')' \
+            f' AND dp.name =\'{self.dept}\''
+ 
 
 class SelectAnswer:
     """ Represent SQL query object in the text format. """
@@ -153,9 +233,9 @@ class ReadyReport:
             # DataFrame's headers names for all type of researches
             headers_names = ['Врач', 'Номер ИБ', 'Пациент', 'Назначение',
                              'Дата создания', 'Назначено на дату', 'Статус']
-            # 4 values in 1 row - if user chosen "Невыгруженные эпикризы"
-            if row_values == 4:
-                headers_names = ['ФИО пациента', 'ИБ пациента',
+            # 5 values in 1 row - if user chosen "Невыгруженные эпикризы"
+            if row_values == 5:
+                headers_names = ['ФИО пациента', 'ИБ пациента', 'Лечащий врач',
                                  'Дата подписи выписного эпикриза', 'Дата выписки пациента']
             # 6 values in 1 row - if user chosen "Невыгруженные эпикризы по всем отделениям"
             elif row_values == 6:
@@ -165,10 +245,10 @@ class ReadyReport:
             data = dict(zip(headers_names, data_lists))
             df = pd.DataFrame(data=data)
             first_column = df.columns[0]
-            if first_column == 'ФИО пациента' and (len(df.columns) == 4 or len(df.columns) == 6):
+            if first_column == 'ФИО пациента' and (len(df.columns) == 5 or len(df.columns) == 6):
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=len(df.columns), column='Не выгружено',
-                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
+                          value=(today - df['Дата выписки пациента'].array).days)
                 df.loc[df['Не выгружено'] < 0, 'Не выгружено'] = 0
                 df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             df.columns.rename('ID', inplace=True)
@@ -178,9 +258,9 @@ class ReadyReport:
     def to_excel(self, dept):
         if type(self.dataframe) is not str:
             try:
-                pathlib.Path('../observer/WebApp/static/reports/').mkdir()
+                pathlib.Path('./WebApp/static/reports/').mkdir()
             except (FileExistsError, FileNotFoundError) as error:
-                pass
+                pass   
             first_column_name = self.dataframe.columns[0]
             if first_column_name == 'ID':
                 ReportExcelWriter.xlsx_styles_epicrisis(dept_name=dept, frame=self.dataframe)
@@ -216,7 +296,7 @@ class ReadyReport:
                 report = re.sub(r'<tr>(.*?)</tr>', lambda match: style_and_remove_overcenter(match.group(1)),
                                 report, flags=re.DOTALL)
                 if self.dataframe.columns[0] == 'ФИО пациента' and len(self.dataframe.columns) == 7:
-                    return report
+                    return report 
                 report = string_snippets.download_button + f'\t\t<p class="center-top-cnt">Невыгруженные эпикризы:' \
                                                            f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
             else:
@@ -230,4 +310,3 @@ class ReadyReport:
                          f'\t\t<p class="center-top-cnt">Количество невыполненных назначений:' \
                          f' {cnt}</p>\n\t\t<div class="table-container">\n' + report
         return report
-

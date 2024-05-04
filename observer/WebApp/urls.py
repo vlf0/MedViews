@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.dept, name='dept'),
     path('simi_report_page/', views.simi_report, name='simi_report'),
+    path('test/', views.test, name='test'),
     path('ref_to_type/', views.ref_to_type, name='ref_to_type'),
     path('<str:chosen_dept>/research_type/', views.research_type, name='research_type'),
     path('downloading/<str:chosen_dept>/', views.downloading, name='downloading'),

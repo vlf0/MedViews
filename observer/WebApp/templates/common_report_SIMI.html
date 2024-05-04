@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="{% static 'GKB_D_sign.ico' %}">
-    <title>Department choice</title>
+    <title>Невыгруженные эпикризы</title>
 </head>
 <body>
     <div class="logo">
@@ -16,7 +16,7 @@
 	<div class="button-container">
 		<button form="dept_choice" type="submit" class="common_button"> <b>Вернуться к выбору отделений</b> </button>
 	</div>
-    <p class="center-top-cnt">Невыгруженные эпикризы по всем отделениям с 1 января 2023 года: {{ common_rows_number }} </p>
+    <p class="center-top-text_simi">Невыгруженные эпикризы по всем отделениям: {{ common_rows_number }} </p>
     <div class="table-container">
     {{ report|safe }}
     </div>
