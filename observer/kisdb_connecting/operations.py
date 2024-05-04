@@ -191,29 +191,30 @@ class SelectAnswer:
                 try:
                     connection = psycopg2.connect(database=actual_db['db'],
                                                   host=actual_db['host'],
+                                                  #   port=5431,
                                                   port=actual_db['port'],
                                                   user=actual_db['user'],
-                                                  password=actual_db['password'],
-                                                  )
+                                                  password=actual_db['password'])
                     try:
                         cursor = connection.cursor()
                         cursor.execute(self.query_text)
                         selecting_data = cursor.fetchall()
                         return selecting_data
                     except (Exception, Error) as e:
-                        return f'Ошибка в SQL запросе!\n\n{e}\n'
+                        return f'Error!\n\n{e}\n'
                     finally:
                         cursor.close()
                         connection.close()
                 except (Exception, Error) as e:
-                    return f'Ошибка подключения к БД!\n\n{e}\n'
+                    print(e)
+                    return f'Error!\n\n{e}\n'
             elif len(actual_db) > 1:
-                return 'Проверьте настройки записей подключения к базе данных KIS.\n' \
-                       ' Не должно быть более одной записи в статусе "active".'
+                return 'There are more than one DataBases in ACTIVE status!\n' \
+                       ' Check DB in active in the admin panel!'
             else:
-                return 'Записи о подключении к базе данных KIS в статусе "inactive" \n'
+                return 'DB not active!\n To use it - turn on check box in the admin panel!'
         else:
-            return 'Чтобы начать работу необходимо внести данные подключения к базе данных KIS через админ-панель.'
+            return 'There are no any records in the BD data tab!'
 
 
 class ReadyReport:
@@ -248,7 +249,7 @@ class ReadyReport:
             if first_column == 'ФИО пациента' and (len(df.columns) == 5 or len(df.columns) == 6):
                 # Adding new column contains the different between today and sign date in DF
                 df.insert(loc=len(df.columns), column='Не выгружено',
-                          value=(today - df['Дата выписки пациента'].array).days)
+                          value=(today - df['Дата подписи выписного эпикриза'].array).days)
                 df.loc[df['Не выгружено'] < 0, 'Не выгружено'] = 0
                 df.sort_values(by=['Не выгружено'], ascending=False, inplace=True)
             df.columns.rename('ID', inplace=True)
@@ -266,7 +267,8 @@ class ReadyReport:
                 ReportExcelWriter.xlsx_styles_epicrisis(dept_name=dept, frame=self.dataframe)
             else:
                 ReportExcelWriter.xlsx_styles_researches(dept_name=dept, frame=self.dataframe)
-        return
+        else:
+            pass
 
     def to_html(self, error_value=False):
         """ Prepare raw data getting from KIS DB and creating HTML template based on them. Data handled by PANDAS. """

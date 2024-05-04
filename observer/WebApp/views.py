@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from django.shortcuts import render, redirect
 from django.http import FileResponse
+# My own modules
 from .forms import DeptChoose, ResearchType, DateButtons
 from kisdb_connecting.operations import ReadyReport, SelectAnswer, Queries
 from .local_functions import months, date_converter, validate_dates
@@ -12,10 +13,9 @@ def test(request):
 
 
 def dept(request):
-    """ Displaying the first page where you make a choice dept. """
+    print(request)
     depts_list = DeptChoose()
     if type(depts_list.depts) is str:
-        print(depts_list.depts)
         return render(request=request, template_name='errors.html',
                       context={'error_text': depts_list.depts})
     # Fields to be sending to page (from our forms)
@@ -33,15 +33,11 @@ def simi_report(request):
 
 
 def ref_to_type(request):
-    """ Getting data from page forms across POST request
-     and redirecting to next page with received data. """
     chosen_dept = request.POST.get('dept_name')
     return redirect(to=research_type, chosen_dept=chosen_dept)
 
 
 def research_type(request, chosen_dept, research_type=None):
-    """ Displaying the second page with chosen dept where you make a choice
-     research type and dates period. """
     # Converted to string format for insert to fields on browser in the first refer
     from_dt_initial = (date.today() - timedelta(days=14)).strftime('%Y-%m-%d')
     to_dt_initial = date.today().strftime('%Y-%m-%d')
@@ -66,8 +62,6 @@ def research_type(request, chosen_dept, research_type=None):
 
 
 def ref_to_output(request, chosen_dept):
-    """ Getting data from page forms across POST request
-     and redirecting to next page with received data. """
     # Dates to send on page into information line
     from_dt = request.POST.get('from_dt')
     to_dt = request.POST.get('to_dt')

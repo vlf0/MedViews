@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 test*.*
+output.html
 config_data.txt
 settings_prod.py
 # all python files in the root dir
@@ -12,6 +13,7 @@ settings_prod.py
 *.xls
 *.xlsx
 db.sqlite3
+/static/*
 
 # Distribution / packaging
 .Python
@@ -32,7 +34,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-pg_data/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -128,7 +129,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-#.env
+.env
 .venv
 env/
 venv/

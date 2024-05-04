@@ -77,6 +77,7 @@ body:not(.download_button-container) {
 }
 
 
+
 .center-top-text {      /*Выберите отделение*/
     position:relative;
     font-family: 'nbold',sans-serif;
@@ -347,54 +348,55 @@ div.table-container_simi {
     width: 2pc;
     height: 3pc;
 }
-
 .common_button_simi { /* Prevent text from wrapping to the next line */
-    cursor: pointer;
-    background-color: #ffffff;
-    border: solid;
-    border-color: #eb2b6d;
-    border-radius: 20px;
-    border-width: 10px;
-    padding: 10px;
-    position: fixed;
-    font-family: 'nbold',sans-serif;
-    font-size: 15px;
-    color:black;
-    width: 250px;
-}
+        cursor: pointer;
+        background-color: #ffffff;
+        border: solid;
+        border-color: #eb2b6d;
+        border-radius: 20px;
+        border-width: 10px;
+        padding: 10px;
+        position: fixed;
+        font-family: 'nbold',sans-serif;
+        font-size: 15px;
+        color:black;
+        width: 250px;
+    }
 
 .common_button_simi:hover {
-    background-color: #eb2b6d; 
-    border-color: #00263f;
-    color:white;
-    font-size:15px;
-    border-style:solid
-}
+        background-color: #eb2b6d; 
+        border-color: #00263f;
+        color:white;
+        font-size:15px;
+        border-style:solid
+
+    }
     
 
 .common_button_simi:active {
-    background-color: #f1bd79; 
-    border-color: #ffffff; 
-}
+        background-color: #f1bd79; 
+        border-color: #ffffff; 
+    }
     
     /* Add a pseudo-element for the clickable effect */
 .common_button_simi:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 10px;
-    background-color: #126a7033;
-    pointer-events: none; /* Ensure the pseudo-element doesn't interfere with clicks */
-}
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 10px;
+        background-color: #126a7033;
+        pointer-events: none; /* Ensure the pseudo-element doesn't interfere with clicks */
+    }
 
 .table-container {
     max-height: 800px; /* Set a maximum height for the container */
     overflow:auto;
     width: auto;
     height: auto;
+
 }
 
 /* Style the table header */
@@ -434,7 +436,7 @@ div.table-container_simi {
 .dataframe {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 5px;
+    margin-top: 20px;
     font-family: 'nbold',sans-serif;
 }
 
@@ -458,7 +460,12 @@ div.table-container_simi {
     background-color: #011d27;
 }
 
-
+/* Style the table */
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
 /* Style the table header */
 .dataframe th {
